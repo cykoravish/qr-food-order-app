@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.coverimg {
+  background: url('/public/assets.image1.png');
+}
