@@ -18,10 +18,12 @@ export const Home = () => {
     const navigate = useNavigate();
 
 
-    if (!getCookies('token')) {
-        navigate('/signup')
-    };
-
+    useEffect(() => {
+        if (!getCookies('token')) {
+            navigate('/signup')
+        };
+        navigate('/')
+    }, [navigate]);
     // Fetching data from backend
     useEffect(() => {
         const controller = new AbortController();
