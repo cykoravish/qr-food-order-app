@@ -93,11 +93,11 @@ export const postNewAdmin = async (req, res) => {
 };
 
 export const LoginUser = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: 'All fields are required' })
+    }
     try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ message: 'All fields are required' })
-        }
         const isExistingUser = await User.findOne({ email: email });
         if (!isExistingUser) {
             return res.status(400).json({ message: 'User is not ragistered' })
@@ -111,8 +111,9 @@ export const LoginUser = async (req, res) => {
             username: isExistingUser.username
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
+
         res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 }); // 1 day
-        res.status(200).json({ message: 'Login successfully', token })
+        res.status(200).json({ message: 'Login successfully', token, content: isExistingUser })
 
     } catch (error) {
         return res.status(500).json({ message: 'Interal server error' });

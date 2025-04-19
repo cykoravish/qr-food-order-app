@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, onload } from '../../Redux/Cart/index';
 import PrivateAxios from '../../Services/PrivateAxios';
+import getCookies from '../../Services/ProtectedRoutes';
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -16,8 +17,10 @@ export const Home = () => {
     console.log(import.meta.env.VITE_BACKEND_URL)
     const navigate = useNavigate();
 
-    // console.log("fetch", fetchedData)
-    // console.log("products", products)
+
+    if (!getCookies('token')) {
+        navigate('/signup')
+    };
 
     // Fetching data from backend
     useEffect(() => {
@@ -93,8 +96,10 @@ export const Home = () => {
     }, {});
 
 
+
     return (
         <div className='home-container'>
+
 
             <div onVolumeChange={() => navigate('/signup')}>
                 <img src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />

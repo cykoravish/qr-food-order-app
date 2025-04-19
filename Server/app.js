@@ -30,7 +30,7 @@ app.use('/', express.static(path.join(__dirname, '/uploads')))
 db();
 
 app.use('/api/v1/auth', AuthRoutes);
-app.use('/api/v1/products', ProtectedRoute, ProductsRoute);
+app.use('/api/v1/products', ProtectedRoute.ProductsRoute);
 app.use('/api/v1/carts', ProtectedRoute, CartRoutes);
 app.use('/api/v1/orders', ProtectedRoute, OrderRoutes);
 

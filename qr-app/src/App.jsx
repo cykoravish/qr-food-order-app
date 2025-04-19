@@ -22,9 +22,9 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      <QrCode tabIndex={<Signup />} value='https://foodorderappbyqr.onrender.com/' className='hidden' />
+      <QrCode tabIndex={<Signup />} value='https://food-order-app-1-jddi.onrender.com/signup' className='hidden' />
       <Routes>
-        <Route path='/signup' element={<Signup />} />
+        <Route index path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/' element={<Home />} />
         {/* <Route path='/burger' element={<Burger />} /> */}
