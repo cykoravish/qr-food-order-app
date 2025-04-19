@@ -2,7 +2,6 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { Home } from './Pages/Clients/Home';
-import { Burger } from './Pages/Clients/Burger';
 import { AllDishes } from './Pages/Clients/AllDishes';
 import { CartPage } from './Pages/Clients/CartPage';
 import { Category as UserCategory } from './Pages/Clients/Category'
@@ -28,11 +27,11 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/' element={<Home />} />
-        <Route path='/burger' element={<Burger />} />
+        {/* <Route path='/burger' element={<Burger />} /> */}
         <Route path='/allDishes' element={< AllDishes />} />
         <Route path='/cart' element={<CartPage />} />
         <Route path='/bill' element={<PaymentsMethod />} />
-        <Route path='/order-success/:id' element={<OrderSuccess />} />
+        <Route path='/order-success/' element={<OrderSuccess />} />
         <Route path='/:category' element={< UserCategory />} />
 
         <Route element={<ProtectedRoutes />}>

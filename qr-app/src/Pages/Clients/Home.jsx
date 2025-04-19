@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, onload } from '../../Redux/Cart/index';
+import PrivateAxios from '../../Services/PrivateAxios';
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -19,20 +20,14 @@ export const Home = () => {
 
     // Fetching data from backend
     useEffect(() => {
-        const controller = new AbortController(); // ✅ Create an AbortController
-
+        const controller = new AbortController();
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/v1/products', {
-                    withCredentials: true,
-                    signal: controller.signal, // ✅ Attach the abort signal
-                });
-
+                const response = await PrivateAxios.get('/products');
 
                 if (response.status !== 200) {
                     throw new Error('Response is not okay');
                 }
-                console.log(response.data)
                 setProducts(response.data.data);
             } catch (error) {
                 if (axios.isCancel(error)) {
@@ -47,11 +42,18 @@ export const Home = () => {
 
         // Cleanup function
         return () => {
-            controller.abort(); // Cancel the request if component unmounts
+            controller.abort();
         };
     }, []);
 
-
+    const groupedProducts = products.reduce((acc, product) => {
+        const categoryName = product.categoryId?.name || 'Uncategorized';
+        if (!acc[categoryName]) {
+            acc[categoryName] = [];
+        }
+        acc[categoryName].push(product);
+        return acc;
+    }, {});
 
 
     // Load cart from localStorage
@@ -78,6 +80,16 @@ export const Home = () => {
     console.log('Total quantity:', totalQty);
 
 
+    const filteredGroupedProducts = Object.keys(groupedProducts).reduce((acc, categoryName) => {
+        const filteredProducts = groupedProducts[categoryName].filter(product =>
+            product.name.toLowerCase().includes(search.toLowerCase()) ||
+            product.categoryId?.name.toLowerCase().includes(search.toLowerCase())
+        );
+        if (filteredProducts.length > 0) {
+            acc[categoryName] = filteredProducts;
+        }
+        return acc;
+    }, {});
 
 
     return (
@@ -99,14 +111,27 @@ export const Home = () => {
                 </div>
             </div>
 
-            {search && searchItems.map(([category, data]) => (
-                <div key={category} className="m-4 max-w-[343px] bg-yellow-400 shadow-md rounded-md">
-                    <h3 className="text-lg font-semibold m-2">{category}</h3>
-                    <div className="grid grid-cols-2 gap-4 w-[343px]">
-                        {data.items.map((item) => (
-                            <div key={item._id} className="p-2 rounded shadow w-[90%]">
-                                <h4>{item.name}</h4>
-                                <p>Qty: {item.quantity}</p> {/* Adjusted to use `quantity` instead of `qty` */}
+            {search && Object.keys(filteredGroupedProducts).map((categoryName) => (
+                <div key={categoryName} className='category-section mb-6'>
+                    <div className='flex justify-between px-4 py-2'>
+                        <h2 className='text-xl font-semibold'>{categoryName}</h2>
+                        <Link to={`/${categoryName}`} state={{ items: filteredGroupedProducts[categoryName] }} className='text-blue-500'>
+                            See More
+                        </Link>
+                    </div>
+
+                    <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
+                        {filteredGroupedProducts[categoryName].map((product) => (
+                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+                                <CardDetails
+                                    id={product._id}
+                                    category={product.categoryId?.name}
+                                    dishName={product.name}
+                                    price={product.price || 100}
+                                    qty={product.quantity} // Adjusted to use `quantity`
+                                    image={product.imageUrl}
+                                    onAddToCart={() => addToCarts(product)}
+                                />
                             </div>
                         ))}
                     </div>
@@ -115,31 +140,33 @@ export const Home = () => {
 
             <div className='food-items'>
                 {products.map((product) => (
-                    <CardItem key={product.categoryId?._id} name={product.categoryId?.name} imgPath={`http://localhost:5000/${product.imageUrl}`} />
+                    <CardItem name={product.categoryId?.name} imgPath={`http://localhost:5000/${product.imageUrl}`} />
                 ))}
             </div>
 
-            {products.map((product) => (
-                <div key={product.categoryId?._id} className='category-section mb-6'>
+            {Object.keys(groupedProducts).map((categoryName) => (
+                <div key={categoryName} className='category-section mb-6'>
                     <div className='flex justify-between px-4 py-2'>
-                        <h2 className='text-xl font-semibold'>{product.categoryId?.name}</h2>
-                        <Link to={`/${product.categoryId?.name}`} state={{ items: product.categoryId }} className='text-blue-500'>See More</Link>
+                        <h2 className='text-xl font-semibold'>{categoryName}</h2>
+                        <Link to={`/${categoryName}`} state={{ items: groupedProducts[categoryName] }} className='text-blue-500'>
+                            See More
+                        </Link>
                     </div>
 
                     <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
-
-                        <div key={product._id} className='min-w-[150px] flex-shrink-0'>
-                            <CardDetails
-                                id={product._id}
-                                category={product.categoryId?.name}
-                                dishName={product.name}
-                                price={product.price || 100}
-                                qty={product.quantity} // Adjusted to use `quantity`
-                                image={product.imageUrl}
-                                onAddToCart={() => addToCarts(product)}
-                            />
-                        </div>
-
+                        {groupedProducts[categoryName].map((product) => (
+                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+                                <CardDetails
+                                    id={product._id}
+                                    category={product.categoryId?.name}
+                                    dishName={product.name}
+                                    price={product.price || 100}
+                                    qty={product.quantity} // Adjusted to use `quantity`
+                                    image={product.imageUrl}
+                                    onAddToCart={() => addToCarts(product)}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
             ))}

@@ -1,6 +1,7 @@
-import axios from 'axios';
+
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import PrivateAxios from '../../Services/PrivateAxios';
 
 export const NewCategory = () => {
     const naviagate = useNavigate();
@@ -31,16 +32,15 @@ export const NewCategory = () => {
         Form.append('name', form.category);
         Form.append('description', form.description);
         try {
-            const responce = await axios.post('http://localhost:5000/api/v1/products/new-category', Form, { withCredentials: true });
+            const responce = await PrivateAxios.post('/products/new-category', Form);
             console.log(responce)
-            if (responce.statusText === 'ok') {
+            if (responce.status === 201) {
                 setCategory(responce.data.content)
                 naviagate('/admin')
             }
         } catch (error) {
             throw new Error({ message: 'responce Failed', error })
         }
-
     }
 
 

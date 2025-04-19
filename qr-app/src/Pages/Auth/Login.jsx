@@ -1,6 +1,7 @@
-import axios from 'axios';
+
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import PrivateAxios from '../../Services/PrivateAxios';
 
 export const Login = () => {
     const naviagate = useNavigate();
@@ -12,8 +13,8 @@ export const Login = () => {
 
     async function handleForm(e) {
         e.preventDefault();
-        const resoponce = await axios.post('http://localhost:5000/api/v1/auth/login', form, { withCredentials: true });
-        console.log(resoponce)
+
+        const resoponce = await PrivateAxios.post('/auth/login', form);
         if (resoponce.status === 200) {
             await naviagate('/')
         }

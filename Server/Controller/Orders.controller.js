@@ -56,6 +56,18 @@ export const updateOrder = async (req, res) => {
     }
 };
 
+export const getOrder = async (req, res) => {
+    console.log(req.params)
+    const { _id } = req.params._id;
+    try {
+        const order = Order.findById(_id);
+        if (order) {
+            res.status(200).json({ content: data })
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error })
+    }
+}
 
 // export const getorder = async (req, res) => {
 

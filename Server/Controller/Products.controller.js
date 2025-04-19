@@ -17,7 +17,7 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const postNewProduct = async (req, res) => {
-    const { name, description, price, category } = req.body.form
+    const { name, description, price, category } = req.body;
     console.log(req.body);
     const { _id } = req.user;
     const imageUrl = req.file.filename;
@@ -48,7 +48,6 @@ export const postNewProduct = async (req, res) => {
 export const getAllCategory = async (req, res) => {
     try {
         const existedCategory = await Category.find();
-        console.log(existedCategory)
         if (!existedCategory) {
             res.status(400).json({ message: 'empty category', content: [] });
         }
@@ -97,7 +96,6 @@ export const getProduct = async (req, res) => {
 export const postCategory = async (req, res) => {
     const { name, description } = req.body;
     const imageUrl = req.file.filename;
-    // console.log(name, description, imageUrl)
     if (!name || !description) {
         return res.status(400).json({ message: "All fields Are required" })
     };

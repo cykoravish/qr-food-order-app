@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import publicAxios from '../../Services/PublicAxios';
 export const Signup = () => {
     const naviagate = useNavigate();
     const [form, setForm] = useState({
@@ -11,7 +11,7 @@ export const Signup = () => {
 
     async function handleForm(e) {
         e.preventDefault();
-        const resoponce = await axios.post('http://localhost:5000/api/v1/auth/signup', form);
+        const resoponce = await publicAxios.post('/auth/signup', form)
         console.log(resoponce)
         if (!resoponce.status === 201) {
             throw new Error({ message: 'Responce Failed' })

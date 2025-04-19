@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LoadingCard } from '../../components/LoadingCard';
-import axios from 'axios';
+import PrivateAxios from '../../Services/PrivateAxios';
+import { CardDetails } from '../../components/CardDetails';
 
 export const DashBoardPage = () => {
     const [products, setProducts] = useState([]);
@@ -9,10 +10,8 @@ export const DashBoardPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/v1/products', {
-                    withCredentials: true
-                });
-                setProducts(response.data.data); // Set fetched data
+                const responce = await PrivateAxios.get('/products');
+                setProducts(responce.data.data); // Set fetched data
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -22,8 +21,17 @@ export const DashBoardPage = () => {
     }, [])
 
 
+    const groupedProducts = products.reduce((acc, product) => {
+        const categoryName = product.categoryId?.name || 'Uncategorized';
+        if (!acc[categoryName]) {
+            acc[categoryName] = [];
+        }
+        acc[categoryName].push(product);
+        return acc;
+    }, {});
+
     return (
-        <div className='max-w-screen-md w-[375px] h-[788px] overflow-x-hidden overflow-y-scroll '>
+        <div className='max-w-screen-md w-[375px] h-auto] overflow-x-hidden overflow-y-scroll '>
             <div>
                 <img src='/assets/image1.jpg' alt='logo' />
             </div>
@@ -52,42 +60,32 @@ export const DashBoardPage = () => {
                 </div>
             </div>
 
-            {products.map((product) => (
-                <div key={product._id} className='mb-6'>
-                    <div className='flex justify-between m-1 ml-3'>
-                        <h5>{product.categoryId?.name}</h5>
-                        <Link to='/bestSeller'>See more</Link>
+            {Object.keys(groupedProducts).map((categoryName) => (
+                <div key={categoryName} className='category-section mb-6'>
+                    <div className='flex justify-between px-4 py-2'>
+                        <h2 className='text-xl font-semibold'>{categoryName}</h2>
+                        <Link to={`/${categoryName}`} state={{ items: groupedProducts[categoryName] }} className='text-blue-500'>
+                            See More
+                        </Link>
                     </div>
-                    <div className='ml-1 mb-4 flex overflow-x-scroll overflow-y-hidden'>
-                        <div
-                            key={product._id}
-                            className='min-w-[140px] w-[140px] h-[169px] ml-2 shadow-sm gap-1 p-1 overflow-y-hidden'
-                        >
-                            <img src={`http://localhost:5000/${product.imageUrl}`} alt={product.name} className='w-[97px] h-[78px]' />
-                            <h4 className='font-medium'>{product.name || 'Chole Bhature'}</h4>
-                            <p className='font-bold'>Rs. {product.price || 150}</p>
-                            <button className='w-28 bg-[#F9D718] rounded-md px-2 text-sm h-8 mb-1'>
-                                Add to cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ))
-            }
 
-            {/* {products.map(([category, catData]) => ((console.log("category", catData.ma)),
-
-
-
-                        {(
-                            catData.map((item, index) => (
-
-                            ))
-                        )}
+                    <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
+                        {groupedProducts[categoryName].map((product) => (
+                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+                                <CardDetails
+                                    id={product._id}
+                                    category={product.categoryId?.name}
+                                    dishName={product.name}
+                                    price={product.price || 100}
+                                    qty={product.quantity} // Adjusted to use `quantity`
+                                    image={product.imageUrl}
+                                // onAddToCart={() => addToCarts(product)}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
-            ))} */}
-
+            ))}
 
 
             {/* Admin Actions */}

@@ -113,7 +113,7 @@ export const CartPage = () => {
                         <b>Rs. {total}</b>
                     </div>
                 </div>
-                <Link to={`/bill`} onClick={handleCartAndOrder} className='order-btn items-center flex justify-center ' >Place Orders</Link >
+                <Link to={`/bill`} onClick={handleCartAndOrder} state={{ order: cartstate }} className='order-btn items-center flex justify-center ' >Place Orders</Link >
             </div>
 
         </div >

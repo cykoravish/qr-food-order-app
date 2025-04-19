@@ -1,9 +1,7 @@
-import axios from 'axios';
+
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-// import { useDispatch, useSelector } from 'react-redux';
-// import { addProduct } from '../../ItemsSlice';
-// import { selectGroupedProducts } from '../../Selecters/Selecters';
+import PrivateAxios from '../../Services/PrivateAxios';
 
 export const NewProduct = () => {
     const [catgory, setCategoryOption] = useState([]);
@@ -22,7 +20,7 @@ export const NewProduct = () => {
     useEffect(() => {
         const controler = new AbortController();
         async function fetched() {
-            const responce = await axios.get('http://localhost:5000/api/v1/products/category', { withCredentials: true, signal: controler.signal });
+            const responce = await PrivateAxios.get('/products/category');
             console.log(responce)
             if (responce.statusText === 'OK') {
                 console.log(responce.data.content)
@@ -54,13 +52,13 @@ export const NewProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(form)
-        const responce = await axios.post('http://localhost:5000/api/v1/products/new-product', { "picture": picture, form }, {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const data = new FormData();
+        data.append("picture", picture); // match backend field
+        data.append("name", form.name);
+        data.append("description", form.description);
+        data.append("category", form.category);
+        data.append("price", form.price);
+        const responce = await PrivateAxios.post('/products/new-product', data)
         console.log(responce)
         if (responce.status === 201) {
             setForm({
@@ -193,7 +191,7 @@ export const NewProduct = () => {
                             value={form.category} // Replace with your actual form state
                         >
                             {catgory.map((category) => (
-                                <option key={category.name} value={category._id}>
+                                <option key={category._id} value={category._id}>
                                     {category.name}
                                 </option>
                             ))}
