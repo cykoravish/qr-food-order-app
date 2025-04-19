@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { CardItem } from '../../components/CardItem';
 import { CardDetails } from '../../components/CardDetails';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, onload } from '../../Redux/Cart/index';
@@ -13,7 +13,8 @@ export const Home = () => {
     const cartItems = useSelector((state) => state.cart.cartItems);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
-
+    console.log(import.meta.env.VITE_BACKEND_URL)
+    const navigate = useNavigate();
 
     // console.log("fetch", fetchedData)
     // console.log("products", products)
@@ -46,7 +47,7 @@ export const Home = () => {
         };
     }, []);
 
-    const groupedProducts = products.reduce((acc, product) => {
+    const groupedProducts = products?.reduce((acc, product) => {
         const categoryName = product.categoryId?.name || 'Uncategorized';
         if (!acc[categoryName]) {
             acc[categoryName] = [];
@@ -94,7 +95,8 @@ export const Home = () => {
 
     return (
         <div className='home-container'>
-            <div>
+
+            <div onVolumeChange={() => navigate('/signup')}>
                 <img src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />
             </div>
 

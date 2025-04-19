@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const PrivateAxios = axios.create({
-    baseURL: 'http://localhost:5000/api/v1',
+    baseURL: `${import.meta.env.VITE_BACKEND_URL}/api/v1`,
     headers: {
         "Content-Type": "application/json",
     },
@@ -16,7 +16,7 @@ PrivateAxios.interceptors.request.use(
         }
 
         // Don't manually set Content-Type if it's FormData
-        if (config.data instanceof FormData && 'picture') {
+        if (config.data instanceof FormData) {
             delete config.headers["Content-Type"];
         }
 
