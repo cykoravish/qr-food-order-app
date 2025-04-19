@@ -21,23 +21,13 @@ export const PaymentsMethod = () => {
     }, []);
     console.log("order", order.productId)
 
-
+    // totel Price
     const totalPrice = cart?.items?.reduce(
         (acc, item) => acc + item.productId.price * item.quantity,
         0
     ) || 0;
 
 
-
-
-    // console.log(mappedItems)
-
-
-    // useEffect(() => {
-    //     // Only run if cart.items exist and order is not already placed
-    //     if (!cart.items || cart.items.length === 0 || order) return;
-
-    //     const controller = new AbortController();
     function handlePlaceOrder() {
         const placeOrder = async () => {
             try {
@@ -48,6 +38,7 @@ export const PaymentsMethod = () => {
                 }));
 
                 const productData = {
+                    userId: cart.userId,
                     items: mappedItems,
                     totalAmount: totalPrice,
                 };
@@ -70,11 +61,6 @@ export const PaymentsMethod = () => {
 
         placeOrder();
     }
-
-    //     return () => {
-    //         controller.abort();
-    //     };
-    // }, [cart.items, order, totalPrice]);
 
     return (
         <div className='payment-method'>

@@ -3,12 +3,10 @@ import Product from "../Model/Product.model.js";
 import User from "../Model/User.model.js";
 
 export const getAllProducts = async (req, res) => {
-    console.log('hit route get')
     try {
         const products = await Product.find().populate('categoryId');
-        console.log(products)
         if (!products) {
-            return res.status(200).json({ data: [] });
+            return res.status(200).json(null);
         }
         res.status(200).json({ data: products });
     } catch (error) {
@@ -18,10 +16,8 @@ export const getAllProducts = async (req, res) => {
 
 export const postNewProduct = async (req, res) => {
     const { name, description, price, category } = req.body;
-    console.log(req.body);
     const { _id } = req.user;
     const imageUrl = req.file.filename;
-    console.log(name, description, category, price)
 
     if (!name || !description || !category || !price) {
         return res.status(400).json({ message: 'Data is required' })

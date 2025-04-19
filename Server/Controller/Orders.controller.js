@@ -3,7 +3,7 @@ import Order from "../Model/Order.model.js";
 
 export const getAllOrders = async (req, res) => {
     try {
-        const orders = await Orders.find();
+        const orders = await Order.find();
         if (!orders.length === 0) {
             return res.status(400).json({ data: null })
         }
@@ -14,22 +14,18 @@ export const getAllOrders = async (req, res) => {
 };
 
 export const postOrder = async (req, res) => {
-    const { items, totalAmount, tax, deliveryCharge } = req.body;
-    const { _id, } = req.user;
-    console.log('items', items, totalAmount)
+    const { items, totalAmount, tax, deliveryCharge, userId } = req.body;
+    // const { _id, } = req.user;
     if (!items || !totalAmount) {
         return res.status(400).json({ message: 'Items not found' })
     };
     try {
-
         const newOrder = new Order({
-            userId: _id,
+            userId: userId,
             items,
             totalAmount: totalAmount,
         });
         await newOrder.save();
-        console.log(newOrder)
-        // const order = Order.findOne
 
         await Cart.deleteOne({ userId: _id });
 
@@ -57,7 +53,6 @@ export const updateOrder = async (req, res) => {
 };
 
 export const getOrder = async (req, res) => {
-    console.log(req.params)
     const { _id } = req.params._id;
     try {
         const order = Order.findById(_id);
@@ -68,12 +63,3 @@ export const getOrder = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error })
     }
 }
-
-// export const getorder = async (req, res) => {
-
-//     try {
-
-//     } catch (error) {
-
-//     }
-// }
