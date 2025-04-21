@@ -6,7 +6,7 @@ export const CardItem = ({ name, imgPath }) => {
     <div>
       <div className='item-card'>
         <img src={imgPath} alt='catgeory' className='rounded-full w-[62px] h-[62px] ' />
-        <Link to={`/:${name}`}> <p className='pl-3'>{name}</p></Link>
+        <Link to={`/${name}`}> <p className='pl-3'>{name}</p></Link>
 
       </div>
     </div>

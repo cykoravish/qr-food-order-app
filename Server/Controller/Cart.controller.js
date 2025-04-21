@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import Cart from "../Model/Cart.model.js";
 import Orders from "../Model/Order.model.js";
 import Products from "../Model/Product.model.js";
-import User from "../Model/User.model.js"
+import User from "../Model/Admin.model.js"
 const objectId = new mongoose.Types.ObjectId();
 
 export const getCartItems = async (req, res) => {
-    const { _id } = req.user;
+    // const { _id } = req.user;
     try {
         const cart = await Cart.findOne({ userId: _id }).populate('items.productId');
         if (cart.length === 0) {
@@ -19,11 +19,12 @@ export const getCartItems = async (req, res) => {
 };
 
 export const postAddTOCart = async (req, res) => {
+    console.log(req.body)
     try {
-        const user = req.user; // ⬅️ user info should be attached from your auth middleware
-        const { items } = req.body;
+        // ⬅️ user info should be attached from your auth middleware
+        const { userId, items } = req.body;
         const newOrder = new Cart({
-            userId: user._id, // if you want to add userId also, add this in schema
+            userId: userId, // if you want to add userId also, add this in schema
             items
         });
 

@@ -1,27 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { incrementCart, removeFromCart, onload } from '../../Redux/Cart';
-import axios from 'axios';
+import { incrementCart, removeFromCart, } from '../../Redux/Cart';
 
 export const CartPage = () => {
     const cartstate = useSelector((state) => state.cart.cartItems);
 
-    const [cart, setCart] = useState([])
-    // console.log(cartstate)
+    // const [cart, setCart] = useState([])
     const dispatch = useDispatch();
-    console.log("cart", cart)
+    // console.log("cart", cart)
 
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cartstate))
-    }, [cartstate]);
 
-    useEffect(() => {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            dispatch(onload(JSON.parse(savedCart)))
-        }
-    }, [dispatch]);
 
     const total = Array.isArray(cartstate)
         ? cartstate.reduce((acc, item) => acc + (Number(item.price) * Number(item.quantity)), 0)
@@ -37,34 +26,14 @@ export const CartPage = () => {
     }
 
 
-    const transformedCart = cartstate.map(item => ({
-        productId: item._id,
-        quantity: item.quantity
-    }));
-
-
-
-    async function handleCartAndOrder() {
-        try {
-            const responce = await axios.post('http://localhost:5000/api/v1/carts/add-cart', { items: transformedCart }, { withCredentials: true });
-            if (responce.statusText === 'OK') {
-                setCart(responce.data.content)
-            }
-
-        } catch (error) {
-            throw new Error({ message: 'reponce failed', error })
-        }
-
-    }
-
-
 
     return (
+
         <div className='order-container'>
             <div className='item-cards flex justify-between'>
                 <Link className='flex' to={'/'}>
                     <img src='/assets/back.png' alt='back' />
-                    <span> MyCart </span>
+                    <span> Home </span>
                 </Link>
                 <Link to={'/'} className='flex'>
                     <img src='/assets/plus.png' alt='plus' width={20} height={20} />
@@ -113,7 +82,7 @@ export const CartPage = () => {
                         <b>Rs. {total}</b>
                     </div>
                 </div>
-                <Link to={`/bill`} onClick={handleCartAndOrder} state={{ order: cartstate }} className='order-btn items-center flex justify-center ' >Place Orders</Link >
+                <Link to={`/user-info`} className='order-btn items-center flex justify-center ' >Place Order</Link >
             </div>
 
         </div >

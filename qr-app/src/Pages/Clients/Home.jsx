@@ -15,13 +15,8 @@ export const Home = () => {
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
     console.log(import.meta.env.VITE_BACKEND_URL)
-    const navigate = useNavigate();
 
-
-    if (!getCookies('token')) {
-        navigate('/signup')
-    };
-
+    console.log(cartItems)
     // Fetching data from backend
     useEffect(() => {
         const controller = new AbortController();
@@ -60,27 +55,12 @@ export const Home = () => {
     }, {});
 
 
-    // Load cart from localStorage
-    useEffect(() => {
-        const storedCartData = localStorage.getItem('cart');
-        if (storedCartData) {
-            const parsedCartData = JSON.parse(storedCartData);
-            dispatch(onload(parsedCartData)); // Load cart items into Redux state
-        }
-    }, [dispatch]);
-
-    // Save cart in localStorage
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems]);
-
-
     const addToCarts = async (product) => {
         dispatch(addToCart(product));
     };
 
     // Calculate total quantity in cart
-    const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0); // Fixed the issue with cartItems structure
+    const totalQty = cartItems?.reduce((sum, item) => sum + item.quantity, 0); // Fixed the issue with cartItems structure
     console.log('Total quantity:', totalQty);
 
 
@@ -99,9 +79,7 @@ export const Home = () => {
 
     return (
         <div className='home-container'>
-
-
-            <div onVolumeChange={() => navigate('/signup')}>
+            <div>
                 <img src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />
             </div>
 
@@ -178,7 +156,7 @@ export const Home = () => {
                 </div>
             ))}
             <div className='flex w-[300px] bg-yellow-400 text-center justify-center items-center fixed bottom-2 h-[35px] left-6 rounded-md'>
-                <Link className='px-4 flex items-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Orders<span className='font-bold ml-1'> {totalQty}</span></Link>
+                <Link className='px-4 flex items-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1'> {totalQty}</span></Link>
             </div>
         </div>
     );

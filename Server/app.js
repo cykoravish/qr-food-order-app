@@ -7,6 +7,7 @@ import AuthRoutes from './Router/User.Router.js'
 import ProductsRoute from './Router/Products.Router.js'
 import CartRoutes from './Router/Cart.router.js'
 import OrderRoutes from './Router/Order.route.js'
+import PaymentRoutes from './Router/Payment.router.js'
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url'
 import path from 'path';
@@ -20,6 +21,7 @@ const __dirname = path.dirname(__Filename);
 app.use(cors({
     origin: process.env.FRONTEND,
     methods: ['GET', 'POST', 'PATCH', 'PUT'],
+    // allowedHeaders: true,
     credentials: true
 }));
 
@@ -30,8 +32,9 @@ app.use('/', express.static(path.join(__dirname, '/uploads')))
 db();
 
 app.use('/api/v1/auth', AuthRoutes);
-app.use('/api/v1/products', ProtectedRoute, ProductsRoute);
-app.use('/api/v1/carts', ProtectedRoute, CartRoutes);
+app.use('/api/v1/products', ProductsRoute);
+app.use('/api/v1/carts', CartRoutes);
+app.use('/api/v1/payment', PaymentRoutes);
 app.use('/api/v1/orders', ProtectedRoute, OrderRoutes);
 
 

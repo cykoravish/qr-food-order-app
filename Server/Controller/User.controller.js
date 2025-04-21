@@ -1,50 +1,62 @@
-import User from "../Model/User.model.js";
+
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
+import User from '../Model/User.model.js';
 
 export const postNewUser = async (req, res) => {
     console.log(req.body)
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { name, phone } = req.body;
+    if (!name || !phone) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    if (password.trim() == 0 || password.length < 8) {
-        return res.status(400).json({ message: 'Password must be atleast 6 char long' })
-    }
+    if (name.trim() == 0 || name.length < 1) {
+        return res.status(400).json({ message: 'Name char must be more then one ' })
+    };
 
     try {
-        const isExistingUser = await User.findOne({ email: email });
-
+        const isExistingUser = await User.findOne({ phone });
         if (isExistingUser) {
-            return res.status(400).json({ message: 'User alreday ragistered' })
+            res.status(200).json({ message: 'user Already Ragistered', user: isExistingUser });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const newUser = await User({
+            name,
+            phone
+        });
 
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: "Email structure is not correct" })
-        }
-
-        try {
-            const newUser = new User({
-                name,
-                email: email,
-                password: hashedPassword
-            });
-
-            await newUser.save();
-            res.status(201).json({ message: 'user Ragistred Successfukky' })
-        } catch (error) {
-            console.log('date is not saved')
-        }
-
+        await newUser.save();
+        res.status(200).json({ message: 'user Added successfully', user: newUser });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error })
+        res.status(500).json({ message: 'Internal server error', error })
     }
+};
+
+export const putUser = async (req, res) => {
+    const { name, phone } = req.body;
+    if (name.length === 0 || phone.length <= 10) {
+        return res.status(400).json({ message: 'All fields required with valid value' })
+    };
+
+    try {
+        const existingUser = await User.findOne({ phone });
+        if (!existingUser) {
+            return res.status(400).json({ message: 'Invalid details' })
+        };
+
+        if (name) {
+            existingUser.name = name
+        };
+        if (phone) {
+            existingUser.phone = phone
+        };
+
+        await existingUser.save();
+        res.status(200).json({ message: 'user updated Successfully', user: existingUser })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error })
+    }
+
 };
 
 export const postNewAdmin = async (req, res) => {
@@ -112,7 +124,11 @@ export const LoginUser = async (req, res) => {
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
 
-        res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 }); // 1 day
+        res.cookie('token', token, {
+            // httpOnly: true,
+            // secure: true, // required in HTTPS
+            // sameSite: 'None', // cross-site cookie allowed
+        }); // 1 day
         res.status(200).json({ message: 'Login successfully', token, content: isExistingUser })
 
     } catch (error) {
@@ -170,4 +186,4 @@ export const profileUser = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', error })
     }
 
-}
+};

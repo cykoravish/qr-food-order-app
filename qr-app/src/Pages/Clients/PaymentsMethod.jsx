@@ -1,71 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import './Home.css'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import './Home.css'
 import PrivateAxios from '../../Services/PrivateAxios'
+import { useSelector } from 'react-redux'
 export const PaymentsMethod = () => {
-    const [cart, setCart] = useState([]);
+    const cart = useSelector((state) => state.cart.cartItems);
+    const [searchParams] = useSearchParams();
+    const userId = searchParams.get('userId')
+
     const [order, setOrder] = useState('');
-    useEffect(() => {
-        async function fetchOrders() {
-            try {
-                const responce = await PrivateAxios.get('carts');
-                if (responce) {
-                    setCart(responce.data.data)
-                }
-            } catch (error) {
-                throw new Error({ message: 'Responce failed', error })
-            }
-        }
-        fetchOrders();
-    }, []);
     console.log("order", order.productId)
+    console.log(cart)
 
     // totel Price
-    const totalPrice = cart?.items?.reduce(
-        (acc, item) => acc + item.productId.price * item.quantity,
+    const totalPrice = cart?.reduce(
+        (acc, item) => acc + item.price * item.quantity,
         0
     ) || 0;
 
+    console.log(totalPrice)
 
-    function handlePlaceOrder() {
-        const placeOrder = async () => {
-            try {
-                const mappedItems = cart.items.map(item => ({
-                    productId: item.productId?._id,
-                    quantity: item.quantity,
-                    price: item.productId?.price
-                }));
-
-                const productData = {
-                    userId: cart.userId,
-                    items: mappedItems,
-                    totalAmount: totalPrice,
-                };
-
-                const response = await PrivateAxios.post('/orders/place-order', productData);
-
-                if (response.status === 200) {
-                    setOrder(response.data.order);
-                } else {
-                    console.error("Failed to place order");
-                }
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log('Request aborted');
-                } else {
-                    console.error("Error placing order:", error);
-                }
-            }
-        };
-
-        placeOrder();
-    }
 
     return (
         <div className='payment-method'>
             <div className='item-cards'>
-                <Link className='flex' to={'/cart'}>
+                <Link className='flex' to={`/user-info?userId=${userId}}`}>
                     <img src='/assets/back.png' alt='back' />
                     <span>Payment-Methods </span>
                 </Link>
@@ -86,11 +46,11 @@ export const PaymentsMethod = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {cart?.items?.map((item) => (<tr key={item.productId?._id}>
-                            <td>{item.productId.name}</td>
+                        {cart?.map((item) => (<tr key={item._id}>
+                            <td>{item.name}</td>
                             <td>{item.quantity}</td>
-                            <td>Rs.{item.productId.price}</td>
-                            <td>{(item.productId.price * item.quantity)}</td>
+                            <td>Rs.{item.price}</td>
+                            <td>{(item.price * item.quantity)}</td>
                         </tr>))}
 
 
@@ -119,7 +79,7 @@ export const PaymentsMethod = () => {
                 </div>
             </div>
             <div className=' shadow-xl rounded-md bg-yellow-500 w-[90%] h-[35px] flex items-center justify-center  ml-5'>
-                <Link className='' to={`/order-success/`} onClick={handlePlaceOrder}>Call Waiter</Link>
+                <Link className='' to={`/payment?userId=${userId}`} >Pay & Call Waiter</Link>
             </div>
 
 

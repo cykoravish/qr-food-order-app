@@ -1,6 +1,6 @@
 import corn from 'node-cron';
 import Products from '../../Model/Product.model.js';
-import User from '../../Model/User.model.js';
+import User from '../../Model/Admin.model.js';
 
 
 corn.schedule('0 0 * * *', async () => {
