@@ -12,7 +12,6 @@ export const Signup = () => {
     async function handleForm(e) {
         e.preventDefault();
         const resoponce = await publicAxios.post('/auth/signup', form)
-        console.log(resoponce)
         if (!resoponce.status === 201) {
             throw new Error({ message: 'Responce Failed' })
         }
@@ -23,7 +22,6 @@ export const Signup = () => {
         e.preventDefault();
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
-        console.log(form)
     }
     return (
         <div className='w-[375px] h-full overflow-x-hidden items-center relative'>
@@ -55,6 +53,9 @@ export const Signup = () => {
                     </div>
                     <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
                         <button type="submit" className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Signup</button>
+                    </div>
+                    <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
+                        <Link to={'/login'} className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Login</Link>
                     </div>
                 </form>
             </div>

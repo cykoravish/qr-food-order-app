@@ -1,134 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import PrivateAxios from '../../Services/PrivateAxios';
+import publicAxios from '../../Services/PublicAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCart, syncCartFromLocalStorage } from '../../Redux/Cart/index';
 
-export const PaymentPage = ({ cart, totalPrice, setOrder }) => {
+export const PaymentPage = () => {
     const [searchParams] = useSearchParams();
     const userId = searchParams.get('userId');
-    const [paymentMethod, setPaymentMethod] = useState('');
+    const [PaymentMethod, setPaymentMethod] = useState('');
+    const [order, setOrder] = useState(null);
+    const dispatch = useDispatch();
+    const cart = useSelector((state) => state.cart.cartItems);
     const navigate = useNavigate();
+    // Sync localStorage when the component loads
+    useEffect(() => {
+        dispatch(syncCartFromLocalStorage());
+    }, [dispatch]);
 
-    // const handlePlaceOrder = async () => {
-    //     try {
-    //         const mappedItems = cart.map(item => ({
-    //             productId: item.productId?._id,
-    //             quantity: item.quantity,
-    //             price: item.productId?.price,
-    //         }));
+    const totalPrice = Array.isArray(cart)
+        ? cart.reduce((acc, item) => acc + (Number(item.price) * Number(item.quantity)), 0)
+        : 0;
 
-    //         const orderData = {
-    //             userId,
-    //             items: mappedItems,
-    //             totalAmount: totalPrice,
-    //             paymentMethod
-    //         };
-
-    //         const response = await PrivateAxios.post('/orders/place-order', orderData);
-
-    //         if (response.status === 200) {
-    //             setOrder(response.data.order);
-    //             navigate('/order-success');
-    //         } else {
-    //             console.error('Order failed');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
-    const handlePlaceOrder = async () => {
+    const HandleplaceOrder = async () => {
         try {
             const mappedItems = cart.map(item => ({
-                productId: item.productId._id,
+                productId: item._id,
                 quantity: item.quantity,
-                price: item.productId.price
+                price: item.price
             }));
 
-            const orderData = {
+            const productData = {
                 userId,
                 items: mappedItems,
                 totalAmount: totalPrice,
+                paymentMethod: PaymentMethod
             };
 
-            // 1. Create Razorpay Order from backend
-            const res = await PrivateAxios.post('/payment/create-order', orderData);
-            const razorpayOrder = res.data;
+            const response = order ? null : await publicAxios.post('/orders/place-order', productData);
 
-            // 2. Open Razorpay Checkout
-            const options = {
-                key: 'YOUR_RAZORPAY_KEY_ID', // Get from Razorpay dashboard
-                amount: razorpayOrder.amount,
-                currency: 'INR',
-                name: 'Food Ordering App',
-                description: 'Test Payment',
-                order_id: razorpayOrder.id,
-                handler: async function (response) {
-                    // 3. Payment success - call backend to confirm
-                    const paymentData = {
-                        razorpayOrderId: response.razorpay_order_id,
-                        razorpayPaymentId: response.razorpay_payment_id,
-                        razorpaySignature: response.razorpay_signature,
-                        userId,
-                        paymentMethod: 'UPI',
-                        items: mappedItems,
-                        totalAmount: totalPrice,
-                    };
-
-                    const confirmRes = await PrivateAxios.post('/payment/verify', paymentData);
-
-                    if (confirmRes.status === 200) {
-                        setOrder(confirmRes.data.order);
-                        navigate('/order-success');
-                    }
-                },
-                theme: { color: '#F37254' }
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.open();
-
+            if (response.status === 200 || response.status === 201) {
+                setOrder(response.data.order);
+                dispatch(clearCart()); // Clear Redux and localStorage
+                alert('Order placed successfully!');
+                navigate('/order-success')
+            } else {
+                console.error("Failed to place order");
+            }
         } catch (error) {
-            console.error("Razorpay Error:", error);
+            console.error("Error placing order:", error);
         }
     };
 
-
     return (
-        <div className="mx-4 my-6">
-            <Link to={`/user-info?userId=${userId}`} className="flex items-center gap-2 mb-4 text-blue-600">
-                <img src="/assets/back.png" alt="back" className="w-5 h-5" />
-                <span>Back to User Details</span>
-            </Link>
+        <div className='mx-2'>
+            {/* Back to user details link */}
+            <div className='my-2'>
+                <Link to={`/user-info?userId=${userId}`} className='flex items-center gap-1 text-lg font-semibold'>
+                    <img src='/assets/back.png' alt='back' className='w-6 h-6' />
+                    <span className='capitalize'>User Details</span>
+                </Link>
+            </div>
 
-            <h2 className="text-2xl text-center font-semibold mb-4">Payment Methods</h2>
+            {/* Payment methods */}
+            <div className='mt-4 flex flex-col gap-2 mx-2 items-center'>
+                <h2 className='text-2xl text-center'>Payment Methods</h2>
 
-            <div className="flex flex-col items-center gap-4">
-                <div
-                    className={`w-[90%] h-12 flex items-center justify-center rounded cursor-pointer
-                    ${paymentMethod === 'Cash' ? 'bg-yellow-400' : 'bg-gray-200'}`}
-                    onClick={() => setPaymentMethod('Cash')}
-                >
-                    💵 Cash on Delivery
+                <div className='flex justify-center w-[90%] h-12 bg-gray-200 text-center mt-4 items-center rounded'>
+                    <button onClick={() => setPaymentMethod('Cash')} className='w-full'>Cash</button>
                 </div>
 
-                <div
-                    className={`w-[90%] h-12 flex items-center justify-center rounded cursor-pointer
-                    ${paymentMethod === 'UPI' ? 'bg-yellow-400' : 'bg-green-400'}`}
-                    onClick={() => setPaymentMethod('UPI')}
-                >
-                    🏦 UPI Payment
+                <div className='flex justify-center w-[90%] h-12 bg-green-400 text-center items-center rounded'>
+                    <button onClick={() => setPaymentMethod('UPI')} className='w-full'>UPI</button>
                 </div>
             </div>
 
-            <div className="fixed bottom-2 w-[95%] flex justify-between gap-2 mx-auto left-0 right-0">
-                <div className="w-1/2 py-2 text-center bg-gray-300 rounded">Discard</div>
-                <button
-                    onClick={handlePlaceOrder}
-                    disabled={!paymentMethod}
-                    className={`w-1/2 py-2 text-center rounded ${paymentMethod ? 'bg-amber-400' : 'bg-gray-300'}`}
+            {/* Bottom action buttons */}
+            <div className='flex fixed bottom-1 w-[95%] gap-1 h-12 px-2'>
+                <Link
+                    to={`/user-info?userId=${userId}`}
+                    className='w-[50%] flex items-center justify-center bg-gray-200 rounded'
                 >
-                    Save
-                </button>
+                    Discard
+                </Link>
+
+                {PaymentMethod ? (
+                    <button
+                        className='w-[50%] flex items-center justify-center bg-amber-300 rounded'
+                        onClick={HandleplaceOrder}
+                    >
+                        Save
+                    </button>
+                ) : (
+                    <div className='w-[50%] flex items-center justify-center bg-red-200 text-sm text-gray-700 rounded'>
+                        Select Payment Method
+                    </div>
+                )}
             </div>
         </div>
     );

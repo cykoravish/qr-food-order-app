@@ -5,19 +5,20 @@ import Sales from "../Model/Sales.model.js";
 
 export const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find();
+        const orders = await Order.find().populate('userId').populate('items.productId');
         if (!orders.length === 0) {
             return res.status(400).json({ data: null })
         }
-        res.status(200).json({ data: orders });
+        res.status(200).json({ content: orders });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error })
     }
 };
 
 export const postOrder = async (req, res) => {
-    const { items, totalAmount, tax, deliveryCharge, userId } = req.body;
+    const { items, totalAmount, tax, deliveryCharge, userId, paymentMethod } = req.body;
     // const { _id, } = req.user;
+    console.log(req.body)
     if (!items || !totalAmount) {
         return res.status(400).json({ message: 'Items not found' })
     };
@@ -26,30 +27,37 @@ export const postOrder = async (req, res) => {
             userId: userId,
             items,
             totalAmount: totalAmount,
+            paymentMethod: paymentMethod,
         });
         await newOrder.save();
 
-        await Cart.deleteOne({ userId: _id });
+        await Cart.deleteOne({ userId: userId });
 
-        const order = await Order.findByIdAndUpdate(newOrder._id, { $set: { status: 'delivered' } });
+        // const order = await Order.findByIdAndUpdate(newOrder._id, { $set: { status: '' } });
 
-        await Sales.
-
-            res.status(201).json({ massage: 'Order successfully placed', order: order })
+        res.status(201).json({ massage: 'Order successfully placed', order: newOrder })
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 export const updateOrder = async (req, res) => {
-    const { orderId } = req.params;
+    const { id } = req.params;
     const { status } = req.body;
-    if (!orderId) {
+    console.log(id, status)
+    if (!id) {
         return res.status(400).json({ message: 'OrderId is not found' })
     };
     try {
-        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { $set: { status: status } });
-        res.status(200).json({ message: '' });
+        const order = await Order.findByIdAndUpdate(id, { $set: { status: status } });
+        if (status === 'delivered') {
+            const newSale = new Sales({
+                totelOrders: +1,
+                totelRevenue: +order.totalAmount,
+            });
+            await newSale.save();
+        };
+        res.status(200).json({ message: 'Order updated' });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error })
     }
@@ -122,43 +130,3 @@ export const getOrder = async (req, res) => {
 // }
 
 // backend/controllers/paymentController.js
-import Razorpay from 'razorpay';
-import crypto from 'crypto';
-
-const razorpayInstance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_SECRET,
-});
-
-// Create Order
-export const createOrder = async (req, res) => {
-    const { amount } = req.body;
-
-    const options = {
-        amount: amount * 100, // Razorpay uses paise
-        currency: "INR",
-        receipt: `receipt_order_${Math.random() * 1000}`,
-    };
-
-    try {
-        const order = await razorpayInstance.orders.create(options);
-        res.status(200).json(order);
-    } catch (err) {
-        res.status(500).json({ message: "Razorpay order failed", error: err });
-    }
-};
-
-// Verify Signature (after payment)
-export const verifyPayment = async (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
-    const generatedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET)
-        .update(razorpay_order_id + "|" + razorpay_payment_id)
-        .digest("hex");
-
-    if (generatedSignature === razorpay_signature) {
-        res.status(200).json({ message: "Payment verified successfully" });
-    } else {
-        res.status(400).json({ message: "Invalid signature" });
-    }
-};

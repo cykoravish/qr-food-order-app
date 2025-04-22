@@ -14,13 +14,10 @@ export const Login = () => {
         e.preventDefault();
 
         const resoponce = await PrivateAxios.post('/auth/login', form);
-        if (resoponce.status === 200) {
-            console.log(resoponce.data.content.role)
-            if (resoponce.data.content.role === 'admin') {
-                await naviagate('/admin')
-            }
-            await naviagate('/')
-        }
+        if (resoponce.status !== 200) {
+            throw new Error({ message: 'Respocne Failed' })
+        };
+        naviagate('/admin')
     };
 
     function handleInput(e) {

@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { incrementCart, removeFromCart, } from '../../Redux/Cart';
+import publicAxios from '../../Services/PublicAxios';
 
 export const CartPage = () => {
     const cartstate = useSelector((state) => state.cart.cartItems);
@@ -11,10 +12,11 @@ export const CartPage = () => {
     // console.log("cart", cart)
 
 
-
     const total = Array.isArray(cartstate)
         ? cartstate.reduce((acc, item) => acc + (Number(item.price) * Number(item.quantity)), 0)
         : 0;
+
+
 
 
     function handleMinusQuanity(id) {
@@ -24,6 +26,9 @@ export const CartPage = () => {
     function handlePlusQuantity(id) {
         dispatch(incrementCart(id))
     }
+
+
+
 
 
 

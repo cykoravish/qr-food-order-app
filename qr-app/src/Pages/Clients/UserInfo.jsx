@@ -6,21 +6,18 @@ import PrivateAxios from '../../Services/PrivateAxios';
 
 export const UserInfo = () => {
     const [searchParams] = useSearchParams();
-    const userId = searchParams.get('userId')
+    const userId = searchParams.get('userId');
+
+    console.log(userId)
     const navigate = useNavigate();
     const [user, setUser] = useState(() => {
         const saved = localStorage.getItem('user');
         return saved ? JSON.parse(saved) : null;
     });
-    const [cart, setCart] = useState({});
+    const [cart, setCart] = useState(null);
     const cartItems = useSelector((state) => state.cart.cartItems)
 
 
-    const data = cartItems?.map((product) => ({
-        productId: product._id,
-        quantity: product.quantity
-    }));
-    console.log(data)
 
     const [form, setForm] = useState({
         name: user?.name || '',
@@ -39,7 +36,7 @@ export const UserInfo = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = user ? null : await publicAxios.post('/auth/user', form);
+            const response = user ? await publicAxios.put('/auth/user', form) : await publicAxios.post('/auth/user', form);
             if (response.status === 200) {
                 const updatedUser = response.data.user;
                 setUser(updatedUser);
@@ -55,17 +52,26 @@ export const UserInfo = () => {
     const handleEdit = () => {
         setIsEditMode(true);
     };
+    console.log(cart)
 
+    const itemData = cartItems.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity
+    }))
+    console.log(itemData)
     async function handleCartDeta() {
+
         const cartData = {
             userId: userId ? userId : user._id,
-            items: data
+            items: itemData
         };
+        console.log(cartData)
         const responce = cart ? null : await publicAxios.post('/carts/add-cart', cartData);
-        if (!responce.statusText === 'ok') {
+        console.log(responce)
+        if (responce.statusText !== 'Created') {
             throw new Error({ message: 'responce failed' })
         };
-        setCart(responce.data.data)
+        setCart(responce.data.content)
     }
 
     return (
@@ -90,7 +96,10 @@ export const UserInfo = () => {
 
                         <div className='w-full flex gap-2 mt-4'>
                             <button className='bg-gray-300 w-1/2 py-2 rounded' onClick={() => setIsEditMode(false)}>Cancel</button>
-                            <button className='bg-amber-400 w-1/2 py-2 rounded' onClick={handleSubmit}>Save</button>
+                            <button className='bg-amber-400 w-1/2 py-2 rounded' onClick={() => {
+                                handleSubmit();
+                                handleCartDeta();
+                            }}>Save</button>
                         </div>
                     </>
                 ) : (
@@ -98,7 +107,10 @@ export const UserInfo = () => {
                         <p className='text-lg font-medium'>👤 Name: {user.name}</p>
                         <p className='text-lg font-medium mt-2'>📞 Phone: {user.phone}</p>
                         <button className='mt-4 bg-blue-400 text-white py-2 px-4 rounded' onClick={handleEdit}>Edit</button>
-                        <Link className='mt-4 bg-blue-400 text-white py-2 px-4 rounded flex justify-center' to={`/cart-bill/?userId=${userId ? userId : user._id}`} onClick={handleCartDeta}>Bill Details</Link>
+                        <Link className='mt-4 bg-blue-400 text-white py-2 px-4 rounded flex justify-center' to={`/cart-bill/?userId=${userId ? userId : user._id}`} onClick={() => {
+                            handleCartDeta();
+                            handleSubmit();
+                        }}>Bill Details</Link>
                     </>
                 )}
             </div>

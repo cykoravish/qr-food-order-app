@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
-import User from '../Model/Admin.model.js';
+import Admin from '../Model/Admin.model.js';
 
 const ProtectedRoute = async (req, res, next) => {
-    console.log(req.cookies)
     const { token } = req.cookies;
     try {
         if (!token) {
@@ -12,7 +11,7 @@ const ProtectedRoute = async (req, res, next) => {
         if (!decodeUser) {
             return res.status(400).json({ message: 'Token must' })
         }
-        const user = await User.findOne({ _id: decodeUser.id }).select('-password');
+        const user = await Admin.findOne({ _id: decodeUser.id }).select('-password');
         req.user = user;
         next();
     } catch (error) {

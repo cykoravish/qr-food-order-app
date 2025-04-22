@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import './Home.css'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './Home.css'
 import PrivateAxios from '../../Services/PrivateAxios'
 import { useSelector } from 'react-redux'
@@ -9,8 +9,8 @@ export const PaymentsMethod = () => {
     const [searchParams] = useSearchParams();
     const userId = searchParams.get('userId')
 
-    const [order, setOrder] = useState('');
-    console.log("order", order.productId)
+    // const [order, setOrder] = useState('');
+    // console.log("order", order.productId)
     console.log(cart)
 
     // totel Price
@@ -19,13 +19,13 @@ export const PaymentsMethod = () => {
         0
     ) || 0;
 
-    console.log(totalPrice)
+    console.log(totalPrice);
 
 
     return (
         <div className='payment-method'>
             <div className='item-cards'>
-                <Link className='flex' to={`/user-info?userId=${userId}}`}>
+                <Link className='flex' to={`/user-info?userId=${userId}`}>
                     <img src='/assets/back.png' alt='back' />
                     <span>Payment-Methods </span>
                 </Link>

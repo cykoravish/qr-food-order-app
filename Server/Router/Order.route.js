@@ -5,7 +5,7 @@ const route = express.Router();
 
 route.get('/orders', getAllOrders);
 route.post('/place-order', postOrder);
-route.patch('/:orderId', updateOrder)
+route.patch('/:id', updateOrder)
 route.get('/:id', getOrder)
 
 

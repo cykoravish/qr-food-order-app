@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
 import User from '../Model/User.model.js';
+import Admin from '../Model/Admin.model.js';
 
 export const postNewUser = async (req, res) => {
     console.log(req.body)
@@ -17,7 +18,7 @@ export const postNewUser = async (req, res) => {
     try {
         const isExistingUser = await User.findOne({ phone });
         if (isExistingUser) {
-            res.status(200).json({ message: 'user Already Ragistered', user: isExistingUser });
+            return res.status(200).json({ message: 'User already registered', user: isExistingUser });
         }
 
         const newUser = await User({
@@ -26,10 +27,11 @@ export const postNewUser = async (req, res) => {
         });
 
         await newUser.save();
-        res.status(200).json({ message: 'user Added successfully', user: newUser });
+        res.status(200).json({ message: 'User added successfully', user: newUser });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error', error })
+        res.status(500).json({ message: 'Internal server error', error });
     }
+
 };
 
 export const putUser = async (req, res) => {
@@ -61,8 +63,9 @@ export const putUser = async (req, res) => {
 
 export const postNewAdmin = async (req, res) => {
     try {
-        const { username, email, password, role, orders } = req.body;
-        if (!username || !email, !password || !role) {
+        const { name, email, password } = req.body;
+        console.log(name, email, password)
+        if (!name || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' })
         }
 
@@ -70,7 +73,7 @@ export const postNewAdmin = async (req, res) => {
             return res.status(400).json({ message: 'Password must be atleast 6 char long' })
         }
 
-        const isExistingUser = await User.findOne({ email: email });
+        const isExistingUser = await Admin.findOne({ email: email });
 
         if (isExistingUser) {
             return res.status(400).json({ message: 'User alreday ragistered' })
@@ -78,27 +81,21 @@ export const postNewAdmin = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const emailRegx = /^[^s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
         if (!emailRegx.test(email)) {
             return res.status(400).json({ message: "Email structure is not correct" })
         }
 
-        const newUser = new User({
-            username: username,
-            email: emailRegx,
+        const newUser = new Admin({
+            name: name,
+            email: email,
             password: hashedPassword,
-            role: 'admin',
-            allProducts: [],        // Start with empty, update as admin adds products
-            sales: {
-                totalSalesAmount: 0,
-                successfulOrders: [],
-                pendingOrders: [],
-            }
         });
 
         await newUser.save();
-        res.status(201).json({ message: 'user Ragistred Successfukky' })
+        res.status(201).json({ message: 'user Ragistred Successfully' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', error })
     }
@@ -110,7 +107,7 @@ export const LoginUser = async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' })
     }
     try {
-        const isExistingUser = await User.findOne({ email: email });
+        const isExistingUser = await Admin.findOne({ email: email });
         if (!isExistingUser) {
             return res.status(400).json({ message: 'User is not ragistered' })
         }

@@ -8,6 +8,7 @@ import ProductsRoute from './Router/Products.Router.js'
 import CartRoutes from './Router/Cart.router.js'
 import OrderRoutes from './Router/Order.route.js'
 import PaymentRoutes from './Router/Payment.router.js'
+import SalesRouter from './Router/Sales.router.js'
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url'
 import path from 'path';
@@ -34,8 +35,9 @@ db();
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/products', ProductsRoute);
 app.use('/api/v1/carts', CartRoutes);
-app.use('/api/v1/payment', PaymentRoutes);
-app.use('/api/v1/orders', ProtectedRoute, OrderRoutes);
+// app.use('/api/v1/payment', PaymentRoutes);
+app.use('/api/v1/orders', OrderRoutes);
+app.use('/api/v1/sales', SalesRouter);
 
 
 app.use((err, req, res, next) => {

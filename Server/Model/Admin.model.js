@@ -4,11 +4,6 @@ const AdminSchema = mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    role: {
-        type: String,
-        enum: ['client', 'admin'],
-        default: 'client'
-    },
     createdAt: {
         type: Date,
         default: Date.now
