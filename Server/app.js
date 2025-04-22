@@ -31,7 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use('/', express.static(path.join(__dirname, '/uploads')))
 db();
-
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, './frontend/dist/index.html'));
+});
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/products', ProductsRoute);
 app.use('/api/v1/carts', CartRoutes);
