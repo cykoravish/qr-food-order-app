@@ -38,15 +38,15 @@ function App() {
       <Route path='/order-success' element={<OrderSuccess />} />
 
       {/* Admin Protected Routes */}
-     <Route path='/admin' element={<ProtectedRoutes />}>
-        <Route index path='/' element={<DashBoardPage />} />
-        <Route path='/createProduct' element={<NewProduct />} />
-        <Route path='/Category' element={<Category />} />
-        <Route path='/newCategory' element={<NewCategory />} />
-        <Route path='/pending-orders' element={<OrderUpdate />} />
-        <Route path='/totelsale' element={<TotalSale />} />
-        <Route path='/data-visualize' element={<GraphicalPage />} />
-      </Route>
+{/*      <Route path='/admin' element={<ProtectedRoutes />}> */}
+        <Route index path='/admin' element={<DashBoardPage />} />
+        <Route path='/admin/createProduct' element={<NewProduct />} />
+        <Route path='/admin/Category' element={<Category />} />
+        <Route path='/admin/newCategory' element={<NewCategory />} />
+        <Route path='/admin/pending-orders' element={<OrderUpdate />} />
+        <Route path='/admin/totelsale' element={<TotalSale />} />
+        <Route path='/admin/data-visualize' element={<GraphicalPage />} />
+{/*       </Route> */}
     </Routes>
   );
 }
