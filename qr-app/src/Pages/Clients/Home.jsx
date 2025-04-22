@@ -141,7 +141,7 @@ export const Home = () => {
 
             <div className='food-items'>
                 {products.map((product) => (
-                    <CardItem name={product.categoryId?.name} imgPath={`http://localhost:5000/${product.imageUrl}`} />
+                    <CardItem name={product.categoryId?.name} imgPath={`https://food-order-app-qply.onrender.com/${product.imageUrl}`} />
                 ))}
             </div>
 
