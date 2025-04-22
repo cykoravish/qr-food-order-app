@@ -120,11 +120,12 @@ export const LoginUser = async (req, res) => {
             username: isExistingUser.username
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
+        res.cookie('token', token,{
 
-        res.cookie('token', token, {
-            // httpOnly: true,
-            // secure: true, // required in HTTPS
-            // sameSite: 'None', // cross-site cookie allowed
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            secure: true, // required in HTTPS
+            sameSite: 'Lex', // cross-site cookie allowed
         }); // 1 day
         res.status(200).json({ message: 'Login successfully', token, content: isExistingUser })
 
@@ -182,5 +183,5 @@ export const profileUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', error })
     }
-
 };
+
