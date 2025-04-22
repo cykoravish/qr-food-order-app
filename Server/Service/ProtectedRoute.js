@@ -7,7 +7,7 @@ const ProtectedRoute = async (req, res, next) => {
         if (!token) {
             return res.status(400).json({ message: 'Token did not found' })
         }
-        const decodeUser = jwt.verify(token, process.env.JWTSECRET);
+        const decodeUser = jwt.verify(token, 'myNewSecret');
         if (!decodeUser) {
             return res.status(400).json({ message: 'Token must' })
         }
