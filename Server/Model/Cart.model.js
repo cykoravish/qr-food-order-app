@@ -17,7 +17,6 @@ const CartSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
-
 });
 const Cart = mongoose.model('Cart', CartSchema);
 export default Cart;

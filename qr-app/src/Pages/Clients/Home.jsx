@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import { CardItem } from '../../components/CardItem';
 import { CardDetails } from '../../components/CardDetails';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart, onload } from '../../Redux/Cart/index';
+import { addToCart } from '../../Redux/Cart/index';
 import PrivateAxios from '../../Services/PrivateAxios';
-import getCookies from '../../Services/ProtectedRoutes';
+import EventEmitter from 'events';
 
 export const Home = () => {
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.cartItems);
+    const cartItems = useSelector((state) => state ? state.cart.cartItems : []);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
-    console.log(import.meta.env.VITE_BACKEND_URL)
     const navigate = useNavigate();
+    const [clickCount, setClickCount] = useState(0);
 
+    const handleAdminAccess = () => {
+        setClickCount(prev => {
+            const newCount = prev + 1;
 
-    useEffect(() => {
-        if (!getCookies('token')) {
-            navigate('/signup')
-        };
-        navigate('/')
-    }, [navigate]);
-    // Fetching data from backend
+            if (newCount === 10) {
+                alert("🎉 Secret Admin Access Activated!");
+                navigate('/signup')
+
+                return 0;
+            }
+
+            return newCount;
+        });
+    };
+
     useEffect(() => {
         const controller = new AbortController();
         const fetchData = async () => {
@@ -62,20 +69,6 @@ export const Home = () => {
     }, {});
 
 
-    // Load cart from localStorage
-    useEffect(() => {
-        const storedCartData = localStorage.getItem('cart');
-        if (storedCartData) {
-            const parsedCartData = JSON.parse(storedCartData);
-            dispatch(onload(parsedCartData)); // Load cart items into Redux state
-        }
-    }, [dispatch]);
-
-    // Save cart in localStorage
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems]);
-
 
     const addToCarts = async (product) => {
         dispatch(addToCart(product));
@@ -84,7 +77,7 @@ export const Home = () => {
     // Calculate total quantity in cart
     const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0); // Fixed the issue with cartItems structure
     console.log('Total quantity:', totalQty);
-
+    console.log(cartItems)
 
     const filteredGroupedProducts = Object.keys(groupedProducts).reduce((acc, categoryName) => {
         const filteredProducts = groupedProducts[categoryName].filter(product =>
@@ -99,13 +92,12 @@ export const Home = () => {
 
 
 
+
     return (
         <div className='home-container'>
-
-
-            <div onVolumeChange={() => navigate('/signup')}>
-                <img src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />
-            </div>
+            <button onClick={handleAdminAccess}>
+                <img id='imgAdmin' src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />
+            </button>
 
             <div className='search-container w-[82% ]'>
                 <p>Choose the best dish for you</p>
@@ -180,7 +172,7 @@ export const Home = () => {
                 </div>
             ))}
             <div className='flex w-[300px] bg-yellow-400 text-center justify-center items-center fixed bottom-2 h-[35px] left-6 rounded-md'>
-                <Link className='px-4 flex items-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Orders<span className='font-bold ml-1'> {totalQty}</span></Link>
+                <Link className='px-4 flex items-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1'> {totalQty}</span></Link>
             </div>
         </div>
     );

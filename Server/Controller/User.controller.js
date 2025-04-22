@@ -1,56 +1,71 @@
-import User from "../Model/User.model.js";
+
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
+import User from '../Model/User.model.js';
+import Admin from '../Model/Admin.model.js';
 
 export const postNewUser = async (req, res) => {
     console.log(req.body)
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { name, phone } = req.body;
+    if (!name || !phone) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    if (password.trim() == 0 || password.length < 8) {
-        return res.status(400).json({ message: 'Password must be atleast 6 char long' })
-    }
+    if (name.trim() == 0 || name.length < 1) {
+        return res.status(400).json({ message: 'Name char must be more then one ' })
+    };
 
     try {
-        const isExistingUser = await User.findOne({ email: email });
-
+        const isExistingUser = await User.findOne({ phone });
         if (isExistingUser) {
-            return res.status(400).json({ message: 'User alreday ragistered' })
+            return res.status(200).json({ message: 'User already registered', user: isExistingUser });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const newUser = await User({
+            name,
+            phone
+        });
 
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: "Email structure is not correct" })
-        }
-
-        try {
-            const newUser = new User({
-                name,
-                email: email,
-                password: hashedPassword
-            });
-
-            await newUser.save();
-            res.status(201).json({ message: 'user Ragistred Successfukky' })
-        } catch (error) {
-            console.log('date is not saved')
-        }
-
+        await newUser.save();
+        res.status(200).json({ message: 'User added successfully', user: newUser });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error })
+        res.status(500).json({ message: 'Internal server error', error });
     }
+
+};
+
+export const putUser = async (req, res) => {
+    const { name, phone } = req.body;
+    if (name.length === 0 || phone.length <= 10) {
+        return res.status(400).json({ message: 'All fields required with valid value' })
+    };
+
+    try {
+        const existingUser = await User.findOne({ phone });
+        if (!existingUser) {
+            return res.status(400).json({ message: 'Invalid details' })
+        };
+
+        if (name) {
+            existingUser.name = name
+        };
+        if (phone) {
+            existingUser.phone = phone
+        };
+
+        await existingUser.save();
+        res.status(200).json({ message: 'user updated Successfully', user: existingUser })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', error })
+    }
+
 };
 
 export const postNewAdmin = async (req, res) => {
     try {
-        const { username, email, password, role, orders } = req.body;
-        if (!username || !email, !password || !role) {
+        const { name, email, password } = req.body;
+        console.log(name, email, password)
+        if (!name || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' })
         }
 
@@ -58,7 +73,7 @@ export const postNewAdmin = async (req, res) => {
             return res.status(400).json({ message: 'Password must be atleast 6 char long' })
         }
 
-        const isExistingUser = await User.findOne({ email: email });
+        const isExistingUser = await Admin.findOne({ email: email });
 
         if (isExistingUser) {
             return res.status(400).json({ message: 'User alreday ragistered' })
@@ -66,27 +81,21 @@ export const postNewAdmin = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const emailRegx = /^[^s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
         if (!emailRegx.test(email)) {
             return res.status(400).json({ message: "Email structure is not correct" })
         }
 
-        const newUser = new User({
-            username: username,
-            email: emailRegx,
+        const newUser = new Admin({
+            name: name,
+            email: email,
             password: hashedPassword,
-            role: 'admin',
-            allProducts: [],        // Start with empty, update as admin adds products
-            sales: {
-                totalSalesAmount: 0,
-                successfulOrders: [],
-                pendingOrders: [],
-            }
         });
 
         await newUser.save();
-        res.status(201).json({ message: 'user Ragistred Successfukky' })
+        res.status(201).json({ message: 'user Ragistred Successfully' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', error })
     }
@@ -98,7 +107,7 @@ export const LoginUser = async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' })
     }
     try {
-        const isExistingUser = await User.findOne({ email: email });
+        const isExistingUser = await Admin.findOne({ email: email });
         if (!isExistingUser) {
             return res.status(400).json({ message: 'User is not ragistered' })
         }
@@ -111,7 +120,6 @@ export const LoginUser = async (req, res) => {
             username: isExistingUser.username
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
-
         res.cookie('token', token,{
 
             maxAge: 24 * 60 * 60 * 1000,
@@ -175,5 +183,5 @@ export const profileUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', error })
     }
+};
 
-}
