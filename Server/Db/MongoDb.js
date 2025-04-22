@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 
-const db = async () => {
+const db = async (srv) => {
     try {
-        await mongoose.connect(process.env.DB);
+        await mongoose.connect(srv);
         console.log('Db Connected Successfully')
     } catch (error) {
         console.log(error)
