@@ -1,10 +1,9 @@
-
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { Home } from './Pages/Clients/Home';
 import { AllDishes } from './Pages/Clients/AllDishes';
 import { CartPage } from './Pages/Clients/CartPage';
-import { Category as UserCategory } from './Pages/Clients/Category'
+import { Category as UserCategory } from './Pages/Clients/Category';
 import { PaymentsMethod } from './Pages/Clients/PaymentsMethod';
 import { DashBoardPage } from './Pages/Admin/DashBoardPage';
 import { NewProduct } from './Pages/Admin/NewProduct';
@@ -25,29 +24,27 @@ import { GraphicalPage } from './Pages/Admin/GraphicalPage';
 
 function App() {
   return (
-
-    // <ScrollToTop />
-    // <QrCode tabIndex={<Signup />} value='https://food-order-app-1-jddi.onrender.com/signup' className='hidden' />
     <Routes className='w-[375px] h-auto'>
-      <Route index path='/signup' element={<Signup />} />
+      {/* Public Routes */}
+      <Route path='/signup' element={<Signup />} />
       <Route path='/login' element={<Login />} />
-      <Route index path='/user-info' element={<UserInfo />} />
+      <Route path='/user-info' element={<UserInfo />} />
       <Route path='/' element={<Home />} />
-      <Route path='/allDishes' element={< AllDishes />} />
+      <Route path='/allDishes' element={<AllDishes />} />
       <Route path='/cart' element={<CartPage />} />
       <Route path='/cart-bill' element={<PaymentsMethod />} />
-      <Route path='/:category' element={< UserCategory />} />
+      <Route path='/:category' element={<UserCategory />} />
       <Route path='/payment' element={<PaymentPage />} />
       <Route path='/order-success' element={<OrderSuccess />} />
 
-      {/* Admin routes */}
+      {/* Admin Protected Routes */}
       <Route element={<ProtectedRoutes />}>
         <Route path='/admin' element={<DashBoardPage />} />
         <Route path='/admin/createProduct' element={<NewProduct />} />
         <Route path='/admin/Category' element={<Category />} />
         <Route path='/admin/newCategory' element={<NewCategory />} />
         <Route path='/admin/pending-orders' element={<OrderUpdate />} />
-        <Route path='/admin/totelsale' element={<TotalSale />} />
+        <Route path='/admin/totalsale' element={<TotalSale />} />
         <Route path='/admin/data-visualize' element={<GraphicalPage />} />
       </Route>
     </Routes>
