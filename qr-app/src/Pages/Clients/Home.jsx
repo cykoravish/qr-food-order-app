@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Home.css';
 import { CardItem } from '../../components/CardItem';
 import { CardDetails } from '../../components/CardDetails';
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../Redux/Cart/index';
 import PrivateAxios from '../../Services/PrivateAxios';
 import EventEmitter from 'events';
+import { Bounce, toast } from 'react-toastify';
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -15,14 +16,26 @@ export const Home = () => {
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
     const [clickCount, setClickCount] = useState(0);
+
 
     const handleAdminAccess = () => {
         setClickCount(prev => {
             const newCount = prev + 1;
 
             if (newCount === 10) {
-                alert("🎉 Secret Admin Access Activated!");
+                toast('🦄 Admin Mode Activated', {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: 1,
+                    theme: "colored",
+                    transition: Bounce,
+                });
                 navigate('/signup')
 
                 return 0;
@@ -68,6 +81,9 @@ export const Home = () => {
         return acc;
     }, {});
 
+    const uniqueCategories = [
+        ...new Map(products.map(item => [item.categoryId.name, item.categoryId])).values()
+    ];
 
 
     const addToCarts = async (product) => {
@@ -76,8 +92,6 @@ export const Home = () => {
 
     // Calculate total quantity in cart
     const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0); // Fixed the issue with cartItems structure
-    console.log('Total quantity:', totalQty);
-    console.log(cartItems)
 
     const filteredGroupedProducts = Object.keys(groupedProducts).reduce((acc, categoryName) => {
         const filteredProducts = groupedProducts[categoryName].filter(product =>
@@ -139,10 +153,9 @@ export const Home = () => {
                 </div>
             ))}
 
-            <div className='food-items'>
-                {products.map((product) => (
-                    <CardItem name={product.categoryId?.name} imgPath={`https://food-order-app-qply.onrender.com/${product.imageUrl}`} />
-                ))}
+<
+            <div className='flex flex-row overflow-x-auto gap-2 ml-4 mb-3'>
+                {uniqueCategories.map((category) => <Link key={category.name} to={`/${category.name}`} state={{ items: products }}><CardItem key={category.index} imgPath={category.imageUrl} name={category.name} /></Link>)}
             </div>
 
             {Object.keys(groupedProducts).map((categoryName) => (
@@ -157,6 +170,7 @@ export const Home = () => {
                     <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
                         {groupedProducts[categoryName].map((product) => (
                             <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+
                                 <CardDetails
                                     id={product._id}
                                     category={product.categoryId?.name}
@@ -165,7 +179,9 @@ export const Home = () => {
                                     qty={product.quantity} // Adjusted to use `quantity`
                                     image={product.imageUrl}
                                     onAddToCart={() => addToCarts(product)}
+                                    product={product}
                                 />
+
                             </div>
                         ))}
                     </div>

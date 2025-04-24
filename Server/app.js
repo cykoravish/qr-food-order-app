@@ -24,12 +24,14 @@ app.use(cors({
     methods: ['GET', 'POST', 'PATCH', 'PUT'],
     // allowedHeaders: true,
     credentials: true
+
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use('/', express.static(path.join(__dirname, '/uploads')))
+
 db();
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/products', ProductsRoute);

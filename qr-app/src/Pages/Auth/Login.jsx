@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
+import publicAxios from '../../Services/PublicAxios';
 
 export const Login = () => {
     const naviagate = useNavigate();
@@ -47,6 +48,9 @@ export const Login = () => {
                     </div>
                     <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
                         <button type="submit" className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Login</button>
+                    </div>
+                    <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
+                        <Link to={'/signup'} className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Signup</Link>
                     </div>
                 </form>
             </div>

@@ -103,6 +103,7 @@ export const postNewAdmin = async (req, res) => {
 
 export const LoginUser = async (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password)
     if (!email || !password) {
         return res.status(400).json({ message: 'All fields are required' })
     }
@@ -120,17 +121,11 @@ export const LoginUser = async (req, res) => {
             username: isExistingUser.username
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
-      
-res.cookie('token', token, {
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-    httpOnly: true,
-    secure: true, // Required if using HTTPS
-    sameSite: 'none' // Allow cross-origin (frontend and backend on different domains)
-});
+
         res.status(200).json({ message: 'Login successfully', token, content: isExistingUser })
 
     } catch (error) {
-        return res.status(500).json({ message: 'Interal server error' });
+        return res.status(500).json({ message: 'Interal server error', error });
     }
 };
 

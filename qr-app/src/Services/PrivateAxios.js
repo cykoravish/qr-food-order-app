@@ -5,7 +5,7 @@ const PrivateAxios = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    withCredentials: true
+    withCredentials: false
 });
 PrivateAxios.interceptors.response.use(
     (response) => response,
