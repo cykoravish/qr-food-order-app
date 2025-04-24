@@ -168,6 +168,7 @@ export const DashBoardPage = () => {
                                         price={product.price || 100}
                                         qty={product.quantity} // Adjusted to use `quantity`
                                         image={product.imageUrl}
+                                          product={product}
                                     // onAddToCart={() => addToCarts(product)}
                                     />
                                 </div>
