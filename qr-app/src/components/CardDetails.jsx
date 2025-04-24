@@ -1,12 +1,16 @@
 import React from 'react'
 import '../Pages/Clients/Home.css'
-export const CardDetails = ({ dishName, price, category, id, onAddToCart, image }) => {
+import { Link } from 'react-router-dom';
+export const CardDetails = ({ dishName, price, category, id, onAddToCart, image, product }) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     return (
-        <card className='mb-2'>
-            <img src={`http://localhost:5000/${image}`} alt='food' className='w-[97px] h-[85px] object-center rounded-full' />
-            <h3>{dishName}</h3>
-            <p>Rs. {price}</p>
-            <button className='bg-yellow-300 px-4 h-9 mt-2 shadow-md rounded-md' onClick={() => onAddToCart(category, id, price)}>Add to cart</button>
-        </card>
+        <div className=' max-w-[100px] flex flex-col justify-center shadow-md hover:bg-amber-500'>
+            <Link to={`/product/${product._id}`} state={{ item: product }}>
+                <img src={`${backendUrl}/${image}`} alt='food' className='w-[97px] h-[85px] object-center rounded-full' />
+            </Link>
+            <h3 className='ml-1'>{dishName}</h3>
+            <p className='ml-1'>Rs. {price}</p>
+            <button className='bg-yellow-300 max-w-[70px] px-1 h-10 flex justify-center items-center rounded-md mt-2' onClick={() => onAddToCart(category, id, price)}>Add to cart</button>
+        </div>
     )
 }

@@ -32,7 +32,7 @@ export const Category = () => {
     }
     console.log(itemArray)
     return (
-        <div className='burger-container p-4'>
+        <div className='burger-container p-1'>
             <div className='item-cards mb-4'>
                 <Link className='flex items-center gap-2 text-lg font-semibold' to={'/'}>
                     <img src='/assets/back.png' alt='back' className='w-6 h-6' />
@@ -42,7 +42,6 @@ export const Category = () => {
 
 
             <div className='burger-item-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-
                 {itemArray.map((product) => (
                     <CardDetails
                         key={product._id}
@@ -50,7 +49,7 @@ export const Category = () => {
                         dishName={product.name}
                         description={product.description}
                         price={product.price}
-                        image={`${product.imageUrl}`}
+                        image={product.imageUrl}
                         onAddToCart={() => handleAddToCart(product)}
                     />
                 ))}
