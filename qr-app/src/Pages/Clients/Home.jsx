@@ -168,9 +168,10 @@ export const Home = () => {
 
                     <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
                         {groupedProducts[categoryName].map((product) => (
-                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
-
+                            <div className='min-w-[150px] flex-shrink-0'>
+                                {console.log(product)}
                                 <CardDetails
+                                    key={product._id}
                                     id={product._id}
                                     category={product.categoryId?.name}
                                     dishName={product.name}

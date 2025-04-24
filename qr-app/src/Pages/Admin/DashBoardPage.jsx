@@ -162,12 +162,14 @@ export const DashBoardPage = () => {
                             {groupedProducts[categoryName].map((product) => (
                                 <div key={product._id} className='min-w-[150px] flex-shrink-0'>
                                     <CardDetails
+                                        key={product._id}
                                         id={product._id}
                                         category={product.categoryId?.name}
                                         dishName={product.name}
                                         price={product.price || 100}
                                         qty={product.quantity} // Adjusted to use `quantity`
                                         image={product.imageUrl}
+                                        product={product}
                                     // onAddToCart={() => addToCarts(product)}
                                     />
                                 </div>
