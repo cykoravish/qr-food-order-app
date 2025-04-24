@@ -7,22 +7,17 @@ const PrivateAxios = axios.create({
     },
     withCredentials: false
 });
-
-PrivateAxios.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+PrivateAxios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Auto logout or redirect if token is invalid/expired
+            localStorage.removeItem('token');
+            window.location.href = '/login'; // optional
         }
-
-        // Don't manually set Content-Type if it's FormData
-        if (config.data instanceof FormData) {
-            delete config.headers["Content-Type"];
-        }
-
-        return config;
-    },
-    (error) => Promise.reject(error)
+        return Promise.reject(error);
+    }
 );
+
 
 export default PrivateAxios;

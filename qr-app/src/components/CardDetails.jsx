@@ -12,5 +12,6 @@ export const CardDetails = ({ dishName, price, category, id, onAddToCart, image,
             <p className='ml-1'>Rs. {price}</p>
             <button className='bg-yellow-300 max-w-[70px] px-1 h-10 flex justify-center items-center rounded-md mt-2' onClick={() => onAddToCart(category, id, price)}>Add to cart</button>
         </div>
+
     )
 }
