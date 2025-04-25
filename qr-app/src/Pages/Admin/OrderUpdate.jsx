@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import publicAxios from '../../Services/PublicAxios'
 import { IoIosClose, IoIosDoneAll } from "react-icons/io";
+import { CiNoWaitingSign } from "react-icons/ci";
+import { socket } from '../../Services/Socket';
+
+
 
 export const OrderUpdate = () => {
     const [orders, setOrders] = useState([]);
+    const [someChanges, setSomeChanges] = useState(false);
+    const navigate = useNavigate();
+
     useEffect(() => {
         const controller = new AbortController();
         const fetched = async () => {
@@ -15,38 +22,66 @@ export const OrderUpdate = () => {
             setOrders(res.data.content);
         };
         fetched();
-
+        socket.on('order-status-updated', () => fetched());
         return () => {
             controller.abort();
+            socket.disconnect()
         }
-    }, []);
+    }, [navigate, orders.length, someChanges]);
     console.log()
 
     const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
     console.log(filterdPendingOrders)
 
     async function handleDelevery(orderId) {
-        console.log(orderId)
-        const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'delivered' });
-        if (responce !== 200) {
-            throw new Error({ message: 'Something error try after some time' })
-        };
-        alert('order updated')
-    }
+        try {
+            const response = await publicAxios.patch(`/orders/${orderId}`, { status: 'delivered' });
+
+            if (response.status !== 200) {
+                throw new Error('Something went wrong, please try again later.');
+            }
+
+            socket.emit('order-status-updated');
+
+            socket.off('order-status-updated')
+
+            navigate('/admin/pending-orders');
+
+        } catch (error) {
+            console.error(error);
+            // Optionally show an error message to the user
+            alert(error.message || 'Something went wrong.');
+        } finally {
+            setSomeChanges(false);
+        }
+    };
+
     async function handleCancel(orderId) {
         const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'cancelled' });
-        if (responce !== 200) {
+        if (responce.status !== 200) {
             throw new Error({ message: 'Something error try after some time' })
         };
         alert('order updated')
+        socket.emit('order-status-updated');
+
+        // Disconnect socket
+        socket.off('order-status-updated')
     }
     async function handleProcessing(orderId) {
         console.log(orderId)
+        setSomeChanges(true)
         const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'processing' });
-        if (responce !== 200) {
+        if (responce.status !== 200) {
             throw new Error({ message: 'Something error try after some time' })
         };
+        console.log(orderId)
+        socket.emit('order-status-updated');
+
+        // Disconnect socket
+        socket.off('order-status-updated')
+        navigate('/admin/pending-orders');
         alert('order updated')
+        setSomeChanges(false)
     }
     return (
         <div className='w-[375px]'>
@@ -61,7 +96,7 @@ export const OrderUpdate = () => {
                             <th className="px-4 py-2 border">Sr. No.</th>
                             <th className="px-4 py-2 border">Products</th>
                             <th className="px-4 py-2 border">Quantity</th>
-                            <th className="px-4 py-2 border">Food Processing</th>
+                            <th className="px-4 py-2 border">Food Processing Action</th>
                             <th className="px-4 py-2 border">Status</th>
                             <th className="px-4 py-2 border">Username</th>
                             <th className="px-4 py-2 border">Payment Method</th>
@@ -90,7 +125,7 @@ export const OrderUpdate = () => {
                                 <td>
                                     <button
                                         onClick={() => handleProcessing(order._id)}
-                                        className={`flex justify-center w-24 h-10 m-1 rounded-md hover:bg-violet-600
+                                        className={`flex justify-center w-24 h-10 m-1 rounded cursor-pointer hover:bg-violet-600
       ${order.status === 'processing' ? 'bg-green-400' : 'bg-yellow-400'}`}
                                     >
                                         {order.status}
@@ -115,9 +150,11 @@ export const OrderUpdate = () => {
                     </tbody>
                 </table>
             </div>
-            ) : (<div className='flex justify-center items-center text-center bg-green-300 mt-12 h-24'>
-                <h1 className='text-2xl font-semibold'>There is not pending orders </h1>
-            </div>)
+            ) : (
+                <div className='flex flex-col justify-center items-center text-center mt-12 '>
+                    <CiNoWaitingSign size={100} />
+                    <h2 className='text-2xl'>I am wating of orders</h2>
+                </div>)
             }
         </div >
     )

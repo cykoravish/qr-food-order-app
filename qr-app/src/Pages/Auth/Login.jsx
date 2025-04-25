@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
 import publicAxios from '../../Services/PublicAxios';
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const Login = () => {
     const naviagate = useNavigate();
@@ -28,9 +29,8 @@ export const Login = () => {
     }
     return (
         <div className='w-[375px] h-full overflow-x-hidden items-center relative'>
-            <div className='flex text-left p-4'>
-                <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
-                <Link to="/" className='ml-2 font-semibold'>Home</Link>
+            <div className='ml-3 mt-2'>
+                <ReverseButton route={'/'} routeName={'Home'} />
             </div>
             <div className='mt-10'>
                 <h2 className='flex justify-center text-2xl font-semibold'>Login Form</h2>
@@ -49,9 +49,8 @@ export const Login = () => {
                     <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
                         <button type="submit" className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Login</button>
                     </div>
-                    <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
-                        <Link to={'/signup'} className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Signup</Link>
-                    </div>
+                    <p className='flex justify-center'> Don't have an account? <Link to={'/login'} className='text-blue-600'>Signup</Link> </p>
+
                 </form>
             </div>
         </div>

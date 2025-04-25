@@ -51,7 +51,7 @@ const DoughnutChart = () => {
     console.log(orderData)
 
     const data = {
-        labels: ['Pending Orders', 'Delivered Orders', 'Processing Orders'],
+        labels: ['Pending Orders', 'Delivered Orders', 'Cancelled Orders'],
         datasets: [
             {
                 label: 'Order Status',

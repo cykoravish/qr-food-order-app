@@ -5,19 +5,28 @@ const PrivateAxios = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    withCredentials: false
+    withCredentials: true
 });
+PrivateAxios.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token'); // or get from context/store
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 PrivateAxios.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Auto logout or redirect if token is invalid/expired
-            localStorage.removeItem('token');
-            window.location.href = '/login'; // optional
+            // Handle token expiry or redirect to login
+            console.warn('Unauthorized, redirecting to login...');
+            // window.location.href = '/login'; // if needed
         }
         return Promise.reject(error);
     }
 );
-
-
 export default PrivateAxios;

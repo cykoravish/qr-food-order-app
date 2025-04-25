@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import './Home.css'
 import PrivateAxios from '../../Services/PrivateAxios'
 import { useSelector } from 'react-redux'
+import { ReverseButton } from '../../components/Client/ReverseButton'
 export const PaymentsMethod = () => {
     const cart = useSelector((state) => state.cart.cartItems);
     const [searchParams] = useSearchParams();
@@ -25,10 +26,7 @@ export const PaymentsMethod = () => {
     return (
         <div className='payment-method'>
             <div className='item-cards'>
-                <Link className='flex' to={`/user-info?userId=${userId}`}>
-                    <img src='/assets/back.png' alt='back' />
-                    <span>Payment-Methods </span>
-                </Link>
+                <ReverseButton route={`/user-info?userId=${userId}`} routeName={'Payment-Methods'} />
             </div>
             <div className="amount">
                 <p>Totel Amount</p>

@@ -88,7 +88,7 @@ export const NewCategory = () => {
                 </div>
             </form>
             <div className='flex justify-between  min-h-[48px] m-4 mt-28 fixed bottom-0 gap-3'>
-                <button className='bg-[#F2EFE3] rounded-md w-[164px]'>Discard</button>
+                <button onClick={() => naviagate('/admin')} className='bg-[#F2EFE3] rounded-md w-[164px]'>Discard</button>
                 <button onClick={handleSubmit} type='submit' className='bg-[#F9D718] w-[164px] rounded-md'>Save</button>
             </div>
         </div>

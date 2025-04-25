@@ -1,23 +1,46 @@
 import { CheckCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import publicAxios from '../../Services/PublicAxios';
-import { Bounce, toast } from 'react-toastify';
+import { Bounce } from 'react-toastify';
+import { socket } from '../../Services/Socket';
 
 export const OrderSuccess = () => {
     const [AllOrder, setAllOrder] = useState([]);
     const [lastOrder, setLastOrder] = useState([]);
-    const navigate = useNavigate();
-    useEffect(() => {
-        const fetchedData = async () => {
+    const [render, setRender] = useState(false);
+    // const navigate = useNavigate();
+
+    const fetchedData = async () => {
+        try {
             const res = await publicAxios.get('/orders/orders');
             if (res.status !== 200) {
-                throw new Error({ message: 'Responce Failed' })
-            };
+                throw new Error('Response Failed');
+            }
+            setAllOrder(res.data.content); // Set state with fetched data
+        } catch (error) {
+            console.error('Error fetching orders:', error.message); // Catch any errors
+        }
+    };
 
-            setAllOrder(res.data.content)
+    useEffect(() => {
+        fetchedData(); // Initial fetch
+
+        // Listen for socket events
+        socket.on('order-status-updated', () => {
+            console.log('Order status updated');
+            setRender(true)
+        });
+        render && fetchedData(); // Fetch data again when event is received
+
+        // Clean up on component unmount
+        return () => {
+            socket.off('order-status-updated'); // Remove the event listener
         };
-        fetchedData()
+
+    }, []);
+
+    useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
         const filterOrder = AllOrder.filter((order) => {
             const today = new Date().toISOString().split('T')[0];
@@ -27,26 +50,14 @@ export const OrderSuccess = () => {
             }
         })
         const recentorder = filterOrder.length > 0 && filterOrder[filterOrder.length - 1];
-        setLastOrder(recentorder)
-        if (recentorder.status === 'delivered') {
-            localStorage.removeItem('user');
-            toast.info('🦄 Thankyou Give us a second chance to serve you!', {
-                position: "top-center",
-                autoClose: 10000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: 1,
-                theme: "colored",
-                transition: Bounce,
-            });
-            navigate('/')
-        };
+        setLastOrder(recentorder);
+    }, [AllOrder])
 
-    }, [AllOrder, navigate]);
-
-
+    useEffect(() => {
+        if (lastOrder.status === 'delivered') {
+            localStorage.removeItem('user')
+        }
+    }, [lastOrder.status])
 
     return (
         <div className="w-[375px] mx-auto min-h-screen flex flex-col items-center justify-center bg-green-50 p-4">

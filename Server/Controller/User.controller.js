@@ -121,6 +121,12 @@ export const LoginUser = async (req, res) => {
             username: isExistingUser.username
         };
         const token = jwt.sign(payload, process.env.JWTSECRET);
+        res.cookie('token', token, {
+            httpOnly: false,
+            secure: false,
+            sameSite: 'Strict',
+            maxAge: 24 * 60 * 60 * 1000 // 1 day in ms
+        });
 
         res.status(200).json({ message: 'Login successfully', token, content: isExistingUser })
 

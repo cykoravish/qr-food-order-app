@@ -84,6 +84,7 @@ export const NewProduct = () => {
             qty: '',
         });
         setPicture(null);
+        navigate('/admin')
     };
 
     function handlePreviewImage() {
