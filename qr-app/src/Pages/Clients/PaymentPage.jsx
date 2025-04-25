@@ -3,6 +3,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import publicAxios from '../../Services/PublicAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, syncCartFromLocalStorage } from '../../Redux/Cart/index';
+import { ReverseButton } from '../../components/Client/ReverseButton';
+// import { socket } from '../../App';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:5000'); // Or your live URL
 
 export const PaymentPage = () => {
     const [searchParams] = useSearchParams();
@@ -43,6 +48,9 @@ export const PaymentPage = () => {
                 dispatch(clearCart()); // Clear Redux and localStorage
                 alert('Order placed successfully!');
                 navigate('/order-success')
+                const orderId = response.data.order._id;
+                socket.emit('order-placed', () => orderId);
+                socket.off('order-placed');
             } else {
                 console.error("Failed to place order");
             }
@@ -55,10 +63,7 @@ export const PaymentPage = () => {
         <div className='mx-2'>
             {/* Back to user details link */}
             <div className='my-2'>
-                <Link to={`/user-info?userId=${userId}`} className='flex items-center gap-1 text-lg font-semibold'>
-                    <img src='/assets/back.png' alt='back' className='w-6 h-6' />
-                    <span className='capitalize'>User Details</span>
-                </Link>
+                <ReverseButton route={`/user-info?userId=${userId}`} routeName={'User Details'} />
             </div>
 
             {/* Payment methods */}

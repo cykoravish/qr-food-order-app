@@ -3,6 +3,8 @@ import { CardDetails } from '../../components/CardDetails';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart as addToCartAction } from '../../Redux/Cart/index.js';
+import { ReverseButton } from '../../components/Client/ReverseButton.jsx';
+import getCookies from '../../Services/ProtectedRoutes.jsx';
 
 export const Category = () => {
     const location = useLocation();
@@ -31,17 +33,15 @@ export const Category = () => {
         dispatch(addToCartAction(product));
     }
     console.log(itemArray)
+
+    const token = getCookies('token');
+    console.log(token, 'token')
     return (
         <div className='burger-container p-1'>
-            <div className='item-cards mb-4'>
-                <Link className='flex items-center gap-2 text-lg font-semibold' to={'/'}>
-                    <img src='/assets/back.png' alt='back' className='w-6 h-6' />
-                    <span className='capitalize'>{category}</span>
-                </Link>
+            <div className='my-2 ml-2 '>
+                {token ? <ReverseButton route={'/admin'} routeName={category} /> : <ReverseButton route={'/'} routeName={category} />}
             </div>
-
-
-            <div className='burger-item-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <div className='burger-item-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-7'>
                 {itemArray.map((product) => (
                     <CardDetails
                         key={product._id}
@@ -51,6 +51,7 @@ export const Category = () => {
                         price={product.price}
                         image={product.imageUrl}
                         onAddToCart={() => handleAddToCart(product)}
+                        product={product}
                     />
                 ))}
             </div>

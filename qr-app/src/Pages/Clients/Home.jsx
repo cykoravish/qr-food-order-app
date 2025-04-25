@@ -9,6 +9,8 @@ import { addToCart } from '../../Redux/Cart/index';
 import PrivateAxios from '../../Services/PrivateAxios';
 import EventEmitter from 'events';
 import { Bounce, toast } from 'react-toastify';
+import { CategoryCard } from '../../components/Client/CategoryCard';
+import { socket } from '../../Services/Socket';
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -18,6 +20,14 @@ export const Home = () => {
     const navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
     const [clickCount, setClickCount] = useState(0);
+
+    useEffect(() => {
+        const data = { name: 'gaurav kumar' }
+        socket.emit('order-updated', (data));
+        socket.on('order-updated', (data) => {
+            console.log(data)
+        })
+    }, [])
 
 
     const handleAdminAccess = () => {
@@ -44,6 +54,7 @@ export const Home = () => {
             return newCount;
         });
     };
+
 
     useEffect(() => {
         const controller = new AbortController();
@@ -108,12 +119,12 @@ export const Home = () => {
 
 
     return (
-        <div className='home-container'>
-            <button onClick={handleAdminAccess}>
-                <img id='imgAdmin' src='/assets/image1.jpg' alt='coverimage' width={375} height={250} />
+        <div className=' max-w-[100%] '>
+            <button onClick={handleAdminAccess} className='w-full'>
+                <img src='/assets/image1.jpg' alt='coverimage' className='w-full h-full object-cover min-w-[100%] max-h-[500px]' />
             </button>
 
-            <div className='search-container w-[82% ]'>
+            <div className='search-container min-w-[90% ]'>
                 <p>Choose the best dish for you</p>
                 <div>
                     <input
@@ -121,7 +132,7 @@ export const Home = () => {
                         name='search'
                         placeholder='Search'
                         onChange={(e) => setSearch(e.target.value)}
-                        className='search-input overflow-x-hidden flex-shrink-0'
+                        className='overflow-x-hidden flex-shrink-0 border border-gray-500 min-w-[100%] min-h-12 text-center rounded-xl '
                     />
                 </div>
             </div>
@@ -153,9 +164,8 @@ export const Home = () => {
                 </div>
             ))}
 
-            <div className='flex flex-row overflow-x-auto gap-2 ml-4 mb-3'>
-                {uniqueCategories.map((category) => <Link key={category.name} to={`/${category.name}`} state={{ items: products }}><CardItem key={category.index} imgPath={category.imageUrl} name={category.name} /></Link>)}
-            </div>
+            {/* category Items */}
+            <CategoryCard uniqueCategories={uniqueCategories} products={products} />
 
             {Object.keys(groupedProducts).map((categoryName) => (
                 <div key={categoryName} className='category-section mb-6'>
@@ -166,7 +176,7 @@ export const Home = () => {
                         </Link>
                     </div>
 
-                    <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
+                    <div className='flex overflow-x-auto min-h-[200px]  space-x-4 px-4'>
                         {groupedProducts[categoryName].map((product) => (
                             <div className='min-w-[150px] flex-shrink-0'>
                                 {console.log(product)}
@@ -187,9 +197,10 @@ export const Home = () => {
                     </div>
                 </div>
             ))}
-            <div className='flex w-[300px] bg-yellow-400 text-center justify-center items-center fixed bottom-2 h-[35px] left-6 rounded-md'>
-                <Link className='px-4 flex items-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1'> {totalQty}</span></Link>
-            </div>
-        </div>
+
+            <div className='fixed  bottom-0 bg-yellow-300 min-w-[300px] w-[100%] min-h-8 m-auto justify-center text-center items-center rounded-md '>
+                <Link className='px-4 flex items-center justify-center text-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1 text-center flex justify-center'> {totalQty}</span></Link>
+            </div >
+        </div >
     );
 };

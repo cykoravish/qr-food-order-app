@@ -7,6 +7,8 @@ import publicAxios from '../../Services/PublicAxios';
 import { BsBoxArrowInDownLeft, BsBoxArrowInUp } from "react-icons/bs";
 import { TbCategoryPlus } from "react-icons/tb";
 import { MdAttachMoney } from "react-icons/md";
+import { socket } from '../../Services/Socket';
+import { StatCard } from '../../components/Admin/StatCard';
 
 export const DashBoardPage = () => {
     const [products, setProducts] = useState([]);
@@ -14,8 +16,8 @@ export const DashBoardPage = () => {
     const [AllSales, setAllSales] = useState([]);
     const [AllCategory, setAllCategory] = useState([]);
 
-
     // fetch All Products
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -28,10 +30,8 @@ export const DashBoardPage = () => {
                 console.error("Error fetching data:", error);
             }
         };
-
-        fetchData();
-    }, [])
-
+        fetchData()
+    }, []);
 
     // Fetch All orders
     useEffect(() => {
@@ -43,9 +43,13 @@ export const DashBoardPage = () => {
             };
             setAllOrders(responce.data.content)
         };
+
         fetchedOrder();
+        socket.on('updated-order', () => fetchedOrder(), alert('new order'));
+        console.log('dahsborad updateed event ')
         return () => {
             controller.abort()
+            socket.off('updated-order')
         }
     }, []);
     console.log(AllOrders);
@@ -65,8 +69,9 @@ export const DashBoardPage = () => {
             controller.abort()
         }
     }, []);
-    console.log(AllSales)
 
+
+    // fetch category
     useEffect(() => {
         const controller = new AbortController();
         const fetchedOrder = async () => {
@@ -90,6 +95,8 @@ export const DashBoardPage = () => {
         return orderDate === today;
     });
 
+    console.log("today", todaysOrders)
+
     // Pending Orders
     const pendingOrders = AllOrders.filter((order) => order.status === 'pending');
 
@@ -105,43 +112,21 @@ export const DashBoardPage = () => {
     }, {});
 
     return (
-        <div className='max-w-screen-md w-[375px] h-auto] overflow-x-hidden overflow-y-scroll '>
+        <div className='w-full min-w-[375px] ]  '>
             <div>
-                <img src='/assets/image1.jpg' alt='logo' />
+                <img src='/assets/image1.jpg' alt='logo' className='w-full h-full object-cover min-w-[100%] max-h-[500px]' />
             </div>
 
             {/* Stats section */}
-            <div className='w-[344px] h-[171px] m-4 overflow-x-hidden overflow-y-hidden '>
-                <div className='flex justify-between mb-4'>
-                    <div className='w-[164px] h-[75px] flex flex-col shadow-md  p-2 '>
-                        <Link>
-                            <div className='flex flex-row gap-24 justify-center text-center items-center text-xl'>{todaysOrders.length}<span><BsBoxArrowInUp size={25} /></span> </div>
-
-                            <p>Orders today</p>
-
-
-                        </Link>
-                    </div>
-                    <div className='w-[164px] h-[75px] flex flex-col shadow-md p-2'>
-                        <Link to={'/admin/pending-orders'}>
-                            <div className='flex flex-row gap-24 justify-center text-center items-center text-xl'>{pendingOrders.length}<span><BsBoxArrowInDownLeft size={25} /></span></div>
-                            <p>Pending Orders</p>
-                        </Link>
-                    </div>
+            <div className='max-w-full h-[400px] min-w-[344px] min-h-[171px] m-4  '>
+                <div className='max-w-full h-1/2 flex justify-between mb-4 '>
+                    <StatCard name={'Today Orders'} value={todaysOrders} imageName={<BsBoxArrowInUp size={40} />} />
+                    <StatCard name={'Pending Orders'} value={pendingOrders} imageName={<BsBoxArrowInDownLeft size={40} />} route={'/admin/pending-orders'} />
                 </div>
-                <div className='flex justify-between mb-4 '>
-                    <div className='w-[164px] h-[75px] flex flex-col shadow-md p-2 overflow-y-hidden'>
-                        <Link to={'/admin/totelsale'}>
-                            <div className='flex flex-row gap-24 justify-center text-center items-center text-xl'>{AllSales ? AllSales.length : 0}<span><MdAttachMoney size={25} /></span></div>
-                            <p>Total Sale</p>
-                        </Link>
-                    </div>
-                    <div className='w-[164px] h-[75px] flex flex-col shadow-md p-2'>
-                        <Link>
-                            <div className='flex flex-row gap-24 justify-center text-center items-center text-xl'>{AllCategory ? AllCategory.length : 0}<span><TbCategoryPlus size={25} /></span></div>
-                            <p>Total Category</p>
-                        </Link>
-                    </div>
+                <div className='max-w-full h-1/2 flex justify-between mb-4 '>
+                    <StatCard name={'Total Sale'} value={AllSales ? AllSales : 0} imageName={<MdAttachMoney size={40} />} route={'/admin/totelsale'} />
+                    <StatCard name={'Total Category'} value={AllCategory ? AllCategory : 0} imageName={<TbCategoryPlus size={40} />} />
+
                 </div>
             </div>
             <Link to={'/admin/data-visualize'}>
@@ -158,9 +143,9 @@ export const DashBoardPage = () => {
                             </Link>
                         </div>
 
-                        <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
+                        <div className='w-full flex overflow-x-auto h-[200px] lg:h-[250px] space-x-4 px-4'>
                             {groupedProducts[categoryName].map((product) => (
-                                <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+                                <div key={product._id} className='w-1/3 min-w-[150px] flex-shrink-0 lg:1/4'>
                                     <CardDetails
                                         key={product._id}
                                         id={product._id}
@@ -170,6 +155,7 @@ export const DashBoardPage = () => {
                                         qty={product.quantity} // Adjusted to use `quantity`
                                         image={product.imageUrl}
                                         product={product}
+                                        css='lg:w-[250px] h-[250px]'
                                     // onAddToCart={() => addToCarts(product)}
                                     />
                                 </div>
@@ -181,11 +167,11 @@ export const DashBoardPage = () => {
 
 
             {/* Admin Actions */}
-            <div className='w-[343px] h-[112px] gap-[16px]    overflow-hidden mb-5 '>
+            <div className='w-[343px] h-[112px] gap-[16px] lg:w-full overflow-hidden mb-5 '>
                 <div className='w-full bg-[#F9D718] m-4 h-[48px] text-center p-2'>
                     <Link to='/admin/createProduct'>Create New Item</Link>
                 </div>
-                <div className='w-full m-4 h-[48px] text-center p-2'>
+                <div className='w-full m-4 h-[48px] text-center p-2 mb-11'>
                     <Link to='/admin/category'>Create New Category</Link>
                 </div>
             </div>

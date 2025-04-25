@@ -3,6 +3,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom'
 import { addToCart } from '../../Redux/Cart';
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const ProductsDetails = () => {
     const location = useLocation();
@@ -20,9 +21,7 @@ export const ProductsDetails = () => {
     return (
         <div className='flex flex-col max-w-[375px] w-[375px] '>
             <div className='flex m-1 text-xl mb-4 mt-3 '>
-                <Link to='/' className='flex flex-row items-center'>
-                    <IoIosArrowBack /><span className='ml-1'>Admin</span>
-                </Link>
+                <ReverseButton route={'/'} routeName={'Admin'} />
             </div>
             <div className="rounded-2xl mx-1 mt-6 shadow-lg bg-white p-4  max-w-[365px] w-[365px] overflow-scroll">
                 {/* Image Section */}

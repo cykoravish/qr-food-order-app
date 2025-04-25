@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import publicAxios from '../../Services/PublicAxios';
 import { useSelector } from 'react-redux';
 import PrivateAxios from '../../Services/PrivateAxios';
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const UserInfo = () => {
     const [searchParams] = useSearchParams();
@@ -77,10 +78,7 @@ export const UserInfo = () => {
     return (
         <div className='mx-3'>
             <div className='my-2'>
-                <Link to={'/cart'} className='flex items-center gap-2 text-lg font-semibold'>
-                    <img src='/assets/back.png' alt='back' className='w-6 h-6' />
-                    <span className='capitalize'>Cart</span>
-                </Link>
+                <ReverseButton route={'/cart'} routeName={'Cart'} />
             </div>
 
             <div className='relative flex flex-col'>

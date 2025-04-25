@@ -1,11 +1,9 @@
 * {
     box-sizing: border-box;
-    max-width: 375px;
-    overflow-x: scroll;
 }
 
 .home-container {
-    max-width: 375px;
+    min-width: 375px;
 }
 
 .search-container {
@@ -286,7 +284,8 @@
     position: unset;
     margin-left: 14px;
     display: flex;
-    width: 343px;
+    width:95%;
+    margin-right:30px;
     height: 40px;
     top: 731px;
     left: 16px;

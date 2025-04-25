@@ -5,24 +5,28 @@ const PrivateAxios = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    withCredentials: false
+    withCredentials: true
 });
-
 PrivateAxios.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token'); // or get from context/store
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers['Authorization'] = `Bearer ${token}`;
         }
-
-        // Don't manually set Content-Type if it's FormData
-        if (config.data instanceof FormData) {
-            delete config.headers["Content-Type"];
-        }
-
         return config;
     },
     (error) => Promise.reject(error)
 );
 
+PrivateAxios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Handle token expiry or redirect to login
+            console.warn('Unauthorized, redirecting to login...');
+            // window.location.href = '/login'; // if needed
+        }
+        return Promise.reject(error);
+    }
+);
 export default PrivateAxios;

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
-import { Signup } from '../Pages/Auth/Signup';
 
 
 function getCookies(name) {
@@ -14,6 +13,7 @@ export default getCookies;
 
 export const ProtectedRoutes = () => {
     const isAuthenticated = getCookies('token');
-    return isAuthenticated ? <Outlet /> : <Navigate to={<Signup />} />;
+    console.log(isAuthenticated)
+    return isAuthenticated ? <Outlet /> : <Navigate to='/signup' />;
 }
 

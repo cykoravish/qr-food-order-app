@@ -1,5 +1,4 @@
 import express from 'express';
-const app = express();
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import db from './Db/MongoDb.js';
@@ -15,28 +14,38 @@ import path from 'path';
 import './Services/Cron/Resetqty.js';
 import ProtectedRoute from './Service/ProtectedRoute.js';
 import Product from './Model/Product.model.js';
+import { createServer } from 'node:http'
+import http from 'http'
+import { Server } from 'socket.io'
+import socketIo from './Socket/Socket.js';
 dotenv.config();
 const __Filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__Filename);
 
+
+
+const app = express();
+
+
 app.use(cors({
-    origin: process.env.FRONTEND,
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PATCH', 'PUT'],
     // allowedHeaders: true,
     credentials: true
 
 }));
 
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use('/', express.static(path.join(__dirname, '/uploads')))
-db(process.env.DB);
 
+db();
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/products', ProductsRoute);
 app.use('/api/v1/carts', CartRoutes);
-// app.use('/api/v1/payment', PaymentRoutes);
 app.use('/api/v1/orders', OrderRoutes);
 app.use('/api/v1/sales', SalesRouter);
 
@@ -54,8 +63,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-
-
-app.listen(process.env.PORT, () => {
-    console.log('server started')
+const server = http.createServer(app); // ✅ Create HTTP server
+const socketIO = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST'],
+        credentials: true,
+    }
 });
+
+socketIo(socketIO);
+
+server.listen(5000, () => console.log('server connected'))

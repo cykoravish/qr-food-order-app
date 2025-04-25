@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { incrementCart, removeFromCart, } from '../../Redux/Cart';
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const CartPage = () => {
     const cartstate = useSelector((state) => state.cart.cartItems);
@@ -27,10 +28,8 @@ export const CartPage = () => {
 
         <div className='order-container'>
             <div className='item-cards flex justify-between'>
-                <Link className='flex' to={'/'}>
-                    <img src='/assets/back.png' alt='back' />
-                    <span> Home </span>
-                </Link>
+                <ReverseButton route={'/'} routeName={'Home'} />
+
                 <Link to={'/'} className='flex'>
                     <img src='/assets/plus.png' alt='plus' width={20} height={20} />
                     Add Item
@@ -78,7 +77,7 @@ export const CartPage = () => {
                         <b>Rs. {total}</b>
                     </div>
                 </div>
-                <Link to={`/user-info`} className='order-btn items-center flex justify-center ' >Place Order</Link >
+                <Link to={`/user-info`} className='order-btn items-center flex justify-center w-full ' >Place Order</Link >
             </div>
 
         </div >
