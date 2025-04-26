@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import publicAxios from '../../Services/PublicAxios'
 import { IoIosClose, IoIosDoneAll } from "react-icons/io";
 import { CiNoWaitingSign } from "react-icons/ci";
-import { socket } from '../../Services/Socket';
+// import { socket } from '../../Services/Socket';
 
 
 
@@ -22,10 +22,10 @@ export const OrderUpdate = () => {
             setOrders(res.data.content);
         };
         fetched();
-        socket.on('order-status-updated', () => fetched());
+        // socket.on('order-status-updated', () => fetched());
         return () => {
             controller.abort();
-            socket.disconnect()
+            // socket.disconnect()
         }
     }, [navigate, orders.length, someChanges]);
     console.log()
@@ -41,12 +41,12 @@ export const OrderUpdate = () => {
                 throw new Error('Something went wrong, please try again later.');
             }
 
-            socket.emit('order-status-updated');
+            // socket.emit('order-status-updated');
 
-            socket.off('order-status-updated')
+            // socket.off('order-status-updated')
 
             navigate('/admin/pending-orders');
-
+            alert('Product deleverd successfully')
         } catch (error) {
             console.error(error);
             // Optionally show an error message to the user
@@ -62,10 +62,10 @@ export const OrderUpdate = () => {
             throw new Error({ message: 'Something error try after some time' })
         };
         alert('order updated')
-        socket.emit('order-status-updated');
+        // socket.emit('order-status-updated');
 
         // Disconnect socket
-        socket.off('order-status-updated')
+        // socket.off('order-status-updated')
     }
     async function handleProcessing(orderId) {
         console.log(orderId)
@@ -75,16 +75,16 @@ export const OrderUpdate = () => {
             throw new Error({ message: 'Something error try after some time' })
         };
         console.log(orderId)
-        socket.emit('order-status-updated');
+        // socket.emit('order-status-updated');
 
         // Disconnect socket
-        socket.off('order-status-updated')
+        // socket.off('order-status-updated')
         navigate('/admin/pending-orders');
         alert('order updated')
         setSomeChanges(false)
     }
     return (
-        <div className='w-[375px]'>
+        <div className='min-w-[375px]'>
             <div className='flex text-left p-4'>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
                 <Link to="/admin" className='ml-2 font-semibold'>Admin</Link>
@@ -125,7 +125,7 @@ export const OrderUpdate = () => {
                                 <td>
                                     <button
                                         onClick={() => handleProcessing(order._id)}
-                                        className={`flex justify-center w-24 h-10 m-1 rounded cursor-pointer hover:bg-violet-600
+                                        className={`flex justify-center min-w-24 lg:w-54 h-10 m-1 text-2xl rounded cursor-pointer hover:bg-violet-600
       ${order.status === 'processing' ? 'bg-green-400' : 'bg-yellow-400'}`}
                                     >
                                         {order.status}
@@ -134,8 +134,8 @@ export const OrderUpdate = () => {
                                 < td className="px-4 py-2 border capitalize">
                                     <select name={order.status} id="">
                                         <option value="">{order.status}</option>
-                                        <option value="processing">Processing</option>
-                                        <option value="">Ready</option>
+                                        {/* <option value="processing">Processing</option> */}
+                                        {/* <option value="">Ready</option> */}
                                     </select>
                                 </td>
                                 <td className="px-4 py-2 border">{order.userId?.name}</td>

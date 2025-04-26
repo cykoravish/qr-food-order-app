@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import publicAxios from '../../Services/PublicAxios';
 import { Bounce } from 'react-toastify';
-import { socket } from '../../Services/Socket';
+// import { socket } from '../../Services/Socket';
 
 export const OrderSuccess = () => {
     const [AllOrder, setAllOrder] = useState([]);
@@ -27,15 +27,15 @@ export const OrderSuccess = () => {
         fetchedData(); // Initial fetch
 
         // Listen for socket events
-        socket.on('order-status-updated', () => {
-            console.log('Order status updated');
-            setRender(true)
-        });
-        render && fetchedData(); // Fetch data again when event is received
+        // socket.on('order-status-updated', () => {
+        //     console.log('Order status updated');
+        //     setRender(true)
+        // });
+        // render && fetchedData(); // Fetch data again when event is received
 
         // Clean up on component unmount
         return () => {
-            socket.off('order-status-updated'); // Remove the event listener
+            // socket.off('order-status-updated'); // Remove the event listener
         };
 
     }, []);

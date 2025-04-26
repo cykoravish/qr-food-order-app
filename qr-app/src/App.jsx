@@ -26,24 +26,25 @@ import { TotalSale } from './Pages/Admin/TotalSale';
 import { GraphicalPage } from './Pages/Admin/GraphicalPage';
 import { ProductsDetails } from './Pages/Clients/ProductsDetails';
 import { Bounce, ToastContainer } from 'react-toastify';
-import { socket } from './Services/Socket';
+import { CategoryView } from './Pages/Admin/CategoryView';
+// import { socket } from './Services/Socket';
 
 // "undefined" means the URL will be computed from the `window.location` object
 
 
 function App() {
-  useEffect(() => {
-    socket.on('connection', () => {
-      console.log('Connected to server, socket ID:', socket.id);
-    });
+  // useEffect(() => {
+  //   socket.on('connection', () => {
+  //     console.log('Connected to server, socket ID:', socket.id);
+  //   });
 
 
-    return () => {
-      socket.off('connection');
-      socket.off('newOrder');
+  //   return () => {
+  //     socket.off('connection');
+  //     socket.off('newOrder');
 
-    };
-  }, []);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -62,7 +63,7 @@ function App() {
         <Route path='/payment' element={<PaymentPage />} />
         <Route path='/order-success' element={<OrderSuccess />} />
 
-  
+
 
         {/* Admin Protected Routes */}
         <Route path='/' element={<ProtectedRoutes />}>
@@ -70,6 +71,7 @@ function App() {
           <Route path='/admin/createProduct' element={<NewProduct />} />
           <Route path='/admin/Category' element={<Category />} />
           <Route path='/admin/newCategory' element={<NewCategory />} />
+          <Route path='/admin/:category' element={<CategoryView />} />
           <Route path='/admin/pending-orders' element={<OrderUpdate />} />
           <Route path='/admin/totelsale' element={<TotalSale />} />
           <Route path='/admin/data-visualize' element={<GraphicalPage />} />

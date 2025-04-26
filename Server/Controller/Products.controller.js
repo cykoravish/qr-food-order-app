@@ -17,6 +17,7 @@ export const getAllProducts = async (req, res) => {
 export const postNewProduct = async (req, res) => {
     const { name, description, price, category } = req.body;
     const { _id } = req.user;
+    console.log(req.body, req.file)
     const imageUrl = req.file.filename;
 
     if (!name || !description || !category || !price) {

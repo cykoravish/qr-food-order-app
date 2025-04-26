@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, syncCartFromLocalStorage } from '../../Redux/Cart/index';
 import { ReverseButton } from '../../components/Client/ReverseButton';
 // import { socket } from '../../App';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000'); // Or your live URL
+// const socket = io('http://localhost:5000'); // Or your live URL
 
 export const PaymentPage = () => {
     const [searchParams] = useSearchParams();
@@ -48,9 +48,9 @@ export const PaymentPage = () => {
                 dispatch(clearCart()); // Clear Redux and localStorage
                 alert('Order placed successfully!');
                 navigate('/order-success')
-                const orderId = response.data.order._id;
-                socket.emit('order-placed', () => orderId);
-                socket.off('order-placed');
+                // const orderId = response.data.order._id;
+                // socket.emit('order-placed', () => orderId);
+                // socket.off('order-placed');
             } else {
                 console.error("Failed to place order");
             }

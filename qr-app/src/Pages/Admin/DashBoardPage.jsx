@@ -7,7 +7,7 @@ import publicAxios from '../../Services/PublicAxios';
 import { BsBoxArrowInDownLeft, BsBoxArrowInUp } from "react-icons/bs";
 import { TbCategoryPlus } from "react-icons/tb";
 import { MdAttachMoney } from "react-icons/md";
-import { socket } from '../../Services/Socket';
+// import { socket } from '../../Services/Socket';
 import { StatCard } from '../../components/Admin/StatCard';
 
 export const DashBoardPage = () => {
@@ -45,11 +45,11 @@ export const DashBoardPage = () => {
         };
 
         fetchedOrder();
-        socket.on('updated-order', () => fetchedOrder(), alert('new order'));
+        // socket.on('updated-order', () => fetchedOrder());
         console.log('dahsborad updateed event ')
         return () => {
             controller.abort()
-            socket.off('updated-order')
+            // socket.off('updated-order')
         }
     }, []);
     console.log(AllOrders);
@@ -138,7 +138,7 @@ export const DashBoardPage = () => {
                     <div key={categoryName} className='category-section mb-6'>
                         <div className='flex justify-between px-4 py-2'>
                             <h2 className='text-xl font-semibold'>{categoryName}</h2>
-                            <Link to={`/${categoryName}`} state={{ items: groupedProducts[categoryName] }} className='text-blue-500'>
+                            <Link to={`/admin/${categoryName}`} state={{ items: groupedProducts[categoryName] }} className='text-blue-500'>
                                 See More
                             </Link>
                         </div>
@@ -155,7 +155,7 @@ export const DashBoardPage = () => {
                                         qty={product.quantity} // Adjusted to use `quantity`
                                         image={product.imageUrl}
                                         product={product}
-                                        css='lg:w-[250px] h-[250px]'
+                                        css='lg:w-[250px] lg:h-[250px]'
                                     // onAddToCart={() => addToCarts(product)}
                                     />
                                 </div>

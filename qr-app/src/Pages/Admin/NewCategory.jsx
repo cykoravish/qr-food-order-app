@@ -2,11 +2,14 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
+import { MdAttachFile } from 'react-icons/md';
 
 export const NewCategory = () => {
     const naviagate = useNavigate();
     const [category, setCategory] = useState('');
     const [picture, setPicture] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [showImage, setShowImage] = useState(true)
     const [form, setForm] = useState({
         category: '',
         description: ''
@@ -32,7 +35,11 @@ export const NewCategory = () => {
         Form.append('name', form.category);
         Form.append('description', form.description);
         try {
-            const responce = await PrivateAxios.post('/products/new-category', Form);
+            const responce = await PrivateAxios.post('/products/new-category', Form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
             console.log(responce)
             if (responce.status === 201) {
                 setCategory(responce.data.content)
@@ -43,19 +50,77 @@ export const NewCategory = () => {
         }
     }
 
+    function handlePreviewImage() {
+        if (picture) {
+            const imageUrl = URL.createObjectURL(picture);
+            setShowImage((prev) => !prev);
+            setPreview(imageUrl)
+        }
+    };
+
+
 
     return (
+        // <div>
+        //     <div className='flex text-left p-4 '>
+        //         <img src="/public/assets/back.png" alt="back" className=' px-2' />
+        //         <Link to={'/admin'}>Add Product</Link>
+        //     </div>
+        //     <div className='flex justify-between m-4'>
+        //         <div className='flex justify-start items-center'>
+        //             <div className='mr-5'>
+        //                 <label htmlFor="file-upload" className="cursor-pointer">
+        //                     <div className="rounded-full bg-gray-600 p-4">
+        //                         <MdAttachFile color='white' size={25} />
+        //                     </div>
+        //                 </label>
+        //                 <input
+        //                     id="file-upload"
+        //                     type="file"
+        //                     name="file"
+        //                     hidden
+        //                     onChange={handleImage}
+        //                     required
+        //                 />
+
+        //                 <div className=''>
+        //                     {picture && <p>{picture.name}</p>}
+        //                 </div>
+        //             </div>
+        //             <div className='flex gap-4'>
+        //                 <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
+        //                     Uploaded Image
+        //                 </button>
+        //                 <button className='bg-[#D9D9D9] border rounded-md px-5' >Delete</button>
+        //             </div>
+        //         </div>
+        //     </div>
+        //     <div className='flex my-2 ml-4'>
+        //         {picture && <p className="text-sm mt-1">{picture.name}</p>}
+        //     </div>
+        //     {preview && (
+        //         <div className="mt-4 ml-3">
+        //             {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
+        //                 <img
+        //                     src={preview}
+        //                     alt="Preview"
+        //                     className="w-32 h-32 object-cover rounded-md border"
+        //                 /></>)}
+
+        //         </div>)}
         <div>
-            <div className='flex text-left p-4 '>
-                <img src="/public/assets/back.png" alt="back" className=' px-2' />
-                <Link to={'/admin'}>Add Product</Link>
+            {/* Top nav */}
+            <div className='flex text-left p-4'>
+                <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
+                <Link to="/admin" className='ml-2 font-semibold'>Add Product</Link>
             </div>
+
             <div className='flex justify-between m-4'>
                 <div className='flex justify-start items-center'>
                     <div className='mr-5'>
                         <label htmlFor="file-upload" className="cursor-pointer">
                             <div className="rounded-full bg-gray-600 p-4">
-                                <img src="/public/assets/vector2.png" alt="file upload" />
+                                <img src="/public/assets/Vector2.png" alt="file upload" />
                             </div>
                         </label>
                         <input
@@ -67,16 +132,39 @@ export const NewCategory = () => {
                             required
                         />
 
-                        <div className=''>
-                            {picture && <p>{picture.name}</p>}
-                        </div>
                     </div>
+
+
                     <div className='flex gap-4'>
-                        <button className='bg-[#F9D718] w-32 flex font-light items-center text-center justify-center rounded-md h-8'>Upload Image</button>
-                        <button className='bg-[#D9D9D9] border rounded-md px-5' >Delete</button>
+                        <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
+                            Uploaded Image
+                        </button>
+                        <button
+                            className='bg-gray-400 border rounded-md px-5'
+                            onClick={() => setPicture(null)}
+                            type="button"
+                        >
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>
+            <div className='flex my-2 ml-4'>
+                {picture && <p className="text-sm mt-1">{picture.name}</p>}
+            </div>
+            <div>
+
+            </div>
+            {preview && (
+                <div className="mt-4 ml-3">
+                    {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
+                        <img
+                            src={preview}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-md border"
+                        /></>)}
+
+                </div>)}
             <form className='flex flex-col w-[90%] max-w-[90%] overflow-hidden m-4' onSubmit={handleSubmit}>
                 <div className='w-full max-w-full h-[70px] flex flex-col m-1 overflow-x-hidden '>
                     <label className='p'>Category</label>
