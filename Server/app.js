@@ -63,15 +63,15 @@ app.use((err, req, res, next) => {
     });
 });
 
-const server = http.createServer(app); // ✅ Create HTTP server
-const socketIO = new Server(server, {
-    cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST'],
-        credentials: true,
-    }
-});
+// const server = http.createServer(app); // ✅ Create HTTP server
+// const socketIO = new Server(server, {
+//     cors: {
+//         origin: 'http://localhost:5173',
+//         methods: ['GET', 'POST'],
+//         credentials: true,
+//     }
+// });
 
-socketIo(socketIO);
+// socketIo(socketIO);
 
-server.listen(5000, () => console.log('server connected'))
+app.listen(5000, () => console.log('server connected'))

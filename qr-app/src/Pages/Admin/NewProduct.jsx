@@ -58,7 +58,11 @@ export const NewProduct = () => {
         data.append("description", form.description);
         data.append("category", form.category);
         data.append("price", form.price);
-        const responce = await PrivateAxios.post('/products/new-product', data)
+        const responce = await PrivateAxios.post('/products/new-product', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
         console.log(responce)
         if (responce.status === 201) {
             setForm({
@@ -88,12 +92,15 @@ export const NewProduct = () => {
     };
 
     function handlePreviewImage() {
+        console.log('click')
         if (picture) {
             const imageUrl = URL.createObjectURL(picture);
+            console.log(imageUrl)
             setShowImage((prev) => !prev);
             setPreview(imageUrl)
         }
     };
+    console.log(preview)
 
     return (
         <div>

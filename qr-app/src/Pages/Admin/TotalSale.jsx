@@ -54,7 +54,7 @@ export const TotalSale = () => {
                 </Link>
             </div>
 
-            <div className='w-[345px] h-[250px] mx-3 overflow-hidden'>
+            <div className='min-w-[345px] h-[250px] mx-3 overflow-hidden'>
                 <div className='w-full bg-green-200 h-[50%] mb-2 flex flex-col justify-center'>
                     <h2 className='text-2xl font-semibold text-center'>Total Sale</h2>
                     <h2 className='text-xl font-bold text-center mt-2'>₹ {totalSale || 0}</h2>

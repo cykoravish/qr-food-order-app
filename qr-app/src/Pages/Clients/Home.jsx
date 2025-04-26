@@ -10,7 +10,7 @@ import PrivateAxios from '../../Services/PrivateAxios';
 import EventEmitter from 'events';
 import { Bounce, toast } from 'react-toastify';
 import { CategoryCard } from '../../components/Client/CategoryCard';
-import { socket } from '../../Services/Socket';
+// import { socket } from '../../Services/Socket';
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -21,13 +21,13 @@ export const Home = () => {
     // eslint-disable-next-line no-unused-vars
     const [clickCount, setClickCount] = useState(0);
 
-    useEffect(() => {
-        const data = { name: 'gaurav kumar' }
-        socket.emit('order-updated', (data));
-        socket.on('order-updated', (data) => {
-            console.log(data)
-        })
-    }, [])
+    // useEffect(() => {
+    //     const data = { name: 'gaurav kumar' }
+    //     socket.emit('order-updated', (data));
+    //     socket.on('order-updated', (data) => {
+    //         console.log(data)
+    //     })
+    // }, [])
 
 
     const handleAdminAccess = () => {

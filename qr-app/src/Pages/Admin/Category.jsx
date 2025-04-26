@@ -17,7 +17,7 @@ export const Category = () => {
         }
     }, []);
     return (
-        <div>
+        <div className='w-full'>
             <div className='flex text-left p-4 '>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full mr-2' />
                 <Link to={'/admin'} className='font-semibold'>Category</Link>
@@ -36,7 +36,7 @@ export const Category = () => {
 
 
             </div>
-            <div className=' flex bg-[#F9D718] w-[343px] h-[48px] m-4 overflow-hidden rounded-md items-center text-center justify-center fixed bottom-0'>
+            <div className=' flex bg-[#F9D718] min-w-[343px] lg:w-full h-[48px] m-4 overflow-hidden rounded-md items-center text-center justify-center fixed bottom-0'>
                 <Link to={'/admin/newCategory'} >Add Category</Link>
             </div>
         </div>
