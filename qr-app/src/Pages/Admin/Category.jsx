@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios'
 
+
 export const Category = () => {
     const [category, setCategory] = useState([]);
     useEffect(() => {
@@ -16,6 +17,8 @@ export const Category = () => {
             controller.abort();
         }
     }, []);
+
+
     return (
         <div className='w-full'>
             <div className='flex text-left p-4 '>
@@ -36,9 +39,9 @@ export const Category = () => {
 
 
             </div>
-            <div className=' flex bg-[#F9D718] min-w-[343px] lg:w-full h-[48px] m-4 overflow-hidden rounded-md items-center text-center justify-center fixed bottom-0'>
-                <Link to={'/admin/newCategory'} >Add Category</Link>
-            </div>
+            <Link to={'/admin/newCategory'} className=' flex bg-[#F9D718] min-w-[343px] lg:w-full h-[48px] m-4 overflow-hidden rounded-md items-center text-center justify-center fixed bottom-0'>
+                Add Category
+            </Link>
         </div>
     )
 }

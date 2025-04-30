@@ -64,12 +64,14 @@ export const updateOrder = async (req, res) => {
 };
 
 export const getOrder = async (req, res) => {
-    const { _id } = req.params._id;
+    const userId = req.params.id;
     try {
-        const order = Order.findById(_id);
-        if (order) {
-            res.status(200).json({ content: data })
+        const order = await Order.find({ userId: userId });
+        console.log(order)
+        if (!order) {
+            return res.status(400).json(null);
         }
+        res.status(200).json({ content: order });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error })
     }

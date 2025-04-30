@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
+import { Model } from '../../components/Model';
 
 export const NewProduct = () => {
     const [catgory, setCategoryOption] = useState([]);
@@ -110,12 +111,12 @@ export const NewProduct = () => {
                 <Link to="/admin" className='ml-2 font-semibold'>Add Product</Link>
             </div>
 
-            <div className='flex justify-between m-4'>
+            <div className='flex flex-col justify-between m-4 lg:items-center'>
                 <div className='flex justify-start items-center'>
                     <div className='mr-5'>
                         <label htmlFor="file-upload" className="cursor-pointer">
-                            <div className="rounded-full bg-gray-600 p-4">
-                                <img src="/public/assets/Vector2.png" alt="file upload" />
+                            <div className="rounded-full bg-gray-600 p-4 ">
+                                <img src="/public/assets/Vector2.png" alt="file upload" className='object-contain' />
                             </div>
                         </label>
                         <input
@@ -132,7 +133,7 @@ export const NewProduct = () => {
 
                     <div className='flex gap-4'>
                         <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
-                            Uploaded Image
+                            {picture && picture.name ? picture.name : 'Uploaded Image'}
                         </button>
                         <button
                             className='bg-gray-400 border rounded-md px-5'
@@ -144,26 +145,21 @@ export const NewProduct = () => {
                     </div>
                 </div>
             </div>
-            <div className='flex my-2 ml-4'>
-                {picture && <p className="text-sm mt-1">{picture.name}</p>}
-            </div>
             <div>
 
             </div>
-            {preview && (
-                <div className="mt-4 ml-3">
-                    {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
-                        <img
-                            src={preview}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-md border"
-                        /></>)}
 
-                </div>)}
+            {preview && showImage && <Model children={<img
+                src={preview}
+                alt="Preview"
+                className="w-64 h-64 object-cover rounded-md border mb-4"
+            />} onClose={() => setShowImage(false)} />}
+
+
 
             {/* Form fields */}
-            <div className='flex flex-col ml-3 overflow-x-hidden'>
-                <form onSubmit={handleSubmit} className='flex flex-col w-[95%] max-w-[90%] overflow-x-hidden'>
+            <div className='flex flex-col ml-3 overflow-x-hidden lg:items-center  '>
+                <form onSubmit={handleSubmit} className='flex flex-col w-[95%] lg:w-[40%] max-w-[90%] overflow-x-hidden'>
                     <div className='w-full h-[67px] flex flex-col mb-2'>
                         <label className='min-h-5'>Product Name</label>
                         <input
@@ -196,13 +192,19 @@ export const NewProduct = () => {
                             className="bg-[#F9F9F9] min-h-[40px] px-2"
                             name="category"
                             onChange={handleForm}
-                            value={form.category} // Replace with your actual form state
+                            value={form.category} // Ensure the select value is controlled by form.state
+                            required
                         >
-                            {catgory.map((category) => (
-                                <option key={category._id} value={category._id}>
-                                    {category.name}
-                                </option>
-                            ))}
+                            {/* "Choose Category" option */}
+                            <option value=''>Choose Category</option>
+                            {/* Render categories only if `catgory` has items */}
+                            {catgory.length > 0 &&
+                                catgory.map((category) => (
+                                    <option key={category._id} value={category._id}>
+                                        {category.name}
+                                    </option>
+                                ))
+                            }
                         </select>
 
 
@@ -221,25 +223,26 @@ export const NewProduct = () => {
                             className='bg-[#F9F9F9] min-h-[40px] px-2'
                         />
                     </div>
+                    < div className='w-full flex justify-between min-h-[48px] mt-28 fixed bottom-2 left-0 right-0 bg-white shadow-md px-4 gap-4' >
+                        <button
+                            onClick={handleDiscard}
+                            className='w-[50%] bg-[#F2EFE3] rounded-md min-w-[164px]'
+                            type="button"
+                        >
+                            Discard
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            className='bg-[#F9D718] w-[50%]  rounded-md min-w-[164px]'
+                        >
+                            Save
+                        </button>
+                    </div >
                 </form>
             </div >
 
             {/* Action Buttons */}
-            < div className='flex justify-between min-h-[48px] m-1 mt-28 fixed bottom-0 left-0 right-0 bg-white shadow-md px-4 gap-4' >
-                <button
-                    onClick={handleDiscard}
-                    className='bg-[#F2EFE3] rounded-md w-[164px]'
-                    type="button"
-                >
-                    Discard
-                </button>
-                <button
-                    onClick={handleSubmit}
-                    className='bg-[#F9D718] w-[164px] rounded-md'
-                >
-                    Save
-                </button>
-            </div >
+
         </div >
     );
 }

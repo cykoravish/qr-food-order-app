@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
-import publicAxios from '../../Services/PublicAxios';
 import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const Login = () => {
@@ -28,13 +27,13 @@ export const Login = () => {
         setForm({ ...form, [name]: value });
     }
     return (
-        <div className='w-[375px] h-full overflow-x-hidden items-center relative'>
-            <div className='ml-3 mt-2'>
+        <div className='min-w-[375px] ml-2 mr-2 h-full overflow-x-hidden items-center relative'>
+            <div className=''>
                 <ReverseButton route={'/'} routeName={'Home'} />
             </div>
-            <div className='mt-10'>
+            <div className='mt-10 flex flex-col items-center'>
                 <h2 className='flex justify-center text-2xl font-semibold'>Login Form</h2>
-                <form onSubmit={handleForm} className='w-[93%] m-3 shadow-md rounded-md'>
+                <form onSubmit={handleForm} className='w-full sm:w-full md:w-[50%] lg:w-[40%] m-3 shadow-md rounded-md flex flex-col justify-center'>
 
                     <div className='flex flex-col'>
                         <input type="email" name='email' placeholder='Email' required
@@ -46,10 +45,17 @@ export const Login = () => {
                             className='m-2 border border-gray-400 pl-2 h-12 rounded-md '
                             onChange={handleInput} />
                     </div>
-                    <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
-                        <button type="submit" className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Login</button>
+                    <div className='ml-2 mr-2'>
+                        <button
+                            type="submit"
+                            className="w-full bg-[#5780FA]  text-white font-semibold h-12 rounded-md hover:bg-blue-600 transition duration-300"
+                        >
+                            Login
+                        </button>
                     </div>
-                    <p className='flex justify-center'> Don't have an account? <Link to={'/login'} className='text-blue-600'>Signup</Link> </p>
+
+
+                    <p className='m-2 flex justify-center'> Don't have an account? <Link to={'/signup'} className='text-blue-600'>Signup</Link> </p>
 
                 </form>
             </div>

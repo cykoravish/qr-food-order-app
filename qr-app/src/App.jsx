@@ -27,24 +27,24 @@ import { GraphicalPage } from './Pages/Admin/GraphicalPage';
 import { ProductsDetails } from './Pages/Clients/ProductsDetails';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { CategoryView } from './Pages/Admin/CategoryView';
+import { io } from 'socket.io-client';
+import { TodayOrderStat } from './Pages/Admin/TodayOrderStat';
 // import { socket } from './Services/Socket';
+
 
 // "undefined" means the URL will be computed from the `window.location` object
 
-
+const socket = io('http://localhost:5000');
 function App() {
-  // useEffect(() => {
-  //   socket.on('connection', () => {
-  //     console.log('Connected to server, socket ID:', socket.id);
-  //   });
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to server, socket ID:', socket.id);
+    });
 
-
-  //   return () => {
-  //     socket.off('connection');
-  //     socket.off('newOrder');
-
-  //   };
-  // }, []);
+    return () => {
+      socket.on('disconnect', (socket => console.log(socket.id)));
+    }
+  }, []);
 
   return (
     <>
@@ -75,6 +75,7 @@ function App() {
           <Route path='/admin/pending-orders' element={<OrderUpdate />} />
           <Route path='/admin/totelsale' element={<TotalSale />} />
           <Route path='/admin/data-visualize' element={<GraphicalPage />} />
+          <Route path='/admin/today-orders' element={<TodayOrderStat />} />
         </Route>
       </Routes >
       <ToastContainer position="top-right"
