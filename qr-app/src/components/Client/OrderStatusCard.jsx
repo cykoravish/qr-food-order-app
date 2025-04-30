@@ -45,7 +45,7 @@ export default function OrderStatusCard({ orderStatus, onClose }) {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -100, opacity: 0 }}
                 transition={{ type: 'spring', duration: 0, damping: 30, stiffness: 60 }}
-                onClick={(e) => e.stopPropagation}
+                onClick={(e) => e.stopPropagatio}
             >
 
                 {/* Top Section */}

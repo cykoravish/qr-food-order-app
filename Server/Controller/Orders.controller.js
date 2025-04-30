@@ -66,7 +66,7 @@ export const updateOrder = async (req, res) => {
 export const getOrder = async (req, res) => {
     const userId = req.params.id;
     try {
-        const order = await Order.find({ userId: userId });
+        const order = await Order.find({ userId: userId }).populate('userId').populate('items.productId');
         console.log(order)
         if (!order) {
             return res.status(400).json(null);
