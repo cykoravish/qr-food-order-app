@@ -13,7 +13,6 @@ export default getCookies;
 
 export const ProtectedRoutes = () => {
     const isAuthenticated = getCookies('token');
-    console.log(isAuthenticated)
     return isAuthenticated ? <Outlet /> : <Navigate to='/signup' />;
 }
 

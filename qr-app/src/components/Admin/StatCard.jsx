@@ -2,23 +2,25 @@ import React from 'react'
 import { BsBoxArrowInUp } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 
-export const StatCard = ({ name, value, imageName, route }) => {
+export const StatCard = ({ name, value, imageName, route, items }) => {
     return (
-        <div className="w-1/2 min-w-[164px] h-full min-h-[75px] flex flex-col shadow-md p-2 relative hover:scale-110 transition duration-300">
-            <Link to={route} className="min-w-[164px] w-full h-full relative block">
+        <div className="w-full flex  flex-row  sm:w-[70%] sm:gap-6  sm:h-[160px] md:flex-col  md:w-[90%] lg:w-[90%]   xl:w-full xl:flex-row h-[150px] f  shadow-md p-4  relative hover:scale-110 transition duration-300 hover:bg-sky-300 ">
+            <Link to={route} state={{ items: items }} className="w-full h-full flex flex-col justify-between relative">
 
-                {/* Image at Top-Right */}
-                <p className="absolute top-2 right-2 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-contain">{imageName}</p>
+                {/* Image at Top-Left */}
+                <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex justify-start">
+                    {imageName}
+                </div>
 
                 {/* Count */}
-                <div className="h-3/4 ml-[40px] flex flex-row gap-8 justify-between items-center text-xl relative">
-                    <span className="w-28 h-2/3 rounded-md text-6xl font-bold text-start">
+                <div className="flex-grow flex justify-center items-center">
+                    <span className="text-6xl font-bold text-start">
                         {value.length}
                     </span>
                 </div>
 
                 {/* Name at Bottom Center */}
-                <p className="text-2xl lg:text-5xl text-center absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                <p className="text-xl text-center">
                     {name}
                 </p>
             </Link>

@@ -25,37 +25,58 @@ export const Signup = () => {
         setForm({ ...form, [name]: value });
     }
     return (
-        <div className='w-[375px] h-full overflow-x-hidden items-center relative'>
-            <ReverseButton route={'/'} routeName={'Home'} />
-            <div className='mt-10'>
+        <div className='w-[98%] mx-auto my-0 overflow-x-hidden  relative'>
+            <ReverseButton route={'/'} routeName={'Home'} css={'mt-2 ml-2'} />
+            <div className='mt-10 flex flex-col items-center '>
                 <h2 className='flex justify-center text-2xl font-semibold'>Ragistration Form</h2>
-                <form onSubmit={handleForm} className='w-[93%] m-3 shadow-md rounded-md'>
+                <form onSubmit={handleForm} className='sm:w-[90%]  lg:w-[40%] flex flex-col text-center justify-center shadow-md rounded-md p-4'>
                     <div className='flex flex-col'>
-                        {/* <label className='m-2'>UserName</label> */}
-                        <input type="text" name='name' placeholder='Name' required
-                            className='m-2 border border-gray-400 pl-2 h-12 rounded-md '
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            required
+                            className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
                             onChange={handleInput}
                         />
                     </div>
                     <div className='flex flex-col'>
-                        {/* <label className='m-2'>Email</label> */}
-                        <input type="email" name='email' placeholder='Email' required
-                            className='m-2 border border-gray-400 pl-2 h-12 rounded-md '
-                            onChange={handleInput} />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                            className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
+                            onChange={handleInput}
+                        />
                     </div>
                     <div className='flex flex-col'>
-                        {/* <label className='m-2'>Password</label> */}
-                        <input type="password" name='password' placeholder='Password' required
-                            className='m-2 border border-gray-400 pl-2 h-12 rounded-md '
-                            onChange={handleInput} />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
+                            onChange={handleInput}
+                        />
                     </div>
-                    <div className='w-[93%]  m-2 mb-2 bg-[#5780FA] rounded-md'>
-                        <button type="submit" className='h-12  flex justify-center text-center items-center m-auto text-xl  '>Signup</button>
-                    </div>
-                    <p className='flex justify-center mt-4'>Already have an account?<Link className='text-blue-500' to={'/login'}>Login</Link></p>
+
+                    {/* 🛠 No extra div! Directly button */}
+                    <button
+                        type="submit"
+                        className="m-2 bg-[#5780FA] text-white font-semibold h-12 rounded-md hover:bg-blue-600 transition duration-300"
+                    >
+                        Signup
+                    </button>
+
+                    <p className="flex justify-center mt-4">
+                        Already have an account?
+                        <Link className="text-blue-500 ml-1" to="/login">Login</Link>
+                    </p>
                 </form>
+
             </div>
-        </div>
+        </div >
 
     )
 }

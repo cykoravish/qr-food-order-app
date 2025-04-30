@@ -29,7 +29,8 @@ export const ProductsDetails = () => {
                     <img
                         src={`${backendUrl}/${product.imageUrl}`}
                         alt="image"
-                        className="w-[250px] h-[200px] object-contain mt-3 rounded-lg shadow-md"
+                        className="w-[250px] h-[200px] object-contain my-3 rounded-full shadow-md"
+                        style={{ width: '100px', height: '100px' }}
                     />
                 </div>
 

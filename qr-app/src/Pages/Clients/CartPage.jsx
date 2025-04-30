@@ -35,29 +35,36 @@ export const CartPage = () => {
                     Add Item
                 </Link>
             </div>
-            <div className='orderDetils'>
+            <div className='min-w-[343px] min-h-[120px] mt-4 m-2'>
                 {Array.isArray(cartstate) && cartstate.map((item) => (
-                    <>
-                        <div className='order-detils-card '>
-                            <div className='left'>
-                                <h4>{item.name}</h4>
-                                <p>{item.description}</p>
-                                <b>Rs. {item.price}</b>
-                            </div>
-                            <div className='right'>
-                                <img src='/assets/pizza.png' alt='pizza' />
-                                <div className='order-quantityBtn'>
-                                    <button onClick={() => handleMinusQuanity(item._id)}> <img src='/assets/minus.png' alt='minus' /></button>
-                                    {item.quantity}
-                                    <p>{item.qty}</p>
-                                    <button onClick={() => handlePlusQuantity(item._id)}><img src='/assets/plus.png' alt='plus' /></button>
-                                </div>
-                            </div >
+                    <div key={item._id} className='order-detils-card flex justify-between items-center p-3 rounded-xl shadow-sm mb-4'>
+
+                        <div className='left text-xl space-y-1'>
+                            <h4 className=' text-base font-semibold'>{item.name}</h4>
+                            <p className='text-sm text-gray-600 mb-4'>{item.description}</p>
+                            <b className='text-black mt-[20px] font-bold'>Rs. {item.price}/-</b>
                         </div>
 
-                    </>
+                        <div className='right flex flex-col items-center gap-2'>
+                            <img src='/assets/pizza.png' alt='pizza' className='w-[85px] h-[64px] object-cover rounded-md' />
+
+                            <div className='flex items-center justify-between w-[120px] h-[32px] rounded-md mt-6 bg-yellow-300 mr-2'>
+                                <button onClick={() => handleMinusQuanity(item._id)} className="p-1">
+                                    <img src='/assets/minus.png' alt='minus' className="w-4 h-4 object-cover" />
+                                </button>
+
+                                <span className='text-base font-semibold'>{item.quantity || item.qty}</span>
+
+                                <button onClick={() => handlePlusQuantity(item._id)} className="p-1">
+                                    <img src='/assets/plus.png' alt='plus' className="w-4 h-4 object-cover" />
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
                 ))}
             </div>
+
             <div className='' >
                 <div className='order-calc'>
                     <div>
@@ -77,7 +84,7 @@ export const CartPage = () => {
                         <b>Rs. {total}</b>
                     </div>
                 </div>
-                <Link to={`/user-info`} className='order-btn items-center flex justify-center w-full ' >Place Order</Link >
+                <Link to={`/user-info`} className='bg-yellow-300 h-[40px] rounded-sm mx-auto my-0 w-[95%] items-center flex justify-center mr-2' >Place Order</Link >
             </div>
 
         </div >

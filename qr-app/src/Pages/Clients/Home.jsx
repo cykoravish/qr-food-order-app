@@ -10,6 +10,10 @@ import PrivateAxios from '../../Services/PrivateAxios';
 import EventEmitter from 'events';
 import { Bounce, toast } from 'react-toastify';
 import { CategoryCard } from '../../components/Client/CategoryCard';
+import OrderStatusCard from '../../components/Client/OrderStatusCard';
+import publicAxios from '../../Services/PublicAxios';
+import { socket } from '../../Services/Socket';
+import { motion } from 'framer-motion';
 // import { socket } from '../../Services/Socket';
 
 export const Home = () => {
@@ -17,19 +21,16 @@ export const Home = () => {
     const cartItems = useSelector((state) => state ? state.cart.cartItems : []);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
+    const [latestOrder, setLatestOrder] = useState([]);
+    const [popup, setPopup] = useState(false);
+    const [user, setUser] = useState({});
     const navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
     const [clickCount, setClickCount] = useState(0);
 
-    // useEffect(() => {
-    //     const data = { name: 'gaurav kumar' }
-    //     socket.emit('order-updated', (data));
-    //     socket.on('order-updated', (data) => {
-    //         console.log(data)
-    //     })
-    // }, [])
 
 
+    // Get admin access
     const handleAdminAccess = () => {
         setClickCount(prev => {
             const newCount = prev + 1;
@@ -37,12 +38,12 @@ export const Home = () => {
             if (newCount === 10) {
                 toast('🦄 Admin Mode Activated', {
                     position: "top-center",
-                    autoClose: 2000,
+                    autoClose: 1000,
                     hideProgressBar: false,
                     closeOnClick: false,
                     pauseOnHover: true,
                     draggable: true,
-                    progress: 1,
+                    progress: false,
                     theme: "colored",
                     transition: Bounce,
                 });
@@ -55,7 +56,7 @@ export const Home = () => {
         });
     };
 
-
+    // Get products
     useEffect(() => {
         const controller = new AbortController();
         const fetchData = async () => {
@@ -83,6 +84,7 @@ export const Home = () => {
         };
     }, []);
 
+    // products with category
     const groupedProducts = products?.reduce((acc, product) => {
         const categoryName = product.categoryId?.name || 'Uncategorized';
         if (!acc[categoryName]) {
@@ -92,8 +94,9 @@ export const Home = () => {
         return acc;
     }, {});
 
+
     const uniqueCategories = [
-        ...new Map(products.map(item => [item.categoryId.name, item.categoryId])).values()
+        ...new Map(products.map(item => [item?.categoryId?.name, item.categoryId])).values()
     ];
 
 
@@ -102,8 +105,10 @@ export const Home = () => {
     };
 
     // Calculate total quantity in cart
-    const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0); // Fixed the issue with cartItems structure
+    const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+
+    // search functionality
     const filteredGroupedProducts = Object.keys(groupedProducts).reduce((acc, categoryName) => {
         const filteredProducts = groupedProducts[categoryName].filter(product =>
             product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -115,30 +120,93 @@ export const Home = () => {
         return acc;
     }, {});
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const existingUser = storedUser ? JSON.parse(storedUser) : null;
+
+        setUser(existingUser);
+
+        async function fetched(userId) {
+            try {
+                const res = await publicAxios(`/orders/${userId}`);
+                if (res.status !== 200) {
+                    throw new Error('Response failed');
+                }
+
+                const orders = res.data.content;
+                setLatestOrder(orders);
+                console.log(orders)
+                const allDelivered = orders.every(order => order.status === 'delivered');
+                console.log("All deleverd", allDelivered)
+                if (allDelivered) {
+                    localStorage.removeItem('user');
+                    setUser(null);
+                }
+
+            } catch (err) {
+                console.error(err.message);
+            }
+        }
+
+        if (existingUser?._id) {
+            fetched(existingUser._id);
+            socket.emit('join-admin');
+
+            const handleOrderUpdate = (data) => {
+                console.log('Admin received order update:', data);
+                fetched(existingUser._id);
+            };
+
+            socket.on('order-updated-status', handleOrderUpdate);
+
+            return () => {
+                socket.off('order-updated-status', handleOrderUpdate);
+            };
+        }
+    }, []);
 
 
 
+
+    function handleShowOrder() {
+        setPopup(prev => !prev);
+    }
+
+    console.log(user)
     return (
         <div className=' max-w-[100%] '>
-            <button onClick={handleAdminAccess} className='w-full'>
-                <img src='/assets/image1.jpg' alt='coverimage' className='w-full h-full object-cover min-w-[100%] max-h-[500px]' />
+            <button onClick={handleAdminAccess} className='w-full '>
+                <img src='/assets/cover.png' alt='coverimage' className='w-full h-full object-cover min-w-[100%] max-h-[500px]' />
             </button>
 
-            <div className='search-container min-w-[90% ]'>
-                <p>Choose the best dish for you</p>
-                <div>
+            {user && <div className='fixed right-0 top-5 w-14 h-8 bg-yellow-300 rounded-full object-contain flex justify-center items-center text-center '>
+                <button onClick={handleShowOrder} className=''>Order</button>
+                {popup && latestOrder?.map((item) => (
+                    <motion.div key={item._id} initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}>
+                        <OrderStatusCard orderStatus={item} onClose={handleShowOrder} />
+                    </motion.div >
+                ))}
+            </div>}
+
+            <div className='search-container min-w-[90% ] items-start'>
+                <p className='flex justify-start mb-3 pl-1' >Choose the best dish for you</p>
+                <div className='flex flex-row items-center gap-2 flex-shrink-0 border border-gray-500 w-[100%] h-[40px] text-start rounded-xl pl-3 '>
+                    <img src="/assets/lens.png" alt="lens" className='w-[16px] h-[16px]' />
                     <input
                         type='search'
                         name='search'
                         placeholder='Search'
                         onChange={(e) => setSearch(e.target.value)}
-                        className='overflow-x-hidden flex-shrink-0 border border-gray-500 min-w-[100%] min-h-12 text-center rounded-xl '
-                    />
+                        className='pr-2 border-none w-[100%] h-[40px] bg-transparent outline-none'
+                    ></input>
                 </div>
             </div>
 
-            {search && Object.keys(filteredGroupedProducts).map((categoryName) => (
-                <div key={categoryName} className='category-section mb-6'>
+
+            {search && Object.keys(filteredGroupedProducts)?.map((categoryName) => (
+                <div key={categoryName} className='category-section mb-3'>
                     <div className='flex justify-between px-4 py-2'>
                         <h2 className='text-xl font-semibold'>{categoryName}</h2>
                         <Link to={`/${categoryName}`} state={{ items: filteredGroupedProducts[categoryName] }} className='text-blue-500'>
@@ -147,8 +215,9 @@ export const Home = () => {
                     </div>
 
                     <div className='flex overflow-x-auto h-[200px] space-x-4 px-4'>
-                        {filteredGroupedProducts[categoryName].map((product) => (
-                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
+                        {filteredGroupedProducts[categoryName]?.map((product) =>
+                        (
+                            < div key={product._id} className='min-w-[150px] flex-shrink-0' >
                                 <CardDetails
                                     id={product._id}
                                     category={product.categoryId?.name}
@@ -164,22 +233,24 @@ export const Home = () => {
                 </div>
             ))}
 
-            {/* category Items */}
-            <CategoryCard uniqueCategories={uniqueCategories} products={products} />
+
+            <div className='' style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <CategoryCard uniqueCategories={uniqueCategories} products={products} />
+            </div>
+
 
             {Object.keys(groupedProducts).map((categoryName) => (
-                <div key={categoryName} className='category-section mb-6'>
+                <div key={categoryName} className='category-section mb-2'>
                     <div className='flex justify-between px-4 py-2'>
-                        <h2 className='text-xl font-semibold'>{categoryName}</h2>
+                        <h2 className='text-[14px] font-semibold'>{categoryName}</h2>
                         <Link to={`/${categoryName}`} state={{ items: groupedProducts[categoryName] }} className='text-blue-500'>
                             See More
                         </Link>
                     </div>
 
-                    <div className='flex overflow-x-auto min-h-[200px]  space-x-4 px-4'>
-                        {groupedProducts[categoryName].map((product) => (
-                            <div className='min-w-[150px] flex-shrink-0'>
-                                {console.log(product)}
+                    <div className='flex overflow-x-auto min-h-[200px]  space-x-4 px-4 scrollbar-hide' style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        {groupedProducts[categoryName]?.map((product) => (
+                            <div key={product._id} className='min-w-[150px] flex-shrink-0'>
                                 <CardDetails
                                     key={product._id}
                                     id={product._id}
@@ -198,8 +269,8 @@ export const Home = () => {
                 </div>
             ))}
 
-            <div className='fixed  bottom-0 bg-yellow-300 min-w-[300px] w-[100%] min-h-8 m-auto justify-center text-center items-center rounded-md '>
-                <Link className='px-4 flex items-center justify-center text-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1 text-center flex justify-center'> {totalQty}</span></Link>
+            <div className='fixed bottom-1 top-[95%] bg-amber-300 flex justify-center items-center text-center uppercase w-[95%] my-0 ml-3 lg:ml-0 mx-auto h-[40px] '>
+                <Link className=' flex items-center justify-center text-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1 text-center flex justify-center'> {totalQty}</span></Link>
             </div >
         </div >
     );

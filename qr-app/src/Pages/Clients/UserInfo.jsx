@@ -9,7 +9,6 @@ export const UserInfo = () => {
     const [searchParams] = useSearchParams();
     const userId = searchParams.get('userId');
 
-    console.log(userId)
     const navigate = useNavigate();
     const [user, setUser] = useState(() => {
         const saved = localStorage.getItem('user');
@@ -53,22 +52,19 @@ export const UserInfo = () => {
     const handleEdit = () => {
         setIsEditMode(true);
     };
-    console.log(cart)
 
     const itemData = cartItems.map((item) => ({
         productId: item._id,
         quantity: item.quantity
-    }))
-    console.log(itemData)
-    async function handleCartDeta() {
+    }));
 
+    async function handleCartDeta() {
         const cartData = {
             userId: userId ? userId : user._id,
             items: itemData
         };
-        console.log(cartData)
         const responce = cart ? null : await publicAxios.post('/carts/add-cart', cartData);
-        console.log(responce)
+
         if (responce.statusText !== 'Created') {
             throw new Error({ message: 'responce failed' })
         };
@@ -87,13 +83,13 @@ export const UserInfo = () => {
                 {isEditMode ? (
                     <>
                         <label htmlFor="name" className='text-xl font-semibold ml-1 mb-1'>Name</label>
-                        <input type="text" name='name' placeholder='Enter Your Name' onChange={handleChange} value={form.name} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
+                        <input type="text" name='name' placeholder='Enter Your Name' required onChange={handleChange} value={form.name} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
 
                         <label htmlFor="phone" className='font-semibold ml-1 mb-1 mt-2 text-xl'>Phone</label>
-                        <input type="text" name='phone' placeholder='Enter Phone Number' onChange={handleChange} value={form.phone} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
+                        <input type="text" name='phone' placeholder='Enter Phone Number' required onChange={handleChange} value={form.phone} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
 
                         <div className='w-full flex gap-2 mt-4'>
-                            <button className='bg-gray-300 w-1/2 py-2 rounded' onClick={() => setIsEditMode(false)}>Cancel</button>
+                            <Link className='bg-gray-300 w-1/2 py-2 rounded flex justify-center' onClick={() => setIsEditMode(false)} to={'/cart'}>Cancel</Link>
                             <button className='bg-amber-400 w-1/2 py-2 rounded' onClick={() => {
                                 handleSubmit();
                                 handleCartDeta();
@@ -105,7 +101,7 @@ export const UserInfo = () => {
                         <p className='text-lg font-medium'>👤 Name: {user.name}</p>
                         <p className='text-lg font-medium mt-2'>📞 Phone: {user.phone}</p>
                         <button className='mt-4 bg-blue-400 text-white py-2 px-4 rounded' onClick={handleEdit}>Edit</button>
-                        <Link className='mt-4 bg-blue-400 text-white py-2 px-4 rounded flex justify-center' to={`/cart-bill/?userId=${userId ? userId : user._id}`} onClick={() => {
+                        <Link className='mt-4 bg-blue-400 text-white py-2 px-4 rounded flex justify-center  items-center' to={`/cart-bill/?userId=${userId ? userId : user._id}`} onClick={() => {
                             handleCartDeta();
                             handleSubmit();
                         }}>Bill Details</Link>

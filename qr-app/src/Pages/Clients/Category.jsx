@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart as addToCartAction } from '../../Redux/Cart/index.js';
 import { ReverseButton } from '../../components/Client/ReverseButton.jsx';
-import getCookies from '../../Services/ProtectedRoutes.jsx';
 
 export const Category = () => {
     const location = useLocation();
@@ -35,8 +34,6 @@ export const Category = () => {
     }
     console.log(itemArray)
 
-    const token = getCookies('token');
-    console.log(token, 'token')
     return (
         <div className='burger-container p-1'>
             <div className='my-2 ml-2 '>

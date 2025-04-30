@@ -76,9 +76,9 @@ export const PaymentsMethod = () => {
                     </div>
                 </div>
             </div>
-            <div className=' shadow-xl rounded-md bg-yellow-500 w-[95%] h-[35px] flex items-center justify-center  md:ml-5 lg:ml-8'>
-                <Link className='' to={`/payment?userId=${userId}`} >Pay & Call Waiter</Link>
-            </div>
+            <Link to={`/payment?userId=${userId}`} className='flex items-center justify-center bg-yellow-300 my-0 mx-auto  h-[40px] w-[95%]'>
+                Pay
+            </Link>
 
 
         </div>

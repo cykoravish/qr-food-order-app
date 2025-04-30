@@ -4,6 +4,7 @@ import publicAxios from '../../Services/PublicAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, syncCartFromLocalStorage } from '../../Redux/Cart/index';
 import { ReverseButton } from '../../components/Client/ReverseButton';
+import { socket } from '../../Services/Socket';
 // import { socket } from '../../App';
 // import { io } from 'socket.io-client';
 
@@ -48,9 +49,8 @@ export const PaymentPage = () => {
                 dispatch(clearCart()); // Clear Redux and localStorage
                 alert('Order placed successfully!');
                 navigate('/order-success')
-                // const orderId = response.data.order._id;
-                // socket.emit('order-placed', () => orderId);
-                // socket.off('order-placed');
+                const orderId = response.data.order._id;
+                socket.emit('order-placed', orderId);
             } else {
                 console.error("Failed to place order");
             }
@@ -70,11 +70,13 @@ export const PaymentPage = () => {
             <div className='mt-4 flex flex-col gap-2 mx-2 items-center'>
                 <h2 className='text-2xl text-center'>Payment Methods</h2>
 
-                <div className='flex justify-center w-[90%] h-12 bg-gray-200 text-center mt-4 items-center rounded'>
+                <div className={`flex justify-center w-[90%] h-12 text-center items-center rounded
+  ${PaymentMethod === 'Cash' ? 'bg-green-600' : 'bg-gray-200'}`}>
                     <button onClick={() => setPaymentMethod('Cash')} className='w-full'>Cash</button>
                 </div>
 
-                <div className='flex justify-center w-[90%] h-12 bg-green-400 text-center items-center rounded'>
+                <div className={`flex justify-center w-[90%] h-12 text-center items-center rounded
+  ${PaymentMethod === 'UPI' ? 'bg-green-600' : 'bg-gray-200'}`}>
                     <button onClick={() => setPaymentMethod('UPI')} className='w-full'>UPI</button>
                 </div>
             </div>

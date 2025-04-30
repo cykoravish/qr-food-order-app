@@ -1,37 +1,55 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import publicAxios from '../../Services/PublicAxios'
 import { IoIosClose, IoIosDoneAll } from "react-icons/io";
 import { CiNoWaitingSign } from "react-icons/ci";
-// import { socket } from '../../Services/Socket';
+import { socket } from '../../Services/Socket';
 
 
 
 export const OrderUpdate = () => {
     const [orders, setOrders] = useState([]);
-    const [someChanges, setSomeChanges] = useState(false);
-    const navigate = useNavigate();
+
+
+
+    const fetched = async () => {
+        const res = await publicAxios.get('/orders/orders');
+        if (res.status !== 200) {
+            throw new Error({ message: 'Responce Failed' })
+        };
+        setOrders(res.data.content);
+    };
+
+    useEffect(() => {
+        // Initially fetch pending orders
+        fetched();
+
+        socket.emit('join-admin'); // Join admin room immediately after connecting
+
+        const handleOrderUpdate = (data) => {
+            console.log('Order updated in Admin Panel:', data);
+            fetched(); // Re-fetch updated orders list
+        };
+
+        socket.on('order-updated-status', handleOrderUpdate);
+
+        return () => {
+            socket.off('order-updated-status', handleOrderUpdate);
+        };
+    }, []);
+
 
     useEffect(() => {
         const controller = new AbortController();
-        const fetched = async () => {
-            const res = await publicAxios.get('/orders/orders', { signal: controller.signal });
-            if (res.status !== 200) {
-                throw new Error({ message: 'Responce Failed' })
-            };
-            setOrders(res.data.content);
-        };
         fetched();
-        // socket.on('order-status-updated', () => fetched());
         return () => {
             controller.abort();
-            // socket.disconnect()
         }
-    }, [navigate, orders.length, someChanges]);
-    console.log()
+    }, []);
+
 
     const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
-    console.log(filterdPendingOrders)
+    // console.log(filterdPendingOrders)
 
     async function handleDelevery(orderId) {
         try {
@@ -40,19 +58,10 @@ export const OrderUpdate = () => {
             if (response.status !== 200) {
                 throw new Error('Something went wrong, please try again later.');
             }
-
-            // socket.emit('order-status-updated');
-
-            // socket.off('order-status-updated')
-
-            navigate('/admin/pending-orders');
+            socket.emit('order-updated', orderId)
             alert('Product deleverd successfully')
         } catch (error) {
-            console.error(error);
-            // Optionally show an error message to the user
             alert(error.message || 'Something went wrong.');
-        } finally {
-            setSomeChanges(false);
         }
     };
 
@@ -61,42 +70,42 @@ export const OrderUpdate = () => {
         if (responce.status !== 200) {
             throw new Error({ message: 'Something error try after some time' })
         };
-        alert('order updated')
-        // socket.emit('order-status-updated');
-
-        // Disconnect socket
-        // socket.off('order-status-updated')
+        socket.emit('order-updated', orderId)
+        alert('order updated');
     }
-    async function handleProcessing(orderId) {
-        console.log(orderId)
-        setSomeChanges(true)
-        const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'processing' });
-        if (responce.status !== 200) {
-            throw new Error({ message: 'Something error try after some time' })
-        };
-        console.log(orderId)
-        // socket.emit('order-status-updated');
+    async function handleProcessing(status, orderId) {
+        console.log(status, orderId)
+        try {
+            console.log('Updating Order ID:', orderId, 'to status:', status);
 
-        // Disconnect socket
-        // socket.off('order-status-updated')
-        navigate('/admin/pending-orders');
-        alert('order updated')
-        setSomeChanges(false)
+            const response = await publicAxios.patch(`/orders/${orderId}`, { status });
+
+            if (response.status !== 200) {
+                throw new Error('Something went wrong, try again later.');
+            }
+
+            socket.emit('order-updated', orderId);
+        } catch (error) {
+            console.error(error.message);
+        }
     }
+
+
+
     return (
-        <div className='min-w-[375px]'>
+        <div className=''>
             <div className='flex text-left p-4'>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
                 <Link to="/admin" className='ml-2 font-semibold'>Admin</Link>
             </div>
             {filterdPendingOrders.length > 0 ? (<div className="overflow-x-auto w-full">
-                <table className="min-w-full text-sm text-left border ">
+                <table className="table-auto border-collapse border border-gray-300">
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="px-4 py-2 border">Sr. No.</th>
                             <th className="px-4 py-2 border">Products</th>
                             <th className="px-4 py-2 border">Quantity</th>
-                            <th className="px-4 py-2 border">Food Processing Action</th>
+                            <th className="px-4 py-2 border">Table</th>
                             <th className="px-4 py-2 border">Status</th>
                             <th className="px-4 py-2 border">Username</th>
                             <th className="px-4 py-2 border">Payment Method</th>
@@ -106,42 +115,42 @@ export const OrderUpdate = () => {
                     </thead>
                     <tbody className='text-xl font-semibold'>
                         {filterdPendingOrders.map((order, index) => (
-                            <tr key={order._id} className="border-t m-auto in-hover::bg-gray-500">
+                            <tr key={order._id} className="">
                                 <td className="px-4 py-2 border">{index + 1}</td>
-                                <td className="px-4 py-2 border">
-                                    <ul className="list-disc ml-4 space-y-1 max-h-24 overflow-y-auto">
-                                        {order.items?.map((item, idx) => (
-                                            <li key={idx}>{item.productId?.name || 'N/A'}</li>
-                                        ))}
-                                    </ul>
+                                <td className="px-4 py-2  flex flex-col">
+                                    {/* <li className=""> */}
+                                    {order.items?.map((item, idx) => (
+                                        <li className='w-50 list-decimal' key={idx}>{item.productId?.name || 'N/A'}</li>
+                                    ))}
+                                    {/* </ul> */}
                                 </td>
                                 <td className="px-4 py-2 border">
-                                    <ul className="list-disc ml-4 space-y-1 max-h-24 overflow-y-auto">
+                                    <ul className="">
                                         {order.items?.map((item, idx) => (
                                             <li key={idx}>{item.quantity || 'N/A'}</li>
                                         ))}
                                     </ul>
                                 </td>
                                 <td>
-                                    <button
-                                        onClick={() => handleProcessing(order._id)}
-                                        className={`flex justify-center min-w-24 lg:w-54 h-10 m-1 text-2xl rounded cursor-pointer hover:bg-violet-600
-      ${order.status === 'processing' ? 'bg-green-400' : 'bg-yellow-400'}`}
-                                    >
-                                        {order.status}
-                                    </button>
+                                    <p className='text-center'>7</p>
                                 </td>
-                                < td className="px-4 py-2 border capitalize">
-                                    <select name={order.status} id="">
+                                <td className="px-4 py-2 border capitalize">
+                                    <select
+                                        name={order.status}
+                                        value={order.status}
+                                        onChange={(e) => handleProcessing(e.target.value, order._id)}
+                                        className="capitalize"
+                                    >
                                         <option value="">{order.status}</option>
-                                        {/* <option value="processing">Processing</option> */}
-                                        {/* <option value="">Ready</option> */}
+                                        <option value="processing">Processing</option>
+                                        <option value="delivered">Ready</option>
                                     </select>
                                 </td>
+
                                 <td className="px-4 py-2 border">{order.userId?.name}</td>
                                 <td className="px-4 py-2 border">{order.paymentMethod}</td>
                                 <td className="px-4 py-2 border">₹{order.totalAmount}</td>
-                                <td className="px-4 py-2 border gap-6 flex justify-center items-center mt-auto">
+                                <td className="px-4 py-2 border gap-6 flex justify-center items-center  content-center ">
                                     <button className='w-9 h-9 bg-green-400 rounded-full' onClick={() => handleDelevery(order._id)}><IoIosDoneAll size={35} /></button>
                                     <button className='w-9 h-9 bg-red-400 rounded-full ' onClick={() => handleCancel(order._id)}><IoIosClose size={35} /></button>
                                 </td>

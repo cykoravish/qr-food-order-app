@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios';
 import { MdAttachFile } from 'react-icons/md';
+import { Model } from '../../components/Model';
 
 export const NewCategory = () => {
     const naviagate = useNavigate();
@@ -61,61 +62,14 @@ export const NewCategory = () => {
 
 
     return (
-        // <div>
-        //     <div className='flex text-left p-4 '>
-        //         <img src="/public/assets/back.png" alt="back" className=' px-2' />
-        //         <Link to={'/admin'}>Add Product</Link>
-        //     </div>
-        //     <div className='flex justify-between m-4'>
-        //         <div className='flex justify-start items-center'>
-        //             <div className='mr-5'>
-        //                 <label htmlFor="file-upload" className="cursor-pointer">
-        //                     <div className="rounded-full bg-gray-600 p-4">
-        //                         <MdAttachFile color='white' size={25} />
-        //                     </div>
-        //                 </label>
-        //                 <input
-        //                     id="file-upload"
-        //                     type="file"
-        //                     name="file"
-        //                     hidden
-        //                     onChange={handleImage}
-        //                     required
-        //                 />
-
-        //                 <div className=''>
-        //                     {picture && <p>{picture.name}</p>}
-        //                 </div>
-        //             </div>
-        //             <div className='flex gap-4'>
-        //                 <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
-        //                     Uploaded Image
-        //                 </button>
-        //                 <button className='bg-[#D9D9D9] border rounded-md px-5' >Delete</button>
-        //             </div>
-        //         </div>
-        //     </div>
-        //     <div className='flex my-2 ml-4'>
-        //         {picture && <p className="text-sm mt-1">{picture.name}</p>}
-        //     </div>
-        //     {preview && (
-        //         <div className="mt-4 ml-3">
-        //             {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
-        //                 <img
-        //                     src={preview}
-        //                     alt="Preview"
-        //                     className="w-32 h-32 object-cover rounded-md border"
-        //                 /></>)}
-
-        //         </div>)}
-        <div>
+        <div className='flex flex-col box-border'>
             {/* Top nav */}
             <div className='flex text-left p-4'>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
                 <Link to="/admin" className='ml-2 font-semibold'>Add Product</Link>
             </div>
 
-            <div className='flex justify-between m-4'>
+            <div className='flex justify-between m-4 flex-col items-center'>
                 <div className='flex justify-start items-center'>
                     <div className='mr-5'>
                         <label htmlFor="file-upload" className="cursor-pointer">
@@ -137,7 +91,7 @@ export const NewCategory = () => {
 
                     <div className='flex gap-4'>
                         <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
-                            Uploaded Image
+                            {picture && picture.name ? picture.name : 'Uploaded image'}
                         </button>
                         <button
                             className='bg-gray-400 border rounded-md px-5'
@@ -149,13 +103,10 @@ export const NewCategory = () => {
                     </div>
                 </div>
             </div>
-            <div className='flex my-2 ml-4'>
-                {picture && <p className="text-sm mt-1">{picture.name}</p>}
-            </div>
             <div>
 
             </div>
-            {preview && (
+            {/* {preview && (
                 <div className="mt-4 ml-3">
                     {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
                         <img
@@ -164,20 +115,40 @@ export const NewCategory = () => {
                             className="w-32 h-32 object-cover rounded-md border"
                         /></>)}
 
-                </div>)}
-            <form className='flex flex-col w-[90%] max-w-[90%] overflow-hidden m-4' onSubmit={handleSubmit}>
-                <div className='w-full max-w-full h-[70px] flex flex-col m-1 overflow-x-hidden '>
-                    <label className='p'>Category</label>
-                    <input type="text" name="category" id="" placeholder='Chinese Burer' onChange={handleFormDate} className='bg-[#F9F9F9] min-h-[40px]  overflow-x-hidden' />
+                </div>)} */}
+            {preview && showImage && <Model children={<img
+                src={preview}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded-md border"
+            />}
+                onClose={() => setShowImage(false)} />}
+            <form className='flex flex-col justify-center items-center w-full m-4' onSubmit={handleSubmit}>
+                <div className='w-[90%] max-w-md h-[90px] flex flex-col m-1 overflow-x-hidden'>
+                    <label className='p-1'>Category</label>
+                    <input
+                        type="text"
+                        name="category"
+                        placeholder='Chinese Burger'
+                        onChange={handleFormDate}
+                        className='bg-[#F9F9F9] min-h-[40px] rounded-md px-2'
+                    />
                 </div>
-                <div className='w-full max-w-full h-[70px] flex flex-col m-1 overflow-x-hidden '>
-                    <label className='p'>Description</label>
-                    <input type="text" name="description" id="" placeholder='description' onChange={handleFormDate} className='bg-[#F9F9F9] min-h-[40px]  overflow-x-hidden' />
+
+                <div className='w-[90%] max-w-md h-[90px] flex flex-col m-1 overflow-x-hidden'>
+                    <label className='p-1'>Description</label>
+                    <input
+                        type="text"
+                        name="description"
+                        placeholder='Description'
+                        onChange={handleFormDate}
+                        className='bg-[#F9F9F9] min-h-[40px] rounded-md px-2'
+                    />
                 </div>
             </form>
-            <div className='flex justify-between  min-h-[48px] m-4 mt-28 fixed bottom-0 gap-3'>
-                <button onClick={() => naviagate('/admin')} className='bg-[#F2EFE3] rounded-md w-[164px]'>Discard</button>
-                <button onClick={handleSubmit} type='submit' className='bg-[#F9D718] w-[164px] rounded-md'>Save</button>
+
+            <div className='flex justify-between w-[99%]  min-h-[48px] mt-28 fixed bottom-0 gap-3 ml-2 mr-2  '>
+                <button onClick={() => naviagate('/admin')} className='bg-[#F2EFE3] w-[50%] rounded-md min-w-[164px]'>Discard</button>
+                <button onClick={handleSubmit} type='submit' className='bg-[#F9D718] w-[50%] min-w-[164px] rounded-md'>Save</button>
             </div>
         </div>
     )

@@ -35,6 +35,38 @@ app.use(cors({
 
 }));
 
+const server = createServer(app)
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173'
+    }
+});
+
+
+io.on('connection', (socket) => {
+    console.log('user connected', socket.id);
+
+    socket.on('join-admin', () => {
+        socket.join('admin-room');
+        console.log('Admin joined admin-room');
+    });
+
+    socket.on('order-placed', (orderId) => {
+        console.log('order placed', orderId);
+        io.to('admin-room').emit('placed-order', orderId); // Only send to Admins
+    });
+
+    socket.on('order-updated', (data) => {
+        console.log("order update status", data);
+        io.to('admin-room').emit('order-updated-status', data); // Only send to Admins
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnect', socket.id);
+    });
+});
+
 
 
 app.use(express.json());
@@ -63,15 +95,5 @@ app.use((err, req, res, next) => {
     });
 });
 
-// const server = http.createServer(app); // ✅ Create HTTP server
-// const socketIO = new Server(server, {
-//     cors: {
-//         origin: 'http://localhost:5173',
-//         methods: ['GET', 'POST'],
-//         credentials: true,
-//     }
-// });
 
-// socketIo(socketIO);
-
-app.listen(5000, () => console.log('server connected'))
+server.listen(5000, () => console.log('server connected'))
