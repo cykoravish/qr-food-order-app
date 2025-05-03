@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import publicAxios from '../../Services/PublicAxios';
 import { useSelector } from 'react-redux';
-import PrivateAxios from '../../Services/PrivateAxios';
 import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const UserInfo = () => {
@@ -21,7 +20,8 @@ export const UserInfo = () => {
 
     const [form, setForm] = useState({
         name: user?.name || '',
-        phone: user?.phone || ''
+        phone: user?.phone || '',
+        table: user?.table || ''
     });
 
     const [isEditMode, setIsEditMode] = useState(!user); // If no user, default to edit mode
@@ -73,7 +73,7 @@ export const UserInfo = () => {
 
     return (
         <div className='mx-3'>
-            <div className='my-2'>
+            <div className='w-[100%] h-[58px] flex items-center'>
                 <ReverseButton route={'/cart'} routeName={'Cart'} />
             </div>
 
@@ -87,6 +87,9 @@ export const UserInfo = () => {
 
                         <label htmlFor="phone" className='font-semibold ml-1 mb-1 mt-2 text-xl'>Phone</label>
                         <input type="text" name='phone' placeholder='Enter Phone Number' required onChange={handleChange} value={form.phone} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
+
+                        <label htmlFor="table" className='font-semibold ml-1 mb-1 mt-2 text-xl'>Table</label>
+                        <input type="number" name='phone' placeholder='Enter Table Number' required onChange={handleChange} value={form.table} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
 
                         <div className='w-full flex gap-2 mt-4'>
                             <Link className='bg-gray-300 w-1/2 py-2 rounded flex justify-center' onClick={() => setIsEditMode(false)} to={'/cart'}>Cancel</Link>

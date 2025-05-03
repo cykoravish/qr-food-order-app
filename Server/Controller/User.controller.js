@@ -6,7 +6,7 @@ import Admin from '../Model/Admin.model.js';
 
 export const postNewUser = async (req, res) => {
     console.log(req.body)
-    const { name, phone } = req.body;
+    const { name, phone, table } = req.body;
     if (!name || !phone) {
         return res.status(400).json({ message: 'All fields are required' })
     }
@@ -23,7 +23,8 @@ export const postNewUser = async (req, res) => {
 
         const newUser = await User({
             name,
-            phone
+            phone,
+            table
         });
 
         await newUser.save();
@@ -51,6 +52,9 @@ export const putUser = async (req, res) => {
         };
         if (phone) {
             existingUser.phone = phone
+        };
+        if (table) {
+            existingUser.table = table
         };
 
         await existingUser.save();

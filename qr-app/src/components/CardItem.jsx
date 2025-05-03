@@ -5,7 +5,7 @@ import '../Pages/Clients/Home.css'
 export const CardItem = ({ name, imgPath }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   return (
-    <div className='flex flex-col '  >
+    <div className='flex flex-col  '  >
       <div className='flex-col' >
         <img
           src={`${backendUrl}/${imgPath}`}

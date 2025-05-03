@@ -116,7 +116,7 @@ export const DashBoardPage = () => {
 
 
     // Pending Orders
-    const pendingOrders = AllOrders.filter((order) => order.status === 'pending');
+    const pendingOrders = AllOrders.filter((order) => order.status === 'pending' || order.status === 'processing');
 
 
     // set deta According category

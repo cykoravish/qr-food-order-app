@@ -137,11 +137,16 @@ export const Home = () => {
                 setLatestOrder(orders);
                 console.log(orders)
                 const allDelivered = orders.every(order => order.status === 'delivered');
-                console.log("All deleverd", allDelivered)
-                if (allDelivered) {
-                    localStorage.removeItem('user');
-                    setUser(null);
-                }
+                console.log("All deleverd", allDelivered);
+
+
+                setTimeout(() => {
+                    if (allDelivered) {
+                        localStorage.removeItem('user');
+                        setUser(null);
+                    }
+                }, 60 * 60 * 1000);
+
 
             } catch (err) {
                 console.error(err.message);
@@ -174,7 +179,7 @@ export const Home = () => {
 
     console.log(user)
     return (
-        <div className=' max-w-[100%] '>
+        <div className=' max-w-[100%] mx-auto'>
             <button onClick={handleAdminAccess} className='w-full '>
                 <img src='/assets/cover.png' alt='coverimage' className='w-full h-full object-cover min-w-[100%] max-h-[500px]' />
             </button>
