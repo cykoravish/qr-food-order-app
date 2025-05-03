@@ -10,7 +10,8 @@ export const NewCategory = () => {
     const [category, setCategory] = useState('');
     const [picture, setPicture] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [showImage, setShowImage] = useState(true)
+    const [showImage, setShowImage] = useState(false)
+    const [image, setImage] = useState(null)
     const [form, setForm] = useState({
         category: '',
         description: ''
@@ -19,6 +20,8 @@ export const NewCategory = () => {
     function handleImage(e) {
         const file = e.target.files[0];
         setPicture(file)
+        const imageUrl = URL.createObjectURL(file);
+        setImage(imageUrl)
     };
 
     function handleFormDate(e) {
@@ -73,8 +76,8 @@ export const NewCategory = () => {
                 <div className='flex justify-start items-center'>
                     <div className='mr-5'>
                         <label htmlFor="file-upload" className="cursor-pointer">
-                            <div className="rounded-full bg-gray-600 p-4">
-                                <img src="/public/assets/Vector2.png" alt="file upload" />
+                            <div className=" bg-gray-600 w-[50px] h-[50px] object-contain rounded-full items-center justify-center flex ">
+                                {image ? <img src={image} alt="file upload" className='w-[50px] h-[50px] object-contain rounded-full' /> : <img src="/public/assets/Vector2.png" alt="file upload" />}
                             </div>
                         </label>
                         <input
@@ -106,16 +109,6 @@ export const NewCategory = () => {
             <div>
 
             </div>
-            {/* {preview && (
-                <div className="mt-4 ml-3">
-                    {showImage && (<><p className="text-sm mb-1">Image Preview:</p>
-                        <img
-                            src={preview}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-md border"
-                        /></>)}
-
-                </div>)} */}
             {preview && showImage && <Model children={<img
                 src={preview}
                 alt="Preview"

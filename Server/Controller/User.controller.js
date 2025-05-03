@@ -36,7 +36,8 @@ export const postNewUser = async (req, res) => {
 };
 
 export const putUser = async (req, res) => {
-    const { name, phone } = req.body;
+    const { name, phone, table } = req.body;
+    console.log(name, phone, table)
     if (name.length === 0 || phone.length <= 10) {
         return res.status(400).json({ message: 'All fields required with valid value' })
     };

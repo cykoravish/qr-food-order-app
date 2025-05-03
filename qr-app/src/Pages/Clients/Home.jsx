@@ -135,9 +135,8 @@ export const Home = () => {
 
                 const orders = res.data.content;
                 setLatestOrder(orders);
-                console.log(orders)
                 const allDelivered = orders.every(order => order.status === 'delivered');
-                console.log("All deleverd", allDelivered);
+
 
 
                 setTimeout(() => {
@@ -146,10 +145,8 @@ export const Home = () => {
                         setUser(null);
                     }
                 }, 60 * 60 * 1000);
-
-
             } catch (err) {
-                console.error(err.message);
+                throw new Error({ message: 'Some error occured', err })
             }
         }
 
@@ -177,7 +174,6 @@ export const Home = () => {
         setPopup(prev => !prev);
     }
 
-    console.log(user)
     return (
         <div className=' max-w-[100%] mx-auto'>
             <button onClick={handleAdminAccess} className='w-full '>

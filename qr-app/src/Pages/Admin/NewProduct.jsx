@@ -9,6 +9,7 @@ export const NewProduct = () => {
     const [picture, setPicture] = useState(null);
     const [preview, setPreview] = useState(null);
     const [showImage, setShowImage] = useState(true)
+    const [image, setImage] = useState();
     const [form, setForm] = useState({
         name: '',
         description: '',
@@ -40,6 +41,8 @@ export const NewProduct = () => {
         const file = e.target.files[0];
         if (file) {
             setPicture(file);
+            const imageUrl = URL.createObjectURL(file);
+            setImage(imageUrl)
         }
     };
 
@@ -115,8 +118,9 @@ export const NewProduct = () => {
                 <div className='flex justify-start items-center'>
                     <div className='mr-5'>
                         <label htmlFor="file-upload" className="cursor-pointer">
-                            <div className="rounded-full bg-gray-600 p-4 ">
-                                <img src="/public/assets/Vector2.png" alt="file upload" className='object-contain' />
+                            <div className=" bg-gray-600 w-[50px] h-[50px] object-contain rounded-full items-center justify-center flex ">
+                                {image ? <img src={image} alt="file upload" className='w-[50px] h-[50px] object-contain rounded-full' /> : <img src="/public/assets/Vector2.png" alt="file upload" />}
+
                             </div>
                         </label>
                         <input

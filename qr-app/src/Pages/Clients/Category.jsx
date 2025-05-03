@@ -10,7 +10,7 @@ export const Category = () => {
     const dispatch = useDispatch();
     const [itemArray, setItems] = useState([]);
     const category = location.pathname.replace(/^\/+/, '');
-    console.log('client')
+
 
     useEffect(() => {
         const rawItems = location.state?.items;
@@ -27,12 +27,11 @@ export const Category = () => {
     }, [location]);
 
 
-    console.log(itemArray)
 
     function handleAddToCart(product) {
         dispatch(addToCartAction(product));
-    }
-    console.log(itemArray)
+    };
+
 
     return (
         <div className='burger-container p-1'>

@@ -39,7 +39,10 @@ export const Category = () => {
 
 
             </div>
-            <Link to={'/admin/newCategory'} className=' flex bg-[#F9D718] min-w-[343px] lg:w-full h-[48px] m-4 overflow-hidden rounded-md items-center text-center justify-center fixed bottom-0'>
+            <Link
+                to="/admin/newCategory"
+                className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#F9D718] w-[98%] lg:w-[98%] h-[48px] rounded-md flex items-center justify-center text-center"
+            >
                 Add Category
             </Link>
         </div>
