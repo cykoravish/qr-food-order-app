@@ -34,6 +34,8 @@ export const UserInfo = () => {
         }));
     };
 
+    console.log(form)
+
     const handleSubmit = async () => {
         try {
             const response = user ? await publicAxios.put('/auth/user', form) : await publicAxios.post('/auth/user', form);
@@ -41,11 +43,11 @@ export const UserInfo = () => {
                 const updatedUser = response.data.user;
                 setUser(updatedUser);
                 localStorage.setItem('user', JSON.stringify(updatedUser));
-                setIsEditMode(false); // Switch to view mode
+                setIsEditMode(false);
                 navigate(`/cart-bill/?userId=${response.data.user._id}`);
             }
         } catch (error) {
-            console.error('Failed to update user:', error);
+            throw new Error({ message: 'Api req failed', error })
         }
     };
 
@@ -63,13 +65,17 @@ export const UserInfo = () => {
             userId: userId ? userId : user._id,
             items: itemData
         };
-        const responce = cart ? null : await publicAxios.post('/carts/add-cart', cartData);
+        try {
+            const responce = cart ? null : await publicAxios.post('/carts/add-cart', cartData);
 
-        if (responce.statusText !== 'Created') {
-            throw new Error({ message: 'responce failed' })
-        };
-        setCart(responce.data.content)
-    }
+            if (responce.statusText !== 'Created') {
+                throw new Error({ message: 'responce failed' })
+            };
+            setCart(responce.data.content)
+        } catch (error) {
+            throw new Error({ message: 'Api req failed', error })
+        }
+    };
 
     return (
         <div className='mx-3'>
@@ -89,7 +95,7 @@ export const UserInfo = () => {
                         <input type="text" name='phone' placeholder='Enter Phone Number' required onChange={handleChange} value={form.phone} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
 
                         <label htmlFor="table" className='font-semibold ml-1 mb-1 mt-2 text-xl'>Table</label>
-                        <input type="number" name='phone' placeholder='Enter Table Number' required onChange={handleChange} value={form.table} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
+                        <input type="number" name='table' placeholder='Enter Table Number' required onChange={handleChange} value={form.table} className='w-full h-10 border rounded-md pl-1 border-gray-500' />
 
                         <div className='w-full flex gap-2 mt-4'>
                             <Link className='bg-gray-300 w-1/2 py-2 rounded flex justify-center' onClick={() => setIsEditMode(false)} to={'/cart'}>Cancel</Link>

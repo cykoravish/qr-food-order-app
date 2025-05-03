@@ -42,7 +42,7 @@ export const CategoryView = () => {
             <div className='my-2 ml-2 '>
                 <ReverseButton route={'/admin'} routeName={category} />
             </div>
-            <div className='burger-item-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-7'>
+            <div className=" grid grid-cols-1 sm:flex sm:flex-wrap sm:gap-4 mt-7">
                 {itemArray.map((product) => (
                     <CardDetails
                         key={product._id}
@@ -53,6 +53,7 @@ export const CategoryView = () => {
                         image={product.imageUrl}
                         onAddToCart={() => handleAddToCart(product)}
                         product={product}
+                        button={true}
                     />
                 ))}
             </div>

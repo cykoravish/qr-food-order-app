@@ -90,75 +90,83 @@ export const OrderUpdate = () => {
         }
     }
 
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+
 
 
     return (
-        <div className=''>
+        <div className='w-full h-screen '>
             <div className='flex text-left p-4'>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
                 <Link to="/admin" className='ml-2 font-semibold'>Admin</Link>
             </div>
-            {filterdPendingOrders.length > 0 ? (<div className="overflow-x-auto w-full">
-                <table className="table-auto border-collapse border border-gray-300">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="px-4 py-2 border">Sr. No.</th>
-                            <th className="px-4 py-2 border">Products</th>
-                            <th className="px-4 py-2 border">Quantity</th>
-                            <th className="px-4 py-2 border">Table</th>
-                            <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border">Username</th>
-                            <th className="px-4 py-2 border">Payment Method</th>
-                            <th className="px-4 py-2 border">Order Amount</th>
-                            <th className="px-4 py-2 border">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className='text-xl font-semibold'>
-                        {filterdPendingOrders.map((order, index) => (
-                            <tr key={order._id} className="">
-                                <td className="px-4 py-2 border">{index + 1}</td>
-                                <td className="px-4 py-2  flex flex-col">
-                                    {/* <li className=""> */}
-                                    {order.items?.map((item, idx) => (
-                                        <li className='w-50 list-decimal' key={idx}>{item.productId?.name || 'N/A'}</li>
-                                    ))}
-                                    {/* </ul> */}
-                                </td>
-                                <td className="px-4 py-2 border">
-                                    <ul className="">
-                                        {order.items?.map((item, idx) => (
-                                            <li key={idx}>{item.quantity || 'N/A'}</li>
-                                        ))}
-                                    </ul>
-                                </td>
-                                <td>
-                                    <p className='text-center'>7</p>
-                                </td>
-                                <td className="px-4 py-2 border capitalize">
-                                    <select
-                                        name={order.status}
-                                        value={order.status}
-                                        onChange={(e) => handleProcessing(e.target.value, order._id)}
-                                        className="capitalize"
-                                    >
-                                        <option value="">{order.status}</option>
-                                        <option value="processing">Processing</option>
-                                        <option value="delivered">Ready</option>
-                                    </select>
-                                </td>
-
-                                <td className="px-4 py-2 border">{order.userId?.name}</td>
-                                <td className="px-4 py-2 border">{order.paymentMethod}</td>
-                                <td className="px-4 py-2 border">₹{order.totalAmount}</td>
-                                <td className="px-4 py-2 border gap-6 flex justify-center items-center  content-center ">
-                                    <button className='w-9 h-9 bg-green-400 rounded-full' onClick={() => handleDelevery(order._id)}><IoIosDoneAll size={35} /></button>
-                                    <button className='w-9 h-9 bg-red-400 rounded-full ' onClick={() => handleCancel(order._id)}><IoIosClose size={35} /></button>
-                                </td>
+            {filterdPendingOrders.length > 0 ? (
+                <div className="overflow-x-auto w-[98%] rounded-md">
+                    <table className="w-[98%] mx-auto border-collapse border border-gray-300 ">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="px-4 py-2 border">Sr. No.</th>
+                                <th className="px-4 py-2 border">Products</th>
+                                <th className="px-4 py-2 border">Quantity</th>
+                                <th className="px-4 py-2 border">Table</th>
+                                <th className="px-4 py-2 border">Status</th>
+                                <th className="px-4 py-2 border">Username</th>
+                                <th className="px-4 py-2 border">Payment Method</th>
+                                <th className="px-4 py-2 border">Order Amount</th>
+                                <th className="px-4 py-2 border">Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className='text-xl font-semibold'>
+                            {filterdPendingOrders.map((order, index) => (
+                                <tr key={order._id} className="">
+                                    <td className="px-4 py-2 border">{index + 1}</td>
+                                    <td className="px-4 py-2  flex-col">
+                                        <ul className="tracking-wide capitalize text-blue-400 pl-3">
+                                            {order.items?.map((item, idx) => (
+                                                <li className='w-50 list-decimal ' key={idx}>{item.productId?.name || 'N/A'}</li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                    <td className="px-4 py-2 border">
+                                        <ul className="list-none space-y-1 text-center">
+                                            {order.items?.map((item, idx) => (
+                                                <li key={idx} >
+                                                    {item.quantity && item.price ? `${item.quantity} * ${item.price}` : 'N/A'}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <p className='text-center'>{currentUser.table}</p>
+                                    </td>
+                                    <td className="px-4 py-2 border capitalize">
+                                        <select
+                                            name={order.status}
+                                            value={order.status}
+                                            onChange={(e) => handleProcessing(e.target.value, order._id)}
+                                            className="capitalize"
+                                        >
+                                            <option value="">{order.status}</option>
+                                            <option value="processing">Processing</option>
+                                            <option value="delivered">Ready</option>
+                                        </select>
+                                    </td>
+
+                                    <td className="px-4 py-2 border uppercase">{order.userId?.name}</td>
+                                    <td className="px-4 py-2 border text-center">{order.paymentMethod}</td>
+                                    <td className="px-4 py-2 border text-center">₹{order.totalAmount}</td>
+                                    <td className="px-4 py-2 border" >
+                                        <div className="px-4 py-2 gap-5 flex  my-auto items-center justify-center">
+                                            <button className='w-9 h-9 bg-green-400 rounded-full' onClick={() => handleDelevery(order._id)}><IoIosDoneAll size={35} /></button>
+                                            <button className='w-9 h-9 bg-red-400 rounded-full ' onClick={() => handleCancel(order._id)}><IoIosClose size={35} /></button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             ) : (
                 <div className='flex flex-col justify-center items-center text-center mt-12 '>
                     <CiNoWaitingSign size={100} />

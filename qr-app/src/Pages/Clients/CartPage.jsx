@@ -6,10 +6,7 @@ import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const CartPage = () => {
     const cartstate = useSelector((state) => state.cart.cartItems);
-
-    // const [cart, setCart] = useState([])
     const dispatch = useDispatch();
-    // console.log("cart", cart)
 
 
     const total = Array.isArray(cartstate)
@@ -18,11 +15,11 @@ export const CartPage = () => {
 
     function handleMinusQuanity(id) {
         dispatch(removeFromCart(id))
-    }
+    };
 
     function handlePlusQuantity(id) {
         dispatch(incrementCart(id))
-    }
+    };
 
     return (
 
