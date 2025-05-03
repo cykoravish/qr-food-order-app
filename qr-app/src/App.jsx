@@ -7,7 +7,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { Home } from './Pages/Clients/Home';
 import { CartPage } from './Pages/Clients/CartPage';
-import { Category as UserCategory } from './Pages/Clients/Category'
+import { Category as FoodCategory } from './Pages/Clients/Category'
 import { PaymentsMethod } from './Pages/Clients/PaymentsMethod';
 import { DashBoardPage } from './Pages/Admin/DashBoardPage';
 import { NewProduct } from './Pages/Admin/NewProduct';
@@ -59,7 +59,7 @@ function App() {
         <Route path='/product/:id' element={<ProductsDetails />} />
         <Route path='/cart' element={<CartPage />} />
         <Route path='/cart-bill' element={<PaymentsMethod />} />
-        <Route path='/:category' element={< UserCategory />} />
+        <Route path='/:category' element={< FoodCategory />} />
         <Route path='/payment' element={<PaymentPage />} />
         <Route path='/order-success' element={<OrderSuccess />} />
 

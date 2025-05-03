@@ -36,10 +36,10 @@ export const Category = () => {
 
     return (
         <div className='burger-container p-1'>
-            <div className='my-2 ml-2 '>
+            <div className='w-[100%] h-[58px] flex items-center'>
                 <ReverseButton route={'/'} routeName={category} />
             </div>
-            <div className='burger-item-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-7'>
+            <div className="burger-item-list mx-auto gap-4 grid sm:flex sm:overflow-x-auto">
                 {itemArray.map((product) => (
                     <CardDetails
                         key={product._id}
@@ -49,7 +49,8 @@ export const Category = () => {
                         price={product.price}
                         image={product.imageUrl}
                         onAddToCart={() => handleAddToCart(product)}
-                        product={product}
+                        product={product} c
+                        css={''}
                     />
                 ))}
             </div>

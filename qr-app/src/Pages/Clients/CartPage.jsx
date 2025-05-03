@@ -28,19 +28,20 @@ export const CartPage = () => {
 
         <div className='order-container'>
             <div className='item-cards flex justify-between'>
-                <ReverseButton route={'/'} routeName={'Home'} />
-
-                <Link to={'/'} className='flex'>
-                    <img src='/assets/plus.png' alt='plus' width={20} height={20} />
-                    Add Item
-                </Link>
+                <div className='w-[100%] h-[58px] my-auto items-center flex justify-between'>
+                    <ReverseButton route={'/'} routeName={'Home'} />
+                    <Link to={'/'} className='flex flex-row items-center'>
+                        <img src='/assets/plus.png' alt='plus' width={25} height={10} />
+                        Add Item
+                    </Link>
+                </div>
             </div>
-            <div className='min-w-[343px] min-h-[120px] mt-4 m-2'>
+            <div className='min-w-[343px] min-h-[120px] mt-2 m-2'>
                 {Array.isArray(cartstate) && cartstate.map((item) => (
-                    <div key={item._id} className='order-detils-card flex justify-between items-center p-3 rounded-xl shadow-sm mb-4'>
+                    <div key={item._id} className='order-detils-card flex justify-between items-center rounded-xl shadow-sm mb-4'>
 
                         <div className='left text-xl space-y-1'>
-                            <h4 className=' text-base font-semibold'>{item.name}</h4>
+                            <h4 className='text-base font-semibold'>{item.name}</h4>
                             <p className='text-sm text-gray-600 mb-4'>{item.description}</p>
                             <b className='text-black mt-[20px] font-bold'>Rs. {item.price}/-</b>
                         </div>
