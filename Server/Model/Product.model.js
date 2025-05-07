@@ -4,6 +4,8 @@ const productSchema = mongoose.Schema({
     name: { type: String, required: true },
     description: String,
     price: Number,
+    quantity: Number,
+    totelQuantity: Number,
     imageUrl: String,
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,

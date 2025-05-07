@@ -15,7 +15,7 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const postNewProduct = async (req, res) => {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, quantity } = req.body;
     const { _id } = req.user;
     console.log(req.body, req.file)
     const imageUrl = req.file.filename;
@@ -28,6 +28,8 @@ export const postNewProduct = async (req, res) => {
             name: name,
             categoryId: category,
             price: price,
+            quantity: quantity,
+            totelQuantity: quantity,
             description: description ? description : null,
             imageUrl: imageUrl,
         });

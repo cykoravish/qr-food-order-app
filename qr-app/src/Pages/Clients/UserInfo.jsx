@@ -6,7 +6,7 @@ import { ReverseButton } from '../../components/Client/ReverseButton';
 
 export const UserInfo = () => {
     const [searchParams] = useSearchParams();
-    const userId = searchParams.get('userId');
+    const userId = searchParams ? searchParams.get('userId') : null;
 
     const navigate = useNavigate();
     const [user, setUser] = useState(() => {

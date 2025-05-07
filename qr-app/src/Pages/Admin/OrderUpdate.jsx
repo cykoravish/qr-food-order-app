@@ -4,13 +4,12 @@ import publicAxios from '../../Services/PublicAxios'
 import { IoIosClose, IoIosDoneAll } from "react-icons/io";
 import { CiNoWaitingSign } from "react-icons/ci";
 import { socket } from '../../Services/Socket';
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 
 
 export const OrderUpdate = () => {
     const [orders, setOrders] = useState([]);
-
-
 
     const fetched = async () => {
         const res = await publicAxios.get('/orders/orders');
@@ -49,36 +48,38 @@ export const OrderUpdate = () => {
 
 
     const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
-    // console.log(filterdPendingOrders)
+    console.log(filterdPendingOrders)
 
-    async function handleDelevery(orderId) {
-        try {
-            const response = await publicAxios.patch(`/orders/${orderId}`, { status: 'delivered' });
+    // async function handleDelevery(orderId) {
+    //     try {
+    //         const response = await publicAxios.patch(`/orders/${orderId}`, { status: 'delivered' });
 
-            if (response.status !== 200) {
-                throw new Error('Something went wrong, please try again later.');
-            }
-            socket.emit('order-updated', orderId)
-            alert('Product deleverd successfully')
-        } catch (error) {
-            alert(error.message || 'Something went wrong.');
-        }
-    };
+    //         if (response.status !== 200) {
+    //             throw new Error('Something went wrong, please try again later.');
+    //         }
+    //         socket.emit('order-updated', orderId)
+    //         alert('Product deleverd successfully')
+    //     } catch (error) {
+    //         alert(error.message || 'Something went wrong.');
+    //     }
+    // };
 
-    async function handleCancel(orderId) {
-        const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'cancelled' });
-        if (responce.status !== 200) {
-            throw new Error({ message: 'Something error try after some time' })
-        };
-        socket.emit('order-updated', orderId)
-        alert('order updated');
-    }
-    async function handleProcessing(status, orderId) {
-        console.log(status, orderId)
+    // async function handleCancel(orderId) {
+    //     const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'cancelled' });
+    //     if (responce.status !== 200) {
+    //         throw new Error({ message: 'Something error try after some time' })
+    //     };
+    //     socket.emit('order-updated', orderId)
+    //     alert('order updated');
+    // }
+    async function handleProcessing(status, orderId, order) {
+        console.log(order)
+        const productIds = order.items?.map((ele) => ele)
+
         try {
             console.log('Updating Order ID:', orderId, 'to status:', status);
 
-            const response = await publicAxios.patch(`/orders/${orderId}`, { status });
+            const response = await publicAxios.patch(`/orders/${orderId}`, { status, productIds });
 
             if (response.status !== 200) {
                 throw new Error('Something went wrong, try again later.');
@@ -90,19 +91,15 @@ export const OrderUpdate = () => {
         }
     }
 
-    const currentUser = JSON.parse(localStorage.getItem('user'));
-
-
 
     return (
         <div className='w-full h-screen '>
             <div className='flex text-left p-4'>
-                <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
-                <Link to="/admin" className='ml-2 font-semibold'>Admin</Link>
+                <ReverseButton routeName={'Admin'} route={'/admin'} />
             </div>
             {filterdPendingOrders.length > 0 ? (
-                <div className="overflow-x-auto w-[98%] rounded-md">
-                    <table className="w-[98%] mx-auto border-collapse border border-gray-300 ">
+                <div className="overflow-x-auto w-[98%] mx-auto rounded-md">
+                    <table className="w-[100%] mx-auto border-collapse border border-gray-300 ">
                         <thead className="bg-gray-100">
                             <tr>
                                 <th className="px-4 py-2 border">Sr. No.</th>
@@ -120,7 +117,7 @@ export const OrderUpdate = () => {
                             {filterdPendingOrders.map((order, index) => (
                                 <tr key={order._id} className="">
                                     <td className="px-4 py-2 border">{index + 1}</td>
-                                    <td className="px-4 py-2  flex-col">
+                                    <td className="px-4 py-2 border  flex-col">
                                         <ul className="tracking-wide capitalize text-blue-400 pl-3">
                                             {order.items?.map((item, idx) => (
                                                 <li className='w-50 list-decimal ' key={idx}>{item.productId?.name || 'N/A'}</li>
@@ -136,14 +133,14 @@ export const OrderUpdate = () => {
                                             ))}
                                         </ul>
                                     </td>
-                                    <td>
-                                        <p className='text-center'>{currentUser.table}</p>
+                                    <td className='px-4 py-2 border'>
+                                        <p className=' text-center'>{order.userId ? order.userId?.table : 0}</p>
                                     </td>
                                     <td className="px-4 py-2 border capitalize">
                                         <select
                                             name={order.status}
                                             value={order.status}
-                                            onChange={(e) => handleProcessing(e.target.value, order._id)}
+                                            onChange={(e) => handleProcessing(e.target.value, order._id, order)}
                                             className="capitalize"
                                         >
                                             <option value="">{order.status}</option>
@@ -157,8 +154,8 @@ export const OrderUpdate = () => {
                                     <td className="px-4 py-2 border text-center">₹{order.totalAmount}</td>
                                     <td className="px-4 py-2 border" >
                                         <div className="px-4 py-2 gap-5 flex  my-auto items-center justify-center">
-                                            <button className='w-9 h-9 bg-green-400 rounded-full' onClick={() => handleDelevery(order._id)}><IoIosDoneAll size={35} /></button>
-                                            <button className='w-9 h-9 bg-red-400 rounded-full ' onClick={() => handleCancel(order._id)}><IoIosClose size={35} /></button>
+                                            <button className='w-9 h-9 bg-green-400 rounded-full' onClick={() => handleProcessing('delivered', order._id, order)}><IoIosDoneAll size={35} /></button>
+                                            <button className='w-9 h-9 bg-red-400 rounded-full ' onClick={() => handleProcessing('cancelled', order._id, order)}><IoIosClose size={35} /></button>
                                         </div>
                                     </td>
 

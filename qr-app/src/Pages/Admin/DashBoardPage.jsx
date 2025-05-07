@@ -137,8 +137,7 @@ export const DashBoardPage = () => {
                 </img>
             </div>
 
-            {/* Stats section */}
-            {/* <div className='w-full  min-w-[250px] min-h-[160px] m-4 mt-[25px] gap-4 my-0 mx-auto mb-5'> */}
+
             <div className='mt-[20px] grid mb-4 grid-cols-2  md:grid-cols-4  sm:gap-6'>
                 <StatCard
                     name={'Today Orders'}
@@ -168,9 +167,9 @@ export const DashBoardPage = () => {
             </div>
 
 
-            <Link to={'/admin/data-visualize'}>
+            {/* <Link to={'/admin/data-visualize'}>
                 <h2 className='flex flex-row text-center bg-green-200 h-9 justify-center items-center'>Graphical Persentation</h2>
-            </Link>
+            </Link> */}
 
             {
                 Object.keys(groupedProducts).map((categoryName) => (
@@ -196,6 +195,8 @@ export const DashBoardPage = () => {
                                         product={product}
                                         button={true}
                                         css='lg:w-[250px] lg:h-[200px]'
+                                        stock={product.quantity ? product.quantity : 0}
+                                        fixedStock={product.totelQuantity ? product.totelQuantity : 0}
                                     />
                                 </div>
                             ))}

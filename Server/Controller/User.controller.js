@@ -1,8 +1,8 @@
-
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
 import User from '../Model/User.model.js';
 import Admin from '../Model/Admin.model.js';
+import Order from '../Model/Order.model.js';
 
 export const postNewUser = async (req, res) => {
     console.log(req.body)
@@ -26,6 +26,8 @@ export const postNewUser = async (req, res) => {
             phone,
             table
         });
+
+        const OrderDetails = await Order.findByIdAndUpdate()
 
         await newUser.save();
         res.status(200).json({ message: 'User added successfully', user: newUser });
