@@ -163,10 +163,30 @@ export const Home = () => {
 
             return () => {
                 socket.off('order-updated-status', handleOrderUpdate);
+
             };
         }
     }, []);
+    console.log(typeof latestOrder)
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user) {
+            const allDelivered = latestOrder.every(order => order.status === 'delivered')
+
+            console.log(allDelivered)
+            if (allDelivered) {
+                const delay = 50 * 60 * 1000;
+
+                setTimeout(() => {
+                    localStorage.removeItem('user');
+                    setUser(null);
+                    console.log("User removed after 5 minutes.");
+                }, delay);
+            }
+        }
+    }, [latestOrder]);
 
 
 
@@ -270,9 +290,15 @@ export const Home = () => {
                 </div>
             ))}
 
-            <div className='fixed bottom-1 top-[95%] bg-amber-300 flex justify-center items-center text-center uppercase w-[95%] my-0 ml-3 lg:ml-0 mx-auto h-[40px] '>
-                <Link className=' flex items-center justify-center text-center ' to={'/cart'} state={{ cartItems }}><span><img src="/assets/cart.png" alt="cart" className='w-[18px] h-[18px]' /></span >Cart<span className='font-bold ml-1 text-center flex justify-center'> {totalQty}</span></Link>
-            </div >
+            <div className="fixed bottom-1 left-0 right-0 mx-auto bg-yellow-300 w-[97%] h-[48px] flex justify-center items-center">
+                <Link className='flex items-center justify-center text-center gap-1' to={'/cart'} state={{ cartItems }}>
+                    <span>
+                        <img src="/assets/cart.svg" alt="cart" className='w-[18px] h-[18px] font-semibold' /></span>
+                    Cart
+                    <span className='font-semibold ml-1 text-center flex justify-center'>{totalQty}</span>
+                </Link>
+            </div>
+
         </div >
     );
 };

@@ -23,22 +23,24 @@ export const CartPage = () => {
 
     return (
 
-        <div className='order-container'>
+        <div className='order-container overflow-x-scroll'>
             <div className='item-cards flex justify-between'>
                 <div className='w-[100%] h-[58px] my-auto items-center flex justify-between'>
                     <ReverseButton route={'/'} routeName={'Home'} />
-                    <Link to={'/'} className='flex flex-row items-center'>
+                    <Link to={'/'} className='fixed right-6 top-2 flex flex-row items-center'>
                         <img src='/assets/plus.png' alt='plus' width={25} height={10} />
                         Add Item
                     </Link>
                 </div>
             </div>
-            <div className='min-w-[343px] min-h-[120px] mt-2 m-2'>
+
+
+            <div className='min-w-[343px] mt-2 m-2 overflow-y-scroll'>
                 {Array.isArray(cartstate) && cartstate.map((item) => (
-                    <div key={item._id} className='order-detils-card flex justify-between items-center rounded-xl shadow-sm mb-4'>
+                    <div key={item._id} className='flex justify-between items-center rounded-xl shadow mb-4 p-1'>
 
                         <div className='left text-xl space-y-1'>
-                            <h4 className='text-base font-semibold'>{item.name}</h4>
+                            <h4 className=' inline text-base font-semibold'>{item.name}</h4>
                             <p className='text-sm text-gray-600 mb-4'>{item.description}</p>
                             <b className='text-black mt-[20px] font-bold'>Rs. {item.price}/-</b>
                         </div>
@@ -63,7 +65,7 @@ export const CartPage = () => {
                 ))}
             </div>
 
-            <div className='' >
+            <div className='sticky bottom-0 left-0 right-0 mx-auto my-auto' >
                 <div className='order-calc'>
                     <div>
                         <p>SubTotel</p>
@@ -82,7 +84,7 @@ export const CartPage = () => {
                         <b>Rs. {total}</b>
                     </div>
                 </div>
-                <Link to={`/user-info`} className='bg-yellow-300 h-[40px] rounded-sm mx-auto my-0 w-[95%] items-center flex justify-center mr-2' >Place Order</Link >
+                <Link to={`/user-info`} className='bg-yellow-300 h-[40px] rounded-sm mx-auto my-0 w-[95%] items-center flex justify-center' >Place Order</Link >
             </div>
 
         </div >

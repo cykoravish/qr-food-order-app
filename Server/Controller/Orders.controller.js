@@ -1,6 +1,7 @@
 
 import Cart from "../Model/Cart.model.js";
 import Order from "../Model/Order.model.js";
+import Product from "../Model/Product.model.js";
 import Sales from "../Model/Sales.model.js";
 
 export const getAllOrders = async (req, res) => {
@@ -44,7 +45,9 @@ export const postOrder = async (req, res) => {
 export const updateOrder = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
-    console.log(id, status)
+    const { productIds } = req.body;
+    console.log(typeof productIds)
+    console.log('productsQuqntity', productIds)
     if (!id) {
         return res.status(400).json({ message: 'OrderId is not found' })
     };
@@ -56,6 +59,28 @@ export const updateOrder = async (req, res) => {
                 totelRevenue: +order.totalAmount,
             });
             await newSale.save();
+            try {
+                await Promise.all(
+                    productIds.map(async (item) => {
+                        const prodId = item.productId._id;
+                        const orderedQty = item.quantity;
+
+                        if (prodId && typeof orderedQty === 'number') {
+                            await Product.findByIdAndUpdate(
+                                prodId,
+                                { $inc: { quantity: -orderedQty } },
+                                { new: true }
+                            );
+                        } else {
+                            console.warn('Invalid product or quantity:', item);
+                        }
+                    })
+                );
+                console.log('All quantities updated successfully');
+            } catch (error) {
+                console.error('Error updating stock:', error);
+            }
+
         };
         res.status(200).json({ message: 'Order updated' });
     } catch (error) {

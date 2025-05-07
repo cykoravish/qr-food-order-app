@@ -7,7 +7,7 @@ corn.schedule('0 0 * * *', async () => {
     try {
         const fixedQty = 10;
 
-        await Products.updateMany({}, { $set: { qty: fixedQty } });
+        await Products.updateMany({}, { $set: {totelQuantity : fixedQty } });
 
         console.log('✅ Product qty reset to', fixedQty);
     } catch (err) {

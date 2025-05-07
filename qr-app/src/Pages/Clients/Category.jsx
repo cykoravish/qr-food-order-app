@@ -9,15 +9,15 @@ export const Category = () => {
     const location = useLocation();
     const dispatch = useDispatch();
     const [itemArray, setItems] = useState([]);
-    const category = location.pathname.replace(/^\/+/, '');
+    const categoryFromPath = decodeURIComponent(location.pathname.replace('/', '').toLowerCase());
 
 
     useEffect(() => {
         const rawItems = location.state?.items;
         const items = Array.isArray(rawItems) ? rawItems : [rawItems];
 
-        const categoryFromPath = location.pathname.replace(/^\/+/, '').toLowerCase();
-
+        const categoryFromPath = decodeURIComponent(location.pathname.replace('/', '').toLowerCase());
+        console.log(categoryFromPath)
         const filteredItems = items.filter(
             (item) =>
                 item?.categoryId?.name?.trim().toLowerCase() === categoryFromPath
@@ -36,9 +36,9 @@ export const Category = () => {
     return (
         <div className='burger-container p-1'>
             <div className='w-[100%] h-[58px] flex items-center'>
-                <ReverseButton route={'/'} routeName={category} />
+                <ReverseButton route={'/'} routeName={categoryFromPath} />
             </div>
-            <div className="burger-item-list mx-auto gap-4 grid sm:flex sm:overflow-x-auto">
+            <div className=" mx-auto gap-4 grid grid-cols-2 sm:flex sm:flex-wrap ">
                 {itemArray.map((product) => (
                     <CardDetails
                         key={product._id}

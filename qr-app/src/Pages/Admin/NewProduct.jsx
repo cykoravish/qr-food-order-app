@@ -15,8 +15,9 @@ export const NewProduct = () => {
         description: '',
         category: '',
         price: '',
+        quantity: ''
     });
-    console.log("categorueue", catgory)
+    console.log("categorueue", form)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,6 +63,7 @@ export const NewProduct = () => {
         data.append("description", form.description);
         data.append("category", form.category);
         data.append("price", form.price);
+        data.append("quantity", form.quantity);
         const responce = await PrivateAxios.post('/products/new-product', data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -108,7 +110,6 @@ export const NewProduct = () => {
 
     return (
         <div>
-            {/* Top nav */}
             <div className='flex text-left p-4'>
                 <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full' />
                 <Link to="/admin" className='ml-2 font-semibold'>Add Product</Link>
@@ -131,9 +132,7 @@ export const NewProduct = () => {
                             onChange={handleImage}
                             required
                         />
-
                     </div>
-
 
                     <div className='flex gap-4'>
                         <button onClick={handlePreviewImage} className='bg-[#F9D718] w-32 flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden'>
@@ -150,7 +149,6 @@ export const NewProduct = () => {
                 </div>
             </div>
             <div>
-
             </div>
 
             {preview && showImage && <Model children={<img
@@ -215,6 +213,18 @@ export const NewProduct = () => {
 
                     </div>
 
+                    <div className='w-full h-[67px] flex flex-col m-1'>
+                        <label className='min-h-5'>Quantity</label>
+                        <input
+                            type="number"
+                            name="quantity"
+                            onChange={handleForm}
+                            value={form.quantity}
+                            placeholder='e.g. 10'
+                            required
+                            className='bg-[#F9F9F9] min-h-[40px] px-2'
+                        />
+                    </div>
                     <div className='w-full h-[67px] flex flex-col m-1'>
                         <label className='min-h-5'>Prices (Rs.)</label>
                         <input

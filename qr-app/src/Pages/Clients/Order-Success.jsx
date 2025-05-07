@@ -25,21 +25,11 @@ export const OrderSuccess = () => {
             }
             const orders = res.data.content;
             setOrder(orders);
-            const allDelivered = orders.every(order => order.status === 'delivered' || order.status === 'cancelled');
-            console.log("All deleverd", allDelivered)
-            if (allDelivered) {
-                setTimeout(() => {
-                    console.log("20 minutes passed. Removing user.");
-                    localStorage.removeItem('user');
-                    setUser(null);
-                }, 60 * 60 * 1000); // 60 minutes
-            }
 
         } catch (err) {
             console.error(err.message);
         }
     }
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -67,6 +57,24 @@ export const OrderSuccess = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user) {
+            const allDelivered = orders && orders.every(order => order.status === 'delivered')
+
+            console.log(allDelivered)
+            if (allDelivered) {
+                const delay = 50 * 60 * 1000;
+
+                setTimeout(() => {
+                    localStorage.removeItem('user');
+                    setUser(null);
+                    console.log("User removed after 5 minutes.");
+                }, delay);
+            }
+        }
+    }, [orders]);
 
     console.log(orders)
 

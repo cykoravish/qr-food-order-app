@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PrivateAxios from '../../Services/PrivateAxios'
+import { ReverseButton } from '../../components/Client/ReverseButton';
 
 
 export const Category = () => {
@@ -22,18 +23,19 @@ export const Category = () => {
     return (
         <div className='w-full'>
             <div className='flex text-left p-4 '>
-                <img src="/assets/back.png" alt="back" className='shadow-sm rounded-full mr-2' />
-                <Link to={'/admin'} className='font-semibold'>Category</Link>
+                <ReverseButton routeName={'Category'} route={'/admin'} />
             </div>
 
 
-            <div className='flex flex-wrap ml-3'>
+            <div className='flex flex-wrap mx-auto w-[98%] gap-4 '>
                 {category?.map((item) => (
-                    <div className='m-2 w-[74px] h-[92px]'>
-                        <div className='flex w-[72px] h-[72px] bg-[#D9D9D9] rounded-full items-center justify-center'>
-                            <img src={`http://localhost:5000/${item.imageUrl}`} alt=" chole" width={51} height={39} />
+                    <div className=' w-[100px] h-[100px] transform-3d '>
+                        <div className='bg-[#D9D9D9] flex justify-center items-center  w-[90%] h-[90%] rounded-full  '>
+                            <img src={`http://localhost:5000/${item.imageUrl}`} alt=" chole" className='w-[70px] h-[70px] rounded-full -translate-z-6 items-center flex justify-center' />
                         </div>
-                        <p className='text-[11px] flex '>{item.name}</p>
+                        <div className='text-[11px] flex text-center justify-center items-center mt-2  '>
+                            <p className='text-center'>{item.name}</p>
+                        </div>
                     </div>
                 ))}
 
