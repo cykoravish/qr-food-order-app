@@ -17,7 +17,6 @@ export const getAllProducts = async (req, res) => {
 export const postNewProduct = async (req, res) => {
     const { name, description, price, category, quantity } = req.body;
     const { _id } = req.user;
-    console.log(req.body, req.file)
     const imageUrl = req.file.filename;
 
     if (!name || !description || !category || !price) {
@@ -34,7 +33,7 @@ export const postNewProduct = async (req, res) => {
             imageUrl: imageUrl,
         });
 
-        await newProduct.save();
+        await newProduct.save();    
 
         await User.findByIdAndUpdate(_id, { $push: { allProducts: newProduct._id } }, { new: true });
 
@@ -85,7 +84,7 @@ export const getProduct = async (req, res) => {
         return res.status(400).json({ message: 'ProductId is required' })
     };
     try {
-        const product = await Products.findById({ _id: productId });
+        const product = await Product.findById({ _id: productId });
         res.status(200).json({ data: product })
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error })
@@ -112,4 +111,4 @@ export const postCategory = async (req, res) => {
             message: 'Internal server error', error
         })
     }
-}
+};

@@ -23,11 +23,11 @@ export const CartPage = () => {
 
     return (
 
-        <div className='order-container overflow-x-scroll'>
-            <div className='item-cards flex justify-between'>
+        <div className='order-container overflow-x-scroll '>
+            <div className=' mx-auto item-cards flex justify-between '>
                 <div className='w-[100%] h-[58px] my-auto items-center flex justify-between'>
                     <ReverseButton route={'/'} routeName={'Home'} />
-                    <Link to={'/'} className='fixed right-6 top-2 flex flex-row items-center'>
+                    <Link to={'/'} className='sticky right-6 top-4 flex flex-row items-center'>
                         <img src='/assets/plus.png' alt='plus' width={25} height={10} />
                         Add Item
                     </Link>
@@ -35,7 +35,7 @@ export const CartPage = () => {
             </div>
 
 
-            <div className='min-w-[343px] mt-2 m-2 overflow-y-scroll'>
+            <div className=' mt-2 m-2 overflow-y-scroll'>
                 {Array.isArray(cartstate) && cartstate.map((item) => (
                     <div key={item._id} className='flex justify-between items-center rounded-xl shadow mb-4 p-1'>
 

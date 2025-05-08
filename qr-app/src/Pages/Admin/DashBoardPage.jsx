@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LoadingCard } from '../../components/LoadingCard';
 import PrivateAxios from '../../Services/PrivateAxios';
 import { CardDetails } from '../../components/CardDetails';
 import publicAxios from '../../Services/PublicAxios';
@@ -9,16 +8,15 @@ import { TbCategoryPlus } from "react-icons/tb";
 import { MdAttachMoney } from "react-icons/md";
 import { StatCard } from '../../components/Admin/StatCard';
 import { socket } from '../../Services/Socket';
-import DoughnutChart from '../../components/DoughnutChart';
 
 export const DashBoardPage = () => {
     const [products, setProducts] = useState([]);
     const [AllOrders, setAllOrders] = useState([]);
     const [AllSales, setAllSales] = useState([]);
     const [AllCategory, setAllCategory] = useState([]);
+    const [todayOrders, setTodayOrders] = useState([]);
 
     // fetch All Products
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -39,7 +37,7 @@ export const DashBoardPage = () => {
         const controller = new AbortController();
 
         const fetchedOrder = async () => {
-            const responce = await publicAxios.get('/orders/orders', { signal: controller.signal });
+            const responce = await PrivateAxios.get('/orders/active-orders', { signal: controller.signal });
             if (responce.status !== 200) {
                 throw new Error({ message: 'responce failed' })
             };
@@ -47,18 +45,16 @@ export const DashBoardPage = () => {
         };
 
         fetchedOrder();
-        socket.emit('join-admin'); // Tell server "Hey, I'm admin!"
+        socket.emit('join-admin'); 
 
         function handleOrderUpdate(data) {
-            console.log('Order update received by Admin:', data);
             fetchedOrder()
-
         }
         socket.on('placed-order', handleOrderUpdate);
 
         return () => {
             controller.abort();
-            socket.off('placed-order', handleOrderUpdate);
+            socket.off('placed-order');
         }
     }, []);
 
@@ -66,7 +62,7 @@ export const DashBoardPage = () => {
     useEffect(() => {
         const controller = new AbortController();
         const fetchedOrder = async () => {
-            const responce = await publicAxios.get('/sales', { signal: controller.signal });
+            const responce = await PrivateAxios.get('/sales', { signal: controller.signal });
             if (responce.status !== 200) {
                 throw new Error({ message: 'responce failed' })
             };
@@ -96,9 +92,22 @@ export const DashBoardPage = () => {
     }, []);
 
 
+    useEffect(()=>{
+        const fetchingTodayorders  = async()=>{
+            try {
+                const todatOrders = await PrivateAxios.get('/orders/today-orders');
+                setTodayOrders(todatOrders.data.content)
+            } catch (error) {
+                throw new Error({messsage:'Responce failed'})
+            }
+        };
+        fetchingTodayorders();
+    },[])
+
+    
     // Today ORders
     const today = new Date().toISOString().split('T')[0];
-    const todaysOrders = AllOrders.filter(order => {
+    const todaysOrders = todayOrders.filter(order => {
         const orderDate = new Date(order.placedAt).toISOString().split('T')[0];
         return orderDate === today;
     });

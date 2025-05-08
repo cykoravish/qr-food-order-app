@@ -62,7 +62,7 @@ export const UserInfo = () => {
 
     async function handleCartDeta() {
         const cartData = {
-            userId: userId ? userId : user._id,
+            userId: userId ? user._id: userId,
             items: itemData
         };
         try {
