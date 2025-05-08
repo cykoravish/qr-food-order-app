@@ -1,10 +1,13 @@
 import express from 'express';
-import { getAllOrders, getOrder, postOrder, updateOrder } from '../Controller/Orders.controller.js';
+import { activeOrders, getAllOrders, getOrder, getTodayOrders, postOrder, updateOrder } from '../Controller/Orders.controller.js';
+import ProtectedRoute from '../Service/ProtectedRoute.js';
 
 const route = express.Router();
 
-route.get('/orders', getAllOrders);
-route.post('/place-order', postOrder);
+route.get('/orders',ProtectedRoute, getAllOrders)
+route.get('/active-orders',ProtectedRoute, activeOrders);
+route.get('/today-orders',ProtectedRoute, getTodayOrders);
+route.post('/place-order',ProtectedRoute, postOrder);
 route.patch('/:id', updateOrder)
 route.get('/:id', getOrder)
 

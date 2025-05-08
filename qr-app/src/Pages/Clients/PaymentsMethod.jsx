@@ -25,8 +25,8 @@ export const PaymentsMethod = () => {
 
     return (
         <div className='payment-method'>
-            <div className='item-cards'>
-                <ReverseButton route={`/user-info?userId=${userId}`} routeName={'Payment-Methods'} />
+            <div className='w-[98%] mx-auto mt-1.5'>
+                <ReverseButton route={`/user-info?userId=${userId}`} routeName={'User-Details'} />
             </div>
             <div className="amount">
                 <p>Totel Amount</p>

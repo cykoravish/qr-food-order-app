@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart, syncCartFromLocalStorage } from '../../Redux/Cart/index';
 import { ReverseButton } from '../../components/Client/ReverseButton';
 import { socket } from '../../Services/Socket';
+import PrivateAxios from '../../Services/PrivateAxios';
 // import { socket } from '../../App';
 // import { io } from 'socket.io-client';
 
@@ -42,7 +43,7 @@ export const PaymentPage = () => {
                 paymentMethod: PaymentMethod
             };
 
-            const response = order ? null : await publicAxios.post('/orders/place-order', productData);
+            const response = order ? null : await PrivateAxios.post('/orders/place-order', productData);
 
             if (response.status === 200 || response.status === 201) {
                 setOrder(response.data.order);

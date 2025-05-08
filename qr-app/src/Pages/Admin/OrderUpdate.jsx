@@ -5,19 +5,22 @@ import { IoIosClose, IoIosDoneAll } from "react-icons/io";
 import { CiNoWaitingSign } from "react-icons/ci";
 import { socket } from '../../Services/Socket';
 import { ReverseButton } from '../../components/Client/ReverseButton';
+import PrivateAxios from '../../Services/PrivateAxios';
 
 
 
 export const OrderUpdate = () => {
-    const [orders, setOrders] = useState([]);
+    const [filterdPendingOrders, setFilterOrder] = useState([]);
 
     const fetched = async () => {
-        const res = await publicAxios.get('/orders/orders');
+        const res = await PrivateAxios.get('/orders/active-orders');
         if (res.status !== 200) {
             throw new Error({ message: 'Responce Failed' })
         };
-        setOrders(res.data.content);
+        setFilterOrder(res.data.content);
     };
+
+    console.log(filterdPendingOrders)
 
     useEffect(() => {
         // Initially fetch pending orders
@@ -47,8 +50,8 @@ export const OrderUpdate = () => {
     }, []);
 
 
-    const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
-    console.log(filterdPendingOrders)
+    // const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
+    // console.log(filterdPendingOrders)
 
     // async function handleDelevery(orderId) {
     //     try {
@@ -118,14 +121,14 @@ export const OrderUpdate = () => {
                                 <tr key={order._id} className="">
                                     <td className="px-4 py-2 border">{index + 1}</td>
                                     <td className="px-4 py-2 border  flex-col">
-                                        <ul className="tracking-wide capitalize text-blue-400 pl-3">
+                                        <ul className="tracking-wide flex flex-col items-start capitalize text-blue-400 pl-3">
                                             {order.items?.map((item, idx) => (
                                                 <li className='w-50 list-decimal ' key={idx}>{item.productId?.name || 'N/A'}</li>
                                             ))}
                                         </ul>
                                     </td>
-                                    <td className="px-4 py-2 border">
-                                        <ul className="list-none space-y-1 text-center">
+                                    <td className="px-1 py-2 border">
+                                        <ul className="list-none space-y-1 flex flex-col items-start">
                                             {order.items?.map((item, idx) => (
                                                 <li key={idx} >
                                                     {item.quantity && item.price ? `${item.quantity} * ${item.price}` : 'N/A'}

@@ -1,10 +1,10 @@
-
-
 import React, { useEffect } from 'react';
-
-
-import './App.css';
+import ScrollToTop from './components/ScrollToTop';
+import QrCode from 'react-qr-code';
+import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import './App.css';
+import { ProtectedRoutes } from './Services/ProtectedRoutes';
 import { Home } from './Pages/Clients/Home';
 import { CartPage } from './Pages/Clients/CartPage';
 import { Category as FoodCategory } from './Pages/Clients/Category'
@@ -14,11 +14,8 @@ import { NewProduct } from './Pages/Admin/NewProduct';
 import { NewCategory } from './Pages/Admin/NewCategory';
 import { Category } from './Pages/Admin/Category';
 import { OrderSuccess } from './Pages/Clients/Order-Success';
-import { ProtectedRoutes } from './Services/ProtectedRoutes';
-import ScrollToTop from './components/ScrollToTop';
 import { Signup } from './Pages/Auth/Signup';
 import { Login } from './Pages/Auth/Login';
-import QrCode from 'react-qr-code';
 import { UserInfo } from './Pages/Clients/UserInfo';
 import { PaymentPage } from './Pages/Clients/PaymentPage';
 import { OrderUpdate } from './Pages/Admin/OrderUpdate';
@@ -27,30 +24,24 @@ import { GraphicalPage } from './Pages/Admin/GraphicalPage';
 import { ProductsDetails } from './Pages/Clients/ProductsDetails';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { CategoryView } from './Pages/Admin/CategoryView';
-import { io } from 'socket.io-client';
 import { TodayOrderStat } from './Pages/Admin/TodayOrderStat';
-// import { socket } from './Services/Socket';
-
-
-// "undefined" means the URL will be computed from the `window.location` object
+import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5000');
 function App() {
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to server, socket ID:', socket.id);
-    });
+    socket.on('connect');
 
     return () => {
-      socket.on('disconnect', (socket => console.log(socket.id)));
+      socket.on('disconnect');
     }
   }, []);
 
   return (
     <>
-
       <QrCode value='https://food-order-app-1-jddi.onrender.com/' className='hidden' />
       <ScrollToTop />
+      <Suspense fallback={<p>Loading page...</p>}>
       <Routes className='min-w-[375px] h-auto'>
         <Route index path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
@@ -78,6 +69,7 @@ function App() {
           <Route path='/admin/today-orders' element={<TodayOrderStat />} />
         </Route>
       </Routes >
+      </Suspense>
       <ToastContainer position="top-right"
         autoClose={5000}
         limit={1}

@@ -1,16 +1,22 @@
-import corn from 'node-cron';
-import Products from '../../Model/Product.model.js';
-import User from '../../Model/Admin.model.js';
+import cron from 'node-cron';
+import Product from '../../Model/Product.model.js';
 
+// Run every day at midnight (00:00)
+cron.schedule('0 0 * * *', async () => {
+  try {
+    // Fetch all products
+    const products = await Product.find();
 
-corn.schedule('0 0 * * *', async () => {
-    try {
-        const fixedQty = 10;
-
-        await Products.updateMany({}, { $set: {totelQuantity : fixedQty } });
-
-        console.log('✅ Product qty reset to', fixedQty);
-    } catch (err) {
-        console.error('❌ Error resetting qty:', err);
+    // Loop through each product and reset its quantity to totelQuantity
+    for (const product of products) {
+      if (typeof product.totelQuantity === 'number') {
+        product.quantity = product.totelQuantity;
+        await product.save();
+      }
     }
+
+    console.log('✅ All product quantities have been reset successfully!');
+  } catch (err) {
+    console.error('❌ Error while resetting product quantities:', err.message);
+  }
 });
