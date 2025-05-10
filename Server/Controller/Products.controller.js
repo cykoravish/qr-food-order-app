@@ -127,20 +127,11 @@ export const putProduct = async (req, res) => {
   const { name, description, price, category, quantity, image } = req.body;
   const { productId } = req.params;
   const imageUrl = req.file?.filename;
-  console.log(
-    productId,
-    name,
-    description,
-    price,
-    category,
-    quantity,
-    image,
-    imageUrl
-  );
+
   try {
     const product = await Product.findById(productId);
-    if(imageUrl){
-        product.imageUrl = imageUrl
+    if (imageUrl) {
+      product.imageUrl = imageUrl;
     }
     if (name) {
       product.name = name;
@@ -156,12 +147,24 @@ export const putProduct = async (req, res) => {
     }
     if (quantity) {
       product.quantity = quantity;
-      product.totelQuantity = quantity
+      product.totelQuantity = quantity;
     }
 
     await product.save();
-    res.status(200).json({content:product})
+    res.status(200).json({ content: product });
   } catch (error) {
-    res.status(500).json({message:'Internal Server error',error})
+    res.status(500).json({ message: "Internal Server error", error });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  const { productId } = req.params;
+  console.log(productId);
+  try {
+    const deleteProduct = await Product.findByIdAndDelete(productId);
+    console.log(deleteProduct);
+    res.status(200).json({ message: "deleted succussfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server Error", error });
   }
 };

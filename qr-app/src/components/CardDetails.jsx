@@ -38,7 +38,7 @@ export const CardDetails = ({ dishName, price, category, id, onAddToCart, image,
                     <img
                         src={`${backendUrl}/${image}`}
                         alt="food"
-                        className='w-[80px] h-[80px] min-w-[80px] min-h-[80px] object-cover rounded-full '
+                        className='w-[80px] h-[80px] min-w-[80px] min-h-[80px] object-cover rounded-full flex justify-center items-center '
                     />
                 {/* </Link> */}
                 <h3 className="ml-1 text-sm font-medium min-w-[108] min-h-[23] tracking-tighter">{dishName}</h3>

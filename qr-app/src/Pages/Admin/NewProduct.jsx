@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import PrivateAxios from "../../Services/PrivateAxios";
 import { Model } from "../../components/Model";
 import { ReverseButton } from "../../components/Client/ReverseButton";
+import publicAxios from "../../Services/PublicAxios";
 
 export const NewProduct = () => {
   const [catgory, setCategoryOption] = useState([]);
@@ -130,10 +131,16 @@ export const NewProduct = () => {
       setPreview(imageUrl);
     }
   }
-  console.log(preview);
+
+  async function handleDelete(productId) {
+    const responce = await publicAxios.delete(`/products/${productId}`);
+    if (responce.status === 200) {
+      navigate("/admin");
+    }
+  }
 
   return (
-    <div className="w-[100%] max-w-4xl flex flex-col">
+    <div className="w-[100%] flex flex-col">
       <div className="flex text-left mb-4 ">
         <ReverseButton routeName={"Add Product"} route={"/admin"} />
       </div>
@@ -152,7 +159,7 @@ export const NewProduct = () => {
         )} */}
 
       {/* Form fields */}
-      <div className="w-full mx-auto">
+      <div className="w-[98%] sm:w-[50%] sm:mx-auto mx-auto">
         <div className="w-full flex flex-col mx-auto sm:w-[70%]">
           <div className="flex flex-col mx-auto w-full sm:flex-row  justify-between gap-4 lg:items-center">
             <div className="flex justify-start items-center">
@@ -163,13 +170,13 @@ export const NewProduct = () => {
                       <img
                         src={image}
                         alt="file upload"
-                        className="w-[50px] h-[50px] object-contain rounded-full"
+                        className="w-[50px] h-[50px] object-cover rounded-full"
                       />
                     ) : product ? (
                       <img
                         src={`http://localhost:5000/${product.imageUrl}`}
                         alt="file upload"
-                        className="w-[50px] h-[50px] object-contain rounded-full"
+                        className="w-[50px] h-[50px] object-cover rounded-full"
                       />
                     ) : (
                       <img src="/public/assets/Vector2.png" alt="file upload" />
@@ -185,22 +192,26 @@ export const NewProduct = () => {
                   required
                 />
               </div>
-              <div className="flex flex-col mx-auto sm:flex-row gap-4">
+              <div className="flex flex-col mx-auto my-auto sm:flex-row gap-2">
                 <button
                   onClick={handlePreviewImage}
-                  className="bg-[#F9D718] p-1.5  flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden"
+                  className="bg-[#F9D718] p-1  flex font-light items-center justify-center text-center rounded-md overflow-y-hidden"
                 >
                   {picture && picture.name ? picture.name : "Uploaded Image"}
                 </button>
                 <button
-                  className="bg-[#F9D718] p-1.5  flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden"
+                  className="bg-[#F9D718] p-1  flex font-light items-center justify-center text-center rounded-md  overflow-y-hidden"
                   onClick={() => setPicture(null)}
                   type="button"
                 >
-                  Delete
+                  Discard
                 </button>
-                <div className="bg-red-700 p-1.5  flex font-light items-center justify-center text-center rounded-md h-8 overflow-y-hidden">
-                  {product && <button>Delete Product</button>}
+                <div className="bg-red-700 p-1  flex font-light items-center justify-center text-center rounded-md overflow-y-hidden">
+                  {product && (
+                    <button onClick={() => handleDelete(product._id)}>
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

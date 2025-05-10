@@ -3,11 +3,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    tailwindcss({
-      screen:{
-        'xs':'280px'
-      }
-    })
+    tailwindcss()
   ],
   server: {
     host: 'localhost', // explicitly set to 0.0.0.0

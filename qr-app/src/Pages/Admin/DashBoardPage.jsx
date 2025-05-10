@@ -203,7 +203,7 @@ export const DashBoardPage = () => {
                                         image={product.imageUrl}
                                         product={product}
                                         button={true}
-                                        css='h-[220px] '
+                                        css='h-[220px] mb-0 '
                                         stock={product.quantity ? product.quantity : 0}
                                         fixedStock={product.totelQuantity ? product.totelQuantity : 0}
                                         data={product}
