@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../Redux/Cart/index";
-import PrivateAxios from "../../Services/PrivateAxios";
 import EventEmitter from "events";
 import { Bounce, toast } from "react-toastify";
 import { CategoryCard } from "../../components/Client/CategoryCard";
@@ -128,36 +127,34 @@ export const Home = () => {
     setUser(existingUser);
 
     async function fetched(userId) {
-        try {
-          const res = await publicAxios.get(`/orders/${userId}`);
-          console.log(res);
-      
-          if (res.status !== 200) {
-            throw new Error("Response failed");
-          }
-      
-          const orders = res.data.content;
-      
-          // Get today's start and end timestamps
-          const now = new Date();
-          const startOfDay = new Date(now.setHours(0, 0, 0, 0)).getTime();
-          const endOfDay = new Date(now.setHours(23, 59, 59, 999)).getTime();
-      
-          // Filter today's orders
-          const filteredOrders = orders.filter((order) => {
-            const orderDate = new Date(order.placedAt).getTime();
-            return orderDate >= startOfDay && orderDate <= endOfDay;
-          });
-      
-          console.log(filteredOrders);
-          setLatestOrder(filteredOrders);
-      
-        } catch (err) {
-          console.error("Error fetching orders:", err);
-          throw new Error("Some error occurred while fetching orders");
+      try {
+        const res = await publicAxios.get(`/orders/${userId}`);
+        console.log(res);
+
+        if (res.status !== 200) {
+          throw new Error("Response failed");
         }
+
+        const orders = res.data.content;
+
+        // Get today's start and end timestamps
+        const now = new Date();
+        const startOfDay = new Date(now.setHours(0, 0, 0, 0)).getTime();
+        const endOfDay = new Date(now.setHours(23, 59, 59, 999)).getTime();
+
+        // Filter today's orders
+        const filteredOrders = orders.filter((order) => {
+          const orderDate = new Date(order.placedAt).getTime();
+          return orderDate >= startOfDay && orderDate <= endOfDay;
+        });
+
+        console.log(filteredOrders);
+        setLatestOrder(filteredOrders);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        throw new Error("Some error occurred while fetching orders");
       }
-      
+    }
 
     if (existingUser?._id) {
       fetched(existingUser._id);
