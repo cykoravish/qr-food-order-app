@@ -41,7 +41,12 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND];
+
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://hilarious-tanuki-5632c3.netlify.app/"
+];
 
 app.use(
   cors({
