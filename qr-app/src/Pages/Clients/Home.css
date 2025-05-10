@@ -2,9 +2,6 @@
     box-sizing: border-box;
 }
 
-.home-container {
-    min-width: 375px;
-}
 
 .search-container {
     margin: 16px;

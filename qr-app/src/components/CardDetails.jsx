@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import '../Pages/Clients/Home.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export const CardDetails = ({ dishName, price, category, id, onAddToCart, image, product, css, button, stock, fixedStock }) => {
+export const CardDetails = ({ dishName, price, category, id, onAddToCart, image, product, css, button, stock, fixedStock,data }) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const [selected, setSelected] = useState(false);
+    const timerRef = useRef(null);
+  const navigate =  useNavigate();
+  
     const totelStock = fixedStock ? fixedStock : 0;
     
     let stockTag;
@@ -15,9 +19,14 @@ export const CardDetails = ({ dishName, price, category, id, onAddToCart, image,
         stockTag = 'InStock';
     };
 
+      
+      
+ 
     return (
         
-        <div className={`min-w-[120px] min-h-[169px] flex flex-col justify-center shadow-md hover:scale-105 ${css}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div   
+          className={` min-w-[120px] min-h-[169px] flex flex-col justify-center shadow-md hover:scale-105 ${css}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      
             <div className='justify-start pl-3 relative'>
                 {stock >= 0 && <div className={`${!stock === 0 ? 'hidden' : ''}
                 ${stockTag === 'OutOfStock' ? 'bg-red-200' :
@@ -29,7 +38,7 @@ export const CardDetails = ({ dishName, price, category, id, onAddToCart, image,
                     <img
                         src={`${backendUrl}/${image}`}
                         alt="food"
-                        className='w-[80px] h-[80px] min-w-[80px] min-h-[80px] object-cover rounded-full '
+                        className='w-[80px] h-[80px] min-w-[80px] min-h-[80px] object-cover rounded-full flex justify-center items-center '
                     />
                 {/* </Link> */}
                 <h3 className="ml-1 text-sm font-medium min-w-[108] min-h-[23] tracking-tighter">{dishName}</h3>
@@ -41,6 +50,15 @@ export const CardDetails = ({ dishName, price, category, id, onAddToCart, image,
             >
                 Add to cart
             </button>
+            {
+               button &&  <Link
+               className={`border w-[85%] flex font-semibold  mb-2 rounded-sm h-[35px] justify-center mx-auto mt-1`}
+             to={'/admin/createProduct'}
+             state={{product:data}}
+           >
+               Edit
+           </Link> 
+            }
         </div>
     );
 };
