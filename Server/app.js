@@ -41,13 +41,28 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND,
-    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-    credentials: false,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.FRONTEND,
+//     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+//     credentials: false,
+//   })
+// );
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://steady-sable-9aa22e.netlify.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 const server = createServer(app);
 
