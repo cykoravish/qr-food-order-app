@@ -26,8 +26,8 @@ import { Bounce, ToastContainer } from "react-toastify";
 import { CategoryView } from "./Pages/Admin/CategoryView";
 import { TodayOrderStat } from "./Pages/Admin/TodayOrderStat";
 import { io } from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const socket = io(backendUrl);
 function App() {
   useEffect(() => {
     socket.on("connect");

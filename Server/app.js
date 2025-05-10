@@ -41,29 +41,32 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
+
+
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://extraordinary-blini-dd0055.netlify.app/"
+  "https://hilarious-tanuki-5632c3.netlify.app/"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND,
+    origin: process.env.FRONTEND || "http://localhost:5173",
     methods: ["GET", "POST"],
-    credentials: true
   },
 });
 
