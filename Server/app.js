@@ -43,7 +43,7 @@ function shouldCompress(req, res) {
 
 app.use(
   cors({
-    origin: "https://steady-sable-9aa22e.netlify.app/",
+    origin: process.env.FRONTEND,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     credentials: true,
   })
