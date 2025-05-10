@@ -43,7 +43,7 @@ function shouldCompress(req, res) {
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://steady-sable-9aa22e.netlify.app"
+  "https://extraordinary-blini-dd0055.netlify.app/"
 ];
 
 app.use(cors({
