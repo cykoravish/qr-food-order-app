@@ -45,7 +45,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-    credentials: true,
+    credentials: false,
   })
 );
 
