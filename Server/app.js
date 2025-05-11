@@ -41,7 +41,7 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-const allowedOrigins = ["http://localhost:5173", "https://food-order-app-5brx.onrender.com"];
+const allowedOrigins = ["http://localhost:5173", "https://hilarious-mermaid-cc36ae.netlify.app/"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -61,7 +61,6 @@ const io = new Server(server, {
   cors: {
     origin: "https://food-order-app-5brx.onrender.com" || "http://localhost:5173",
     methods: ["GET", "POST"],
-    credentials: true,
   },
 });
 
