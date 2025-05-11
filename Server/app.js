@@ -41,7 +41,7 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND];
+const allowedOrigins = ["http://localhost:5173", "https://food-order-app-5brx.onrender.com"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -59,7 +59,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND || "http://localhost:5173",
+    origin: "https://food-order-app-5brx.onrender.com" || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
