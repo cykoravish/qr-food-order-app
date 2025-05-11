@@ -174,7 +174,7 @@ export const NewProduct = () => {
                       />
                     ) : product ? (
                       <img
-                        src={`${process.env.VITE_BACKEND_URL}/${product.imageUrl}`}
+                        src={`${import.meta.env.VITE_BACKEND_URL}/${product.imageUrl}`}
                         alt="file upload"
                         className="w-[50px] h-[50px] object-cover rounded-full"
                       />

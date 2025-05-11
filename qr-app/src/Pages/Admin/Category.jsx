@@ -28,10 +28,10 @@ export const Category = () => {
 
       <div className="flex flex-wrap mx-auto w-[98%] gap-4 ">
         {category?.map((item) => (
-          <div className=" w-[100px] h-[100px] transform-3d ">
+          <div key={item._id} className=" w-[100px] h-[100px] transform-3d ">
             <div className="bg-[#D9D9D9] flex justify-center items-center  w-[90%] h-[90%] rounded-full  ">
               <img
-                src={`${process.env.VITE_BACKEND_URL}/${item.imageUrl}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/${item.imageUrl}`}
                 alt=" chole"
                 className="w-[70px] h-[70px] rounded-full -translate-z-6 items-center flex justify-center"
               />

@@ -168,7 +168,7 @@ export const Home = () => {
       socket.on("order-updated-status", handleOrderUpdate);
 
       return () => {
-        socket.off("order-updated-status", handleOrderUpdate);
+        socket.off("order-updated-status");
       };
     }
   }, []);

@@ -3,6 +3,7 @@ import Product from "../Model/Product.model.js";
 import User from "../Model/Admin.model.js";
 
 export const getAllProducts = async (req, res) => {
+  console.log("products");
   try {
     const products = await Product.find().populate("categoryId");
     if (!products) {
