@@ -41,7 +41,7 @@ function shouldCompress(req, res) {
   return compression.filter(req, res);
 }
 
-const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND];
+const allowedOrigins = ["http://localhost:5173", ];
 
 app.use(
   cors({
