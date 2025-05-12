@@ -36,27 +36,37 @@ export const DashBoardPage = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchedOrder = async () => {
-      const responce = await PrivateAxios.get("/orders/active-orders", {
-        signal: controller.signal,
-      });
-      if (responce.status !== 200) {
-        throw new Error({ message: "responce failed" });
+    const fetchOrder = async () => {
+      try {
+        const response = await PrivateAxios.get("/orders/active-orders", {
+          signal: controller.signal,
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Response failed");
+        }
+
+        setAllOrders(response.data.content);
+      } catch (err) {
+        if (err.name !== "CanceledError") {
+          console.error("Fetching orders failed:", err);
+        }
       }
-      setAllOrders(responce.data.content);
     };
 
-    fetchedOrder();
+    fetchOrder();
     socket.emit("join-admin");
 
-    function handleOrderUpdate(data) {
-      fetchedOrder();
-    }
+    const handleOrderUpdate = (data) => {
+      console.log(data);
+      fetchOrder();
+    };
+
     socket.on("placed-order", handleOrderUpdate);
 
     return () => {
       controller.abort();
-      socket.off("placed-order");
+      socket.off("placed-order", handleOrderUpdate); // Remove specific callback
     };
   }, []);
 

@@ -33,25 +33,26 @@ export const OrderSuccess = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const existingUser = storedUser ? JSON.parse(storedUser) : null;
-    if (existingUser) {
-      fetched(existingUser._id);
 
+    if (existingUser) {
       setUser(existingUser);
+      fetched(existingUser._id); // Initial fetch
     }
 
     socket.emit("join-admin");
 
     const handleOrderUpdate = (data) => {
       console.log("Admin received order update:", data);
-      fetched(existingUser._id);
+      if (existingUser) {
+        fetched(existingUser._id); // Use stored user directly
+      }
     };
 
     socket.on("order-updated-status", handleOrderUpdate);
 
     return () => {
-      socket.off("order-updated-status");
+      socket.off("order-updated-status", handleOrderUpdate); // ✅ Use named function for proper cleanup
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,7 +96,9 @@ export const OrderSuccess = () => {
           {orders.map((order, index) => (
             <details
               key={order._id}
-              className={` border border-gray-300 rounded-xl p-4 gap-4 shadow-md bg-white transition-all`}
+              className={`${
+                order.status === "delivered" ? "hidden" : null
+              } border border-gray-300 rounded-xl p-4 gap-4 shadow-md bg-white transition-all`}
             >
               <summary className=" min-w-[280px] cursor-pointer font-semibold text-md text-blue-600 flex flex-col gap-4 justify-between items-center">
                 <span className="flex ">
@@ -163,7 +166,9 @@ export const OrderSuccess = () => {
         orders && (
           <div
             key={orders._id}
-            className="border rounded-lg p-4 mb-4 shadow-md"
+            className={`${
+              orders.status === "delevered" ? "blur-2xl" : "visible"
+            } border rounded-lg p-4 mb-4 shadow-md`}
           >
             <h2 className="font-medium   mb-2">Order ID: {orders._id}</h2>
             <p>

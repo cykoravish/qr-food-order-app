@@ -19,7 +19,6 @@ export const OrderUpdate = () => {
   };
 
   console.log(filterdPendingOrders);
-
   useEffect(() => {
     // Initially fetch pending orders
     fetched();
@@ -33,7 +32,7 @@ export const OrderUpdate = () => {
     socket.on("order-updated-status", handleOrderUpdate);
 
     return () => {
-      socket.off("order-updated-status");
+      socket.off("order-updated-status", handleOrderUpdate); // Remove the exact handler
     };
   }, []);
 
@@ -71,24 +70,32 @@ export const OrderUpdate = () => {
   //     alert('order updated');
   // }
   async function handleProcessing(status, orderId, order) {
-    console.log(order);
-    const productIds = order.items?.map((ele) => ele);
-
     try {
+      console.log("Processing order:", order);
+      socket.emit("join-admin");
+
+      const productIds = order.items?.map((item) => item); // You could also extract just IDs here if needed
+
       console.log("Updating Order ID:", orderId, "to status:", status);
 
       const response = await publicAxios.patch(`/orders/${orderId}`, {
         status,
-        productIds,
+        productIds, 
       });
 
       if (response.status !== 200) {
         throw new Error("Something went wrong, try again later.");
       }
 
-      socket.emit("order-updated", orderId);
+      socket.emit("order-updated", {
+        orderId,
+        status,
+        productIds,
+      });
+
+      console.log("Order updated and event emitted.");
     } catch (error) {
-      console.error(error.message);
+      console.error("Order update failed:", error.message || error);
     }
   }
 

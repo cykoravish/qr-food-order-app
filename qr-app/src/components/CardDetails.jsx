@@ -22,61 +22,66 @@ export const CardDetails = ({
   const navigate = useNavigate();
 
   const totelStock = fixedStock ? fixedStock : 0;
-
   let stockTag;
-  if (totelStock <= (totelStock / 100) * 10) {
-    stockTag = "lowStock";
-  }
-  if (totelStock === 0) {
+
+  if (stock === 0) {
     stockTag = "OutOfStock";
+  } else if (stock <= (totelStock / 100) * 10) {
+    console.log("stock", stock);
+    stockTag = "lowStock";
   } else {
     stockTag = "InStock";
   }
 
   return (
     <div
-      className={` min-w-[120px] min-h-[169px] flex flex-col justify-center shadow-md hover:scale-105 ${css}`}
+      className={` flex flex-col justify-end shadow-md hover:scale-105 ${css} my-0`} // no relative
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
-      <div className="justify-start pl-3 relative">
-        {stock >= 0 && (
+      {/* Stock tag aligned top-right using flex */}
+      {stock >= 0 && (
+        <div className="flex justify-end w-full px-1 mt-0.5 pt-2">
           <div
-            className={`${!stock === 0 ? "hidden" : ""}
-                ${
-                  stockTag === "OutOfStock"
-                    ? "bg-red-200"
-                    : stockTag === "lowStock"
-                    ? "bg-amber-300"
-                    : "bg-green-700 text-white"
-                } absolute right-0 -top-6 z-0  bg-amber-300 rounded-xl px-2 py-1.5 text-xs font-semibold`}
+            className={`px-2 py-1.5 text-xs font-medium rounded-xl
+              ${
+                stockTag === "OutOfStock"
+                  ? "bg-[#DC3545]"
+                  : stockTag === "lowStock"
+                  ? "bg-[#FFA500]"
+                  : "bg-[#1DB954] text-white"
+              }`}
           >
             {stockTag}
-            <span className="font-bold">({stock})</span>
+            <span className="font-medium"> ({stock})</span>
           </div>
-        )}
-        {/* <Link to={`/product/${id}`} state={{ item: product }} className='flex justify-center'> */}
+        </div>
+      )}
+
+      {/* Content wrapper */}
+      <div className="flex flex-col items-center justify-center pt-2 px-2 pb-2">
         <img
           src={`${backendUrl}/${image}`}
           alt="food"
-          className="w-[80px] h-[80px] min-w-[80px] min-h-[80px] object-cover rounded-full flex justify-center items-center "
+          className="w-[80px] h-[80px] object-cover rounded-full"
         />
-        {/* </Link> */}
-        <h3 className="ml-1 text-sm font-medium min-w-[108] min-h-[23] tracking-tighter">
+        <h3 className="text-sm font-medium tracking-tighter mt-2 text-center">
           {dishName}
         </h3>
-        <p className="ml-1 font-bold text-xs ">Rs. {price}/-</p>
+        <p className="font-bold text-xs mt-1 text-center">Rs. {price}/-</p>
       </div>
-      <button
-        className={`${
-          button ? "hidden" : ""
-        } w-[85%] font-semibold bg-yellow-300 mb-2 rounded-sm h-[35px] justify-center mx-auto mt-1`}
-        onClick={() => onAddToCart(category, id, price)}
-      >
-        Add to cart
-      </button>
+
+      {/* Buttons */}
+      {!button && (
+        <button
+          className="w-[85%] font-semibold bg-yellow-300 mb-2 rounded-sm h-[35px] justify-center mx-auto mt-1"
+          onClick={() => onAddToCart(category, id, price)}
+        >
+          Add to cart
+        </button>
+      )}
       {button && (
         <Link
-          className={`border w-[85%] flex font-semibold  mb-2 rounded-sm h-[35px] justify-center mx-auto mt-1`}
+          className="border w-[85%] mb-2 flex font-semibold rounded-sm h-[35px] justify-center mx-auto mt-1"
           to={"/admin/createProduct"}
           state={{ product: data }}
         >

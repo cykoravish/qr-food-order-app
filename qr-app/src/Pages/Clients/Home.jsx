@@ -282,60 +282,62 @@ export const Home = () => {
         <CategoryCard uniqueCategories={uniqueCategories} products={products} />
       </div>
 
-      {Object.keys(groupedProducts).map((categoryName) => (
-        <div key={categoryName} className="category-section mb-2">
-          <div className="flex justify-between px-4 py-2">
-            <h2 className="text-[14px] font-semibold">{categoryName}</h2>
-            <Link
-              to={`/${categoryName}`}
-              state={{ items: groupedProducts[categoryName] }}
-              className="text-blue-500"
+      <div className="mb-6">
+        {Object.keys(groupedProducts).map((categoryName) => (
+          <div key={categoryName} className="category-section mb-2">
+            <div className="flex justify-between px-4 py-2">
+              <h2 className="text-[14px] font-semibold">{categoryName}</h2>
+              <Link
+                to={`/${categoryName}`}
+                state={{ items: groupedProducts[categoryName] }}
+                className="text-blue-500"
+              >
+                See More
+              </Link>
+            </div>
+
+            <div
+              className="flex overflow-x-auto min-h-[200px]  space-x-4 px-4 scrollbar-hide"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              See More
-            </Link>
+              {groupedProducts[categoryName]?.map((product) => (
+                <div key={product._id} className="min-w-[150px] flex-shrink-0">
+                  <CardDetails
+                    key={product._id}
+                    id={product._id}
+                    category={product.categoryId?.name}
+                    dishName={product.name}
+                    price={product.price || 100}
+                    qty={product.quantity} // Adjusted to use `quantity`
+                    image={product.imageUrl}
+                    onAddToCart={() => addToCarts(product)}
+                    product={product}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
+        ))}
 
-          <div
-            className="flex overflow-x-auto min-h-[200px]  space-x-4 px-4 scrollbar-hide"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        <div className="fixed bottom-1 left-0 right-0 mx-auto bg-yellow-300 w-[97%] h-[48px] flex justify-center items-center">
+          <Link
+            className="flex items-center justify-center text-center gap-1"
+            to={"/cart"}
+            state={{ cartItems }}
           >
-            {groupedProducts[categoryName]?.map((product) => (
-              <div key={product._id} className="min-w-[150px] flex-shrink-0">
-                <CardDetails
-                  key={product._id}
-                  id={product._id}
-                  category={product.categoryId?.name}
-                  dishName={product.name}
-                  price={product.price || 100}
-                  qty={product.quantity} // Adjusted to use `quantity`
-                  image={product.imageUrl}
-                  onAddToCart={() => addToCarts(product)}
-                  product={product}
-                />
-              </div>
-            ))}
-          </div>
+            <span>
+              <img
+                src="/assets/cart.svg"
+                alt="cart"
+                className="w-[18px] h-[18px] font-semibold"
+              />
+            </span>
+            Cart
+            <span className="font-semibold ml-1 text-center flex justify-center">
+              {totalQty}
+            </span>
+          </Link>
         </div>
-      ))}
-
-      <div className="fixed bottom-1 left-0 right-0 mx-auto bg-yellow-300 w-[97%] h-[48px] flex justify-center items-center">
-        <Link
-          className="flex items-center justify-center text-center gap-1"
-          to={"/cart"}
-          state={{ cartItems }}
-        >
-          <span>
-            <img
-              src="/assets/cart.svg"
-              alt="cart"
-              className="w-[18px] h-[18px] font-semibold"
-            />
-          </span>
-          Cart
-          <span className="font-semibold ml-1 text-center flex justify-center">
-            {totalQty}
-          </span>
-        </Link>
       </div>
     </div>
   );

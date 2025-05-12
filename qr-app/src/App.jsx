@@ -27,13 +27,24 @@ import { CategoryView } from "./Pages/Admin/CategoryView";
 import { TodayOrderStat } from "./Pages/Admin/TodayOrderStat";
 import { io } from "socket.io-client";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+console.log(backendUrl);
 const socket = io(backendUrl);
 function App() {
   useEffect(() => {
-    socket.on("connect");
+    const handleConnect = () => {
+      console.log("Connected to socket server");
+    };
+
+    const handleDisconnect = () => {
+      console.log("Disconnected from socket server");
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
 
     return () => {
-      socket.on("disconnect");
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
     };
   }, []);
 
