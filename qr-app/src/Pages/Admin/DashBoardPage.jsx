@@ -18,6 +18,7 @@ export const DashBoardPage = () => {
 
   // fetch All Products
   useEffect(() => {
+    socket.emit("join-admin");
     const fetchData = async () => {
       try {
         const responce = await PrivateAxios.get("/products");

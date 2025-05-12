@@ -79,15 +79,17 @@ io.on("connection", (socket) => {
   });
 
   // Notify admins about a new order
-  socket.on("order-placed", (orderId) => {
-    io.to("admin-room").emit("placed-order", orderId);
-    console.log(`Order placed: ${orderId}`);
+  socket.on("order-placed", () => {
+    io.to("admin-room").emit("placed-order", () => {
+      console.log("admin in the room");
+    });
+    console.log(`Order placed`);
   });
 
   // Notify admins about order status update
-  socket.on("order-updated", (data) => {
-    io.to("admin-room").emit("order-updated-status", data);
-    console.log(`Order updated:`, data);
+  socket.on("order-updated", () => {
+    io.to("admin-room").emit("order-updated-status");
+    console.log(`Order updated:`);
   });
 
   socket.on("disconnect", () => {

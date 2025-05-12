@@ -20,12 +20,11 @@ export const OrderUpdate = () => {
 
   console.log(filterdPendingOrders);
   useEffect(() => {
+    socket.emit("join-admin");
     // Initially fetch pending orders
     fetched();
 
-    socket.emit("join-admin"); // Join admin room immediately after connecting
-
-    const handleOrderUpdate = (data) => {
+    const handleOrderUpdate = () => {
       fetched();
     };
 
@@ -44,31 +43,7 @@ export const OrderUpdate = () => {
     };
   }, []);
 
-  // const filterdPendingOrders = orders.filter((item) => item.status === 'pending' || item.status === 'processing');
-  // console.log(filterdPendingOrders)
-
-  // async function handleDelevery(orderId) {
-  //     try {
-  //         const response = await publicAxios.patch(`/orders/${orderId}`, { status: 'delivered' });
-
-  //         if (response.status !== 200) {
-  //             throw new Error('Something went wrong, please try again later.');
-  //         }
-  //         socket.emit('order-updated', orderId)
-  //         alert('Product deleverd successfully')
-  //     } catch (error) {
-  //         alert(error.message || 'Something went wrong.');
-  //     }
-  // };
-
-  // async function handleCancel(orderId) {
-  //     const responce = await publicAxios.patch(`/orders/${orderId}`, { status: 'cancelled' });
-  //     if (responce.status !== 200) {
-  //         throw new Error({ message: 'Something error try after some time' })
-  //     };
-  //     socket.emit('order-updated', orderId)
-  //     alert('order updated');
-  // }
+  
   async function handleProcessing(status, orderId, order) {
     try {
       console.log("Processing order:", order);
@@ -78,9 +53,9 @@ export const OrderUpdate = () => {
 
       console.log("Updating Order ID:", orderId, "to status:", status);
 
-      const response = await publicAxios.patch(`/orders/${orderId}`, {
+      const response = await PrivateAxios.patch(`/orders/${orderId}`, {
         status,
-        productIds, 
+        productIds,
       });
 
       if (response.status !== 200) {

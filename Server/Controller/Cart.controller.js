@@ -19,7 +19,6 @@ export const getCartItems = async (req, res) => {
 };
 
 export const postAddTOCart = async (req, res) => {
-    console.log(req.body)
     try {
         // ⬅️ user info should be attached from your auth middleware
         const { userId, items } = req.body;

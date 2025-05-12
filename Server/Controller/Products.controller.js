@@ -3,7 +3,7 @@ import Product from "../Model/Product.model.js";
 import User from "../Model/Admin.model.js";
 
 export const getAllProducts = async (req, res) => {
-  console.log("products");
+
   try {
     const products = await Product.find().populate("categoryId");
     if (!products) {
@@ -160,7 +160,6 @@ export const putProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   const { productId } = req.params;
-  console.log(productId);
   try {
     const deleteProduct = await Product.findByIdAndDelete(productId);
     console.log(deleteProduct);

@@ -5,7 +5,6 @@ import Admin from '../Model/Admin.model.js';
 import Order from '../Model/Order.model.js';
 
 export const postNewUser = async (req, res) => {
-    console.log(req.body)
     const { name, phone, table } = req.body;
     if (!name || !phone) {
         return res.status(400).json({ message: 'All fields are required' })
@@ -39,7 +38,6 @@ export const postNewUser = async (req, res) => {
 
 export const putUser = async (req, res) => {
     const { name, phone, table } = req.body;
-    console.log(name, phone, table)
     if (name.length === 0 || phone.length <= 10) {
         return res.status(400).json({ message: 'All fields required with valid value' })
     };
@@ -110,7 +108,6 @@ export const postNewAdmin = async (req, res) => {
 
 export const LoginUser = async (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password)
     if (!email || !password) {
         return res.status(400).json({ message: 'All fields are required' })
     }

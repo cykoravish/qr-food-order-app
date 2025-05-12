@@ -51,13 +51,13 @@ export const PaymentPage = () => {
         : await publicAxios.post("/orders/place-order", productData);
 
       if (response.status === 200 || response.status === 201) {
-        socket.emit("admin-room");
         setOrder(response.data.order);
         dispatch(clearCart()); // Clear Redux and localStorage
         alert("Order placed successfully!");
+        socket.emit("join-admin");
         navigate("/order-success");
         const orderId = response.data.order._id;
-        socket.emit("order-placed", orderId);
+        socket.emit("order-placed");
       } else {
         console.error("Failed to place order");
       }

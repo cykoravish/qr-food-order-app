@@ -112,7 +112,6 @@ export const UserInfo = () => {
                         <button className='mt-4 bg-blue-400 text-white py-2 px-4 rounded' onClick={handleEdit}>Edit</button>
                         <Link className='mt-4 bg-blue-400 text-white py-2 px-4 rounded flex justify-center  items-center' to={`/cart-bill/?userId=${userId ? userId : user._id}`} onClick={() => {
                             handleCartDeta();
-                            handleSubmit();
                         }}>Bill Details</Link>
                     </>
                 )}

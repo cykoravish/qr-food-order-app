@@ -31,6 +31,7 @@ console.log(backendUrl);
 const socket = io(backendUrl);
 function App() {
   useEffect(() => {
+    
     const handleConnect = () => {
       console.log("Connected to socket server");
     };

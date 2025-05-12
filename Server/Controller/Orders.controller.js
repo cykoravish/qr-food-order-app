@@ -46,7 +46,6 @@ export const getTodayOrders = async (req, res) => {
             $lt:tomorrow
         }
     }).populate('userId').populate("items.productId");
-    console.log(todayOrders)
     res.status(200).json({content:todayOrders})
   } catch (error) {
     res.status(500).json({message:'Internal server error',error})
