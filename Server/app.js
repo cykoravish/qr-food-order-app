@@ -63,7 +63,11 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", process.env.frontend, "https://food-ordering-qr-v2w8.onrender.com"],
+    origin: [
+      "http://localhost:5173",
+      process.env.frontend,
+      "https://food-ordering-qr-v2w8.onrender.com",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
