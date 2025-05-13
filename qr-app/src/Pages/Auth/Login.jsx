@@ -49,8 +49,12 @@ export const Login = () => {
   }
   return (
     <div className="min-w-[375px] ml-2 mr-2 h-full overflow-x-hidden items-center relative">
-      <div className="">
-        <ReverseButton route={"/"} routeName={"Home"} />
+      <div className="mt-3">
+        <ReverseButton
+          route={"/"}
+          routeName={"Home"}
+          css={"flex justify-start"}
+        />
       </div>
       <div className="mt-10 flex flex-col items-center">
         <h2 className="flex justify-center text-2xl font-semibold">
@@ -79,7 +83,9 @@ export const Login = () => {
               className="m-2 border border-gray-400 pl-2 h-12 rounded-md "
               onChange={handleInput}
             />
-            {error.password && <p className="text-red-800 text-center">{error.password}</p>}
+            {error.password && (
+              <p className="text-red-800 text-center">{error.password}</p>
+            )}
           </div>
           <div className="ml-2 mr-2">
             <button
