@@ -139,8 +139,10 @@ export const LoginUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWTSECRET);
     res.cookie("token", token, {
       httpOnly: false, // should be true for security, unless you intentionally need JS access
-      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-      sameSite: "Lax", // you can also use "Lax" for more leniency if needed
+      // secure: process.env.NODE_ENV === "production",
+      secure: false,
+      // sameSite: "Lax",
+      sameSite: "None", // you can also use "Lax" for more leniency if needed
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
