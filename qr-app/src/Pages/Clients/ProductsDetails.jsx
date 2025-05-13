@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom'
 import { addToCart } from '../../Redux/Cart';
 import { ReverseButton } from '../../components/Client/ReverseButton';
-import getCookies from '../../Services/ProtectedRoutes';
+// import getCookies from '../../Services/ProtectedRoutes';
+import { getTokenFromLocalStorage } from '../../Services/ProtectedRoutes';
 
 export const ProductsDetails = () => {
     const location = useLocation();
@@ -20,7 +21,7 @@ export const ProductsDetails = () => {
         dispatch(addToCart(product));
     }
 
-    const admin = getCookies('token');
+    const admin = getTokenFromLocalStorage();
     return (
         <>
             <div className='w-[100%] h-[58px] flex items-center'>

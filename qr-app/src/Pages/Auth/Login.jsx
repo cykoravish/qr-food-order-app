@@ -36,10 +36,13 @@ export const Login = () => {
     if (validate()) {
       const resoponce = await PrivateAxios.post("/auth/login", form);
       console.log("login response: ", resoponce);
+      console.log("login response: ", resoponce.data);
       console.log("login response status: ", resoponce.status);
       console.log("login response status !==200: ", resoponce.status !== 200);
       if (resoponce.status !== 200) {
         throw new Error({ message: "Respocne Failed" });
+      }else{
+        localStorage.setItem("token", resoponce.data.token);
       }
       naviagate("/admin");
     }
