@@ -21,29 +21,29 @@ export const Signup = () => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+$/;
 
     if (!form.email.trim() || !emailRegex.test(form.email)) {
-     newErrors.email = "Email is not correct";
+      newErrors.email = "Email is not correct";
     }
 
-    const passwordRezax =/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@*$%&+=!]).{8,}$/;
+    const passwordRezax =
+      /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@*$%&+=!]).{8,}$/;
 
     if (!form.password.trim() || !passwordRezax.test(form.password)) {
       newErrors.password =
         "Password must be Atleats One upparcase later and one lowercase and any symbol";
-    };
+    }
 
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   async function handleForm(e) {
     e.preventDefault();
-    if(validate()){
-        const resoponce = await publicAxios.post("/auth/signup", form);
-        if (!resoponce.status === 201) {
-          throw new Error({ message: "Responce Failed" });
-        }
-        naviagate("/login");
+    if (validate()) {
+      const resoponce = await publicAxios.post("/auth/signup", form);
+      if (!resoponce.status === 201) {
+        throw new Error({ message: "Responce Failed" });
+      }
+      naviagate("/login");
     }
   }
 
@@ -53,8 +53,10 @@ export const Signup = () => {
     setForm({ ...form, [name]: value });
   }
   return (
-    <div className="w-[98%] mx-auto my-0  relative">
-      <ReverseButton route={"/"} routeName={"Home"} css={"mt-2 ml-2"} />
+    <div className="  my-0  relative">
+      <div className="flex justify-start w-[98%] mx-auto mt-3">
+        <ReverseButton route={"/"} routeName={"Home"} css={"text-left"} />
+      </div>
       <div className="mt-10 flex flex-col items-center ">
         <h2 className="flex justify-center text-2xl font-semibold">
           Ragistration Form
@@ -72,7 +74,7 @@ export const Signup = () => {
               className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
               onChange={handleInput}
             />
-              {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
+            {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
           </div>
           <div className="flex flex-col">
             <input
@@ -83,7 +85,7 @@ export const Signup = () => {
               className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
               onChange={handleInput}
             />
-              {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+            {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
           </div>
           <div className="flex flex-col">
             <input
@@ -94,7 +96,9 @@ export const Signup = () => {
               className="m-2 border border-gray-400 pl-2 h-12 rounded-md"
               onChange={handleInput}
             />
-              {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+            {errors.password && (
+              <p style={{ color: "red" }}>{errors.password}</p>
+            )}
           </div>
 
           {/* 🛠 No extra div! Directly button */}
