@@ -9,7 +9,9 @@ const PrivateAxios = axios.create({
 });
 PrivateAxios.interceptors.request.use(
     (config) => {
+        console.log("axios interceptor from local storage")
         const token = localStorage.getItem('token'); // or get from context/store
+        console.log("axios interceptor from local storage token : ", token)
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }

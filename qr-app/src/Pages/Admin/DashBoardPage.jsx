@@ -25,6 +25,7 @@ export const DashBoardPage = () => {
         if (responce.status !== 200) {
           throw new Error({ message: "responce failed" });
         }
+        console.log("dashboard page ", responce)
         setProducts(responce.data.data); // Set fetched data
       } catch (error) {
         console.error("Error fetching data:", error);
