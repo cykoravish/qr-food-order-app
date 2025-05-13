@@ -138,24 +138,11 @@ export const LoginUser = async (req, res) => {
     };
     const token = jwt.sign(payload, process.env.JWTSECRET);
 
-    // res.cookie("token", token, {
-    //   httpOnly: false, // should be true for security, unless you intentionally need JS access
-    //   secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-    //   sameSite: "Lax", // you can also use "Lax" for more leniency if needed
-    //   maxAge: 24 * 60 * 60 * 1000, // 1 day
-    // });
-
-    // res.cookie("token", token, {
-    //   httpOnly: false,
-    //   sameSite: "Lax",
-    //   maxAge: 24 * 60 * 60 * 1000,
-    // });
-
     res.cookie("token", token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: false, // should be true for security, unless you intentionally need JS access
+      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+      sameSite: "Lax", // you can also use "Lax" for more leniency if needed
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     res
