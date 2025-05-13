@@ -44,6 +44,7 @@ function shouldCompress(req, res) {
 const allowedOrigins = [
   "http://localhost:5173",
   "https://hilarious-mermaid-cc36ae.netlify.app/",
+  process.env.FRONTEND,
 ];
 app.use(
   cors({
@@ -62,7 +63,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", process.env.frontend],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -122,4 +123,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-server.listen(5000, () => console.log("server connected 5000"));
+server.listen(5000, () =>
+  console.log(`app listening on port http://localhost:${process.env.PORT}`)
+);
